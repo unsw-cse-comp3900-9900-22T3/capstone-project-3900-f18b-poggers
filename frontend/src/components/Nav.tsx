@@ -15,27 +15,10 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Avatar, Button, Divider, Drawer, Tooltip } from '@mui/material';
 import avatar from '../static/images/avatar.jpg'
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import SidebarButtonItem from './SidebarButtonItem';
 import SidebarSubheading from './SidebarSubheading';
 import { Link } from 'react-router-dom';
 
-const customTheme = createTheme({
-  palette: {
-    primary: {
-      light: '#4f5b62',
-      main: '#263238',
-      dark: '#000a12',
-      contrastText: '#ffffff',
-    },
-    secondary: {
-      light: '#6f74dd',
-      main: '#3949ab',
-      dark: '#00227b',
-      contrastText: '#ffffff',
-    },
-  },
-});
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -243,7 +226,7 @@ export default function Nav() {
   );
 
   return (
-    <ThemeProvider theme={customTheme}>
+    <>
       <Drawer
         open={sidebarOpen}
         onClose={toggleSidebar(false)}
@@ -335,6 +318,6 @@ export default function Nav() {
         {renderMobileMenu}
         {renderMenu}
       </Box>
-    </ThemeProvider >
+    </>
   );
 }
