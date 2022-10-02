@@ -19,7 +19,6 @@ import SidebarButtonItem from './SidebarButtonItem';
 import SidebarSubheading from './SidebarSubheading';
 import { Link } from 'react-router-dom';
 
-
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
