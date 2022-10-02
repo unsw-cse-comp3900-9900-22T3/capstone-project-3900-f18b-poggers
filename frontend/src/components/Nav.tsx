@@ -135,7 +135,7 @@ export default function Nav() {
             sx={{ display: { xs: 'block', sm: 'block', md: 'none' }, width: '100%', marginTop: 1 }}
             color="secondary"
             component={Link}
-            to={"/auth"}
+            to={"/login"}
           >
             <Typography align="center">Log In</Typography>
           </Button>
@@ -325,7 +325,7 @@ export default function Nav() {
                   sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
                   color="secondary" variant="contained"
                   component={Link}
-                  to={"/auth"}
+                  to={"/login"}
                 >
                   <Typography align="center">Log In</Typography>
                 </Button>
