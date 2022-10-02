@@ -132,15 +132,6 @@ export default function Nav() {
         <Box sx={{ padding: 1, display: { xs: 'block', sm: 'block', md: 'none' } }}>
           <Button
             variant="contained"
-            sx={{ display: { xs: 'block', sm: 'block', md: 'none' }, width: '100%', marginBottom: 1 }}
-            color="secondary"
-            component={Link}
-            to={"/auth"}
-          >
-            <Typography align="center">Sign Up</Typography>
-          </Button>
-          <Button
-            variant="contained"
             sx={{ display: { xs: 'block', sm: 'block', md: 'none' }, width: '100%', marginTop: 1 }}
             color="secondary"
             component={Link}
@@ -279,7 +270,7 @@ export default function Nav() {
               sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
               onClick={() => setLoggedIn(!loggedIn)} // remove this later
             >
-              Uber Yeets
+              Instacook
             </Typography>
             <Search>
               <SearchIconWrapper>
@@ -330,15 +321,6 @@ export default function Nav() {
               </>
               :
               <>
-                <Button
-                  variant="contained"
-                  sx={{ marginRight: 1, display: { xs: 'none', sm: 'none', md: 'block' } }}
-                  color="secondary"
-                  component={Link}
-                  to={"/auth"}
-                >
-                  <Typography align="center">Sign Up</Typography>
-                </Button>
                 <Button
                   sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
                   color="secondary" variant="contained"
