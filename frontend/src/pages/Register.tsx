@@ -5,7 +5,7 @@ import authbackground from '../static/images/authbackground.jpeg'
 
 type Props = {}
 
-const Login = (props: Props) => {
+const Register = (props: Props) => {
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
 
@@ -17,18 +17,33 @@ const Login = (props: Props) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+
     const data = {
       email: formData.get('email'),
+      username: formData.get('username'),
       password: formData.get('password'),
-    };
+      confirmPassword: formData.get('confirm-password')
+    }
+    console.log(data);
+
 
     if (!data.email) {
       displayError("The email field cannot be empty.");
       return;
     }
 
-    if (!data.password) {
-      displayError("The password field cannot be empty.");
+    if (!data.username) {
+      displayError("The username field cannot be empty.");
+      return;
+    }
+
+    if (!data.password || !data.confirmPassword) {
+      displayError("The password fields cannot be empty.");
+      return;
+    }
+
+    if (data.password !== data.confirmPassword) {
+      displayError("Passwords do not match");
       return;
     }
 
@@ -41,6 +56,7 @@ const Login = (props: Props) => {
     background: `url(${authbackground}) no-repeat center center fixed`,
     backgroundSize: "cover"
   }
+
   return (
     <Grid
       container
@@ -60,12 +76,14 @@ const Login = (props: Props) => {
           }}
         >
           <Typography component="h1" variant="h5">
-            Log In
+            Register
           </Typography>
           <Typography color="error" variant="body1" sx={{ marginTop: 1, display: `${showErrorMessage ? "block" : "none"}` }}>
             Error: {errorMessage}
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+
+          <Box component="form" onSubmit={handleSubmit} noValidate>
+
             <TextField
               margin="normal"
               required
@@ -80,15 +98,31 @@ const Login = (props: Props) => {
               margin="normal"
               required
               fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+            />
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
               name="password"
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
+              autoComplete="password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="secondary" />}
-              label="Remember me"
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirm-password"
+              label="Confirm Password"
+              type="password"
+              id="confirm-password"
+              autoComplete="password"
             />
             <Button
               type="submit"
@@ -97,15 +131,15 @@ const Login = (props: Props) => {
               sx={{ mt: 3, mb: 2 }}
               color="secondary"
             >
-              Log In
+              Register
             </Button>
             <Grid container>
               <Grid item>
                 <Typography sx={{ display: "inline", mr: 1 }} variant="subtitle1">
-                  Not registered?
+                  Already registered?
                 </Typography>
-                <Link to="/register">
-                  {"Create an Account"}
+                <Link to="/login">
+                  {"Log In"}
                 </Link>
               </Grid>
             </Grid>
@@ -116,4 +150,4 @@ const Login = (props: Props) => {
   )
 }
 
-export default Login
+export default Register

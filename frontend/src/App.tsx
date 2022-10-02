@@ -8,6 +8,7 @@ import {
 import Nav from './components/Nav';
 import Login from './pages/Login';
 import Main from './pages/Main';
+import Register from './pages/Register';
 
 
 const theme = createTheme({
@@ -57,6 +58,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </ThemeProvider>
       </Router>
