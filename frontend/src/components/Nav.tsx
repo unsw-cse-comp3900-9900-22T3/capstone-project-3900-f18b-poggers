@@ -11,7 +11,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Avatar, Button, Divider, Drawer, Tooltip } from '@mui/material';
 import avatar from '../static/images/avatar.jpg'
@@ -205,11 +204,6 @@ export default function Nav() {
     >
       <MenuItem onClick={handleMenuClose}>Signed in as {loggedInUsername}</MenuItem>
       <Divider />
-      <MenuItem>
-        <Badge badgeContent={1} color="error">
-          Notifications
-        </Badge>
-      </MenuItem>
       <Divider />
       <MenuItem onClick={handleProfileMenuOpen}>
         Your Profile
@@ -267,14 +261,6 @@ export default function Nav() {
             {loggedIn ?
               <>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                  <IconButton
-                    aria-label="show 1 new notification"
-                    color="inherit"
-                  >
-                    <Badge badgeContent={1} color="error">
-                      <NotificationsIcon />
-                    </Badge>
-                  </IconButton>
                   <Tooltip title="Account">
                     <IconButton
                       edge="end"
