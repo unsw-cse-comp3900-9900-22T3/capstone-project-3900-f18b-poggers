@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-import { Button, ButtonGroup, Checkbox, FormControlLabel, TextField, Typography, Container, Grid, Paper, Box } from '@mui/material';
+import { Button, Typography, Container, Grid, Box } from '@mui/material';
+import ProfileRecipe from '../components/ProfileRecipe';
 
 type Props = {}
 
@@ -69,7 +70,7 @@ const Profile = (props: Props) => {
         {/* Username and description */}
         <Grid item xs={12} md={8}> 
           <Typography variant="h3">
-            Swxerson
+            John Xina
           </Typography>
 
           <Typography variant="subtitle1" pr={4}>
@@ -77,6 +78,7 @@ const Profile = (props: Props) => {
           </Typography>
         </Grid>
 
+        {/* Recipe header */}
         <Grid item md={12} xs={12}>
             <Box sx={{
               borderBottom: 1,
@@ -86,9 +88,24 @@ const Profile = (props: Props) => {
                 Recipes
               </Typography>
             </Box>
-
         </Grid>
+
       </Grid>  
+
+      {/* Recipe Posts */}
+      <Grid 
+        container
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+        md={9}
+      >
+        <ProfileRecipe />
+        <ProfileRecipe />
+        <ProfileRecipe />
+        <ProfileRecipe />
+        <ProfileRecipe />
+      </Grid>
 
 
 
