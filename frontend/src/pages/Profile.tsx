@@ -23,7 +23,7 @@ type Props = {}
 const Profile = (props: Props) => {
   return (
     <Container 
-      maxWidth="sm"
+      maxWidth="md"
       >
       <Grid 
         container
@@ -45,6 +45,7 @@ const Profile = (props: Props) => {
             alt="Profile Image"
             src="https://i.redd.it/a1zcxisgjls71.png"
             mt={2}
+            ml={{md: 6}}
           />
 
           {/* Subscribe button */}
@@ -71,7 +72,7 @@ const Profile = (props: Props) => {
             Swxerson
           </Typography>
 
-          <Typography variant="subtitle1">
+          <Typography variant="subtitle1" pr={4}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.
           </Typography>
         </Grid>
@@ -79,7 +80,7 @@ const Profile = (props: Props) => {
         <Grid item md={12} xs={12}>
             <Box sx={{
               borderBottom: 1,
-              marginTop: 2,
+              marginTop: 3,
             }}>
               <Typography variant="h5" ml={2}>
                 Recipes
