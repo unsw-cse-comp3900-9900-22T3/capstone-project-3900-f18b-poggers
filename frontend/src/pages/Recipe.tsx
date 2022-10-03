@@ -11,12 +11,12 @@ const Recipe = (props: Props) => {
   const [instructions, setInstruction] = React.useState(["Wrap each piece of beef tightly in a triple layer of cling film to set its shape, then chill overnight.", "Remove the cling film, then quickly sear the beef fillets in a hot pan with a little olive oil for 30-60 seconds until browned all over and rare in the middle. Remove from the pan and leave to cool.", "Finely chop the mushrooms and fry in a hot pan with a little olive oil, the thyme leaves and some seasoning. When the mushrooms begin to release their juices, continue to cook over a high heat for about 10 minutes until all the excess moisture has evaporated and you are left with a mushroom paste (known as a duxelle). Remove the duxelle from the pan and leave to cool.", "Cut the pastry in half, place on a lightly floured surface and roll each piece into a rectangle large enough to envelop one of the beef fillets. Chill in the refrigerator.", "Lay a large sheet of cling film on a work surface and place 4 slices of Parma ham in the middle, overlapping them slightly, to create a square. Spread half the duxelle evenly over the ham."]);
   const listIngredient = ingredients.map((ingredient) =>
 
-    <ListItem>
+    <li>
       {/* <ListItemIcon>
         <CircleIcon />
       </ListItemIcon> */}
       <ListItemText primary={ingredient} />
-    </ListItem>
+    </li>
   );
   const listInstructions = instructions.map((instruction, key) =>
     <ListItem>
@@ -26,12 +26,12 @@ const Recipe = (props: Props) => {
         direction="row"
         // alignItems="center"
       >
-        <Grid xs={0} sx={{paddingTop: 0.75}}>
+        <Grid sm={0} sx={{paddingTop: 0.75}}>
           <Typography variant="h5">
             {key + 1}
           </Typography>
         </Grid>
-        <Grid xs={10} sx={{borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1}}>
+        <Grid sm={10} sx={{borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1}}>
           {instruction}
         </Grid>
       </Grid>
@@ -39,11 +39,8 @@ const Recipe = (props: Props) => {
     </ListItem>
   );
   const bgStyles = {
-    minHeight: `calc(100vh - 64px)`,
+    // minHeight: `calc(100vh - 64px)`,
     backgroundColor: "#d3d3d3",
-    // padding: 20,
-    // background: `url(${testimg}) no-repeat center center fixed`,
-    // backgroundSize: "cover"
   }
   return (
     <Grid
@@ -51,8 +48,8 @@ const Recipe = (props: Props) => {
       spacing={0}
       direction="column"
       alignItems="center"
-      // justifyContent="center"
       style={bgStyles}
+      sx={{paddingLeft: 0}}
     >
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
@@ -100,14 +97,14 @@ const Recipe = (props: Props) => {
             />
           </Card>
           <Grid container spacing={5} sx={{padding: 3}}>
-            <Grid item xs={3}>
+            <Grid item sm={3}>
               <Typography variant="h5">
                 Ingredients
               </Typography>
-              <List>
-                {listIngredient}</List>
+              <ul>
+                {listIngredient}</ul>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item sm={9}>
               <Typography variant="h5">
                 Cooking Instructions
               </Typography>
@@ -128,7 +125,7 @@ const Recipe = (props: Props) => {
             Similar Recipes
           </Typography>
           <Grid container spacing={2} sx={{padding: 3}}>
-            <Grid item xs={3}>
+            <Grid item sm={3}>
               <Card sx={{ maxWidth: 345 }}>
                 <CardActionArea>
                   <CardMedia
@@ -147,7 +144,7 @@ const Recipe = (props: Props) => {
                 </CardActionArea>
               </Card>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item sm={3}>
               <Card sx={{ maxWidth: 345 }}>
                 <CardActionArea>
                   <CardMedia
@@ -164,7 +161,7 @@ const Recipe = (props: Props) => {
                 </CardActionArea>
               </Card>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item sm={3}>
               <Card sx={{ maxWidth: 345 }}>
                 <CardActionArea>
                   <CardMedia
@@ -181,7 +178,7 @@ const Recipe = (props: Props) => {
                 </CardActionArea>
               </Card>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item sm={3}>
               <Card sx={{ maxWidth: 345 }}>
                 <CardActionArea>
                   <CardMedia
