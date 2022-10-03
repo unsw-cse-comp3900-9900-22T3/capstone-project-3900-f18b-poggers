@@ -21,7 +21,7 @@ const ProfileRecipe = (props: Props) => {
         <Grid 
           container
           item
-          // justifyContent="center"
+          justifyContent="center"
           alignItems="center"
           sx={{
             border: 1,
