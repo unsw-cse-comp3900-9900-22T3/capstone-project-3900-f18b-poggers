@@ -9,6 +9,7 @@ import Nav from './components/Nav';
 import Login from './pages/Login';
 import Main from './pages/Main';
 import Register from './pages/Register';
+import Recipe from './pages/Recipe';
 
 
 const theme = createTheme({
@@ -59,6 +60,7 @@ const App = () => {
             <Route path="/" element={<Main />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/recipe" element={<Recipe />} />
           </Routes>
         </ThemeProvider>
       </Router>
