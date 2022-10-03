@@ -27,27 +27,46 @@ const Profile = (props: Props) => {
       >
       <Grid 
         container
-        // direction="row"
         justifyContent="center"
         alignItems="center"
       >
-        <Grid item xs={4}>
+        {/* Profile image */}
+        <Grid item md={4}>
           <Box
             component="img"
             sx={{
               height: 150,
               weight: 150,
-              maxHeight: {xs: 125, md: 150},
-              maxWidth: {xs: 125, md: 150},
+              maxHeight: 150,
+              maxWidth: 150,
               borderRadius: "50%",
-              objectFit: "cover"
+              objectFit: "cover",
             }}
             alt="Profile Image"
             src="https://i.redd.it/a1zcxisgjls71.png"
+            mt={2}
           />
+
+          {/* Subscribe button */}
+          <Box 
+            textAlign='center'
+            mr={{md: 4}}
+            mt={1}
+          >
+            <Button
+              onClick={() => alert('subscribe')}
+              variant="contained"
+              color="secondary"
+              size="small"
+            >
+              Subscribe
+            </Button>
+          </Box>
+
         </Grid>
 
-        <Grid item xs={8}> 
+        {/* U */}
+        <Grid item xs={12} md={8}> 
           <Typography variant="h3">
             Swxerson
           </Typography>
@@ -60,13 +79,7 @@ const Profile = (props: Props) => {
 
 
 
-        <Button
-          onClick={() => alert('subscribe')}
-          variant="contained"
-          color="secondary"
-          size="small">
-          Subscribe
-        </Button>
+
     </Container>
 
   )
