@@ -94,11 +94,13 @@ const Profile = (props: Props) => {
 
       {/* Recipe Posts */}
       <Grid 
-        container
+        // container
         direction="column"
         justifyContent="center"
         alignItems="center"
         md={9}
+        ml={15}
+        mr={15}
       >
         <ProfileRecipe />
         <ProfileRecipe />

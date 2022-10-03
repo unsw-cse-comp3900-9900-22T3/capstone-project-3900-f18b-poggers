@@ -17,7 +17,6 @@ const ProfileRecipe = (props: Props) => {
   }
 
   return (
-    <>
         <Grid 
           container
           item
@@ -55,7 +54,7 @@ const ProfileRecipe = (props: Props) => {
               </Typography>
 
               <Typography variant="body2">
-                Cone and vanilla ice cream
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.
               </Typography>
             </Grid>
 
@@ -88,7 +87,6 @@ const ProfileRecipe = (props: Props) => {
           </Grid>
 
         </Grid>
-    </>
     
 
   )
