@@ -65,7 +65,7 @@ const Profile = (props: Props) => {
 
         </Grid>
 
-        {/* U */}
+        {/* Username and description */}
         <Grid item xs={12} md={8}> 
           <Typography variant="h3">
             Swxerson
@@ -74,6 +74,18 @@ const Profile = (props: Props) => {
           <Typography variant="subtitle1">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.
           </Typography>
+        </Grid>
+
+        <Grid item md={12} xs={12}>
+            <Box sx={{
+              borderBottom: 1,
+              marginTop: 2,
+            }}>
+              <Typography variant="h5" ml={2}>
+                Recipes
+              </Typography>
+            </Box>
+
         </Grid>
       </Grid>  
 
