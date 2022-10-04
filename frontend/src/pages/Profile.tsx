@@ -126,24 +126,12 @@ const Profile = (props: Props) => {
         ml={{md: 15}}
         mr={{md: 15}}
       >
-        <ProfileRecipe 
-          // name={post.name}
-          // description={post.description}
-          // tag={post.tag}
-          // src={post.src}
-          // like={post.like}
-          post={post1}
-        />
+        <ProfileRecipe post={post1}/>
         <ProfileRecipe post={post2}/>
         <ProfileRecipe post={post3}/>
         <ProfileRecipe post={post4}/>
       </Grid>
-
-
-
-
     </Container>
-
   )
 }
 

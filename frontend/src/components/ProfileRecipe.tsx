@@ -38,7 +38,7 @@ const ProfileRecipe = (props: Props) => {
         >
 
           {/* Recipe thumbnail */}
-          <Grid item md={4}>
+          <Grid item md={4} mr={2}>
             <Box
               component="img"
               sx={{
@@ -50,7 +50,6 @@ const ProfileRecipe = (props: Props) => {
               }}
               onClick={() => alert('Recipe page is yet to be implemented')}
               alt="Profile Image"
-              // src="https://i.redd.it/a1zcxisgjls71.png"
               src={props.post.src}
             />
 
@@ -69,8 +68,7 @@ const ProfileRecipe = (props: Props) => {
             </Grid>
 
             {/* Tags and likes */}
-            <Grid 
-              // item
+            <Grid
               container
               direction="row"
               alignItems="flex-end"
@@ -90,10 +88,8 @@ const ProfileRecipe = (props: Props) => {
                   <FavoriteIcon fontSize='small'/> {props.post.like}
                 </Grid>
               </Box>
-
             </Grid>
           </Grid>
-
         </Grid>
     
 
