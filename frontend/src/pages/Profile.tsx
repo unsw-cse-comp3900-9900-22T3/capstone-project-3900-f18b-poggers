@@ -99,8 +99,8 @@ const Profile = (props: Props) => {
         justifyContent="center"
         alignItems="center"
         md={9}
-        ml={15}
-        mr={15}
+        ml={{md: 15}}
+        mr={{md: 15}}
       >
         <ProfileRecipe />
         <ProfileRecipe />
