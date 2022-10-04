@@ -36,15 +36,17 @@ const Profile = (props: Props) => {
           <Box
             component="img"
             sx={{
-              height: 150,
-              weight: 150,
+              minHeight: 150,
+              minWidth: 150,
               maxHeight: 150,
               maxWidth: 150,
               borderRadius: "50%",
               objectFit: "cover",
             }}
             alt="Profile Image"
-            src="https://i.redd.it/a1zcxisgjls71.png"
+            // src="https://i.redd.it/a1zcxisgjls71.png"
+            // src="https://addapinch.com/wp-content/uploads/2017/07/old-fashioned-vanilla-ice-cream-recipe-DSC_4239.jpg"
+            src="https://images.unsplash.com/photo-1615003162333-d3ff3ce1f0f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8dWx0cmElMjB3aWRlfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
             mt={2}
             ml={{md: 6}}
           />
@@ -94,7 +96,7 @@ const Profile = (props: Props) => {
 
       {/* Recipe Posts */}
       <Grid 
-        // container
+        container
         direction="column"
         justifyContent="center"
         alignItems="center"

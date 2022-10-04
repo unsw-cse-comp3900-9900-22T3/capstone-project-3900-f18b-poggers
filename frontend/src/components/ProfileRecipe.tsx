@@ -19,7 +19,6 @@ const ProfileRecipe = (props: Props) => {
   return (
         <Grid 
           container
-          item
           justifyContent="center"
           alignItems="center"
           sx={{
@@ -34,15 +33,18 @@ const ProfileRecipe = (props: Props) => {
             <Box
               component="img"
               sx={{
-                height: 225,
-                weight: 225,
-                maxHeight: 225,
-                maxWidth: 225,
+                minHeight: 200,
+                minWeight: 200,
+                maxHeight: 200,
+                maxWidth: 200,
                 objectFit: "cover",
               }}
               onClick={() => alert('Recipe page is yet to be implemented')}
               alt="Profile Image"
-              src="https://addapinch.com/wp-content/uploads/2017/07/old-fashioned-vanilla-ice-cream-recipe-DSC_4239.jpg" />
+              // src="https://addapinch.com/wp-content/uploads/2017/07/old-fashioned-vanilla-ice-cream-recipe-DSC_4239.jpg" 
+              // src="https://i.redd.it/a1zcxisgjls71.png"
+              src="https://images.unsplash.com/photo-1615003162333-d3ff3ce1f0f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8dWx0cmElMjB3aWRlfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+            />
 
           </Grid>
 
