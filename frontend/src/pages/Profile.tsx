@@ -16,8 +16,8 @@ type RecipePost = {
 const post1: RecipePost = {
   name: "Bing Chilling",
   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.",
-  tag: ['tag1','tag2','tag3'],
-  src: "https://addapinch.com/wp-content/uploads/2017/07/old-fashioned-vanilla-ice-cream-recipe-DSC_4239.jpg",
+  tag: ['vanilla'],
+  src: "https://cdn.discordapp.com/attachments/206003287093149696/1026867082610085898/unknown.png",
   like: 9999,
 }
 
@@ -25,7 +25,7 @@ const post2: RecipePost = {
   name: "Tap Water",
   description: "Short Description",
   tag: ['h20','water','glass','coke'],
-  src: "https://content.instructables.com/ORIG/FU2/Y18R/IDM04U7M/FU2Y18RIDM04U7M.jpg?auto=webp&frame=1&md=f89aceca1e4b5541add572ce51715352",
+  src: "https://media.discordapp.net/attachments/206003287093149696/1026867303154978906/unknown.png?width=1080&height=60",
   like: 6969,
 }
 
@@ -93,7 +93,7 @@ const Profile = (props: Props) => {
 
         {/* Username and description */}
         <Grid item xs={12} md={8}> 
-          <Typography variant="h3">
+          <Typography variant="h3" mb={1}>
             John Xina
           </Typography>
 
@@ -107,6 +107,7 @@ const Profile = (props: Props) => {
             <Box sx={{
               borderBottom: 1,
               marginTop: 3,
+              paddingBottom: 1,
             }}>
               <Typography variant="h5" ml={2}>
                 Recipes

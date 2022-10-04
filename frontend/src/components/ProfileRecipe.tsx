@@ -58,11 +58,11 @@ const ProfileRecipe = (props: Props) => {
           {/* Recipe title and description */}
           <Grid item md={6}>
             <Grid item>
-              <Typography variant="h3">
+              <Typography variant="h3" mb={1}>
                 {props.post.name}
               </Typography>
 
-              <Typography variant="body2" pl={0.5}>
+              <Typography variant="body2" pl={0.5} mb={1}>
                 {props.post.description}
               </Typography>
             </Grid>
