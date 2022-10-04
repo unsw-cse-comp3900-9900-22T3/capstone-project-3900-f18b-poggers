@@ -8,11 +8,8 @@ export const getRecipe = /* GraphQL */ `
       name
       content
       contributor
-      datetime
-      timestamp
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -32,7 +29,6 @@ export const listRecipes = /* GraphQL */ `
         timestamp
         createdAt
         updatedAt
-        owner
       }
       nextToken
     }

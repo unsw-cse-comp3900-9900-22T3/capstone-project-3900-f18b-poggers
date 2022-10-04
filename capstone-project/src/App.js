@@ -7,6 +7,7 @@ import awsconfig from './aws-exports';
 // import the API & graphqlOperation helpers as well as the query
 import { graphqlOperation } from 'aws-amplify'
 import { listRecipes } from './graphql/queries'
+import {  getRecipe } from './graphql/queries'
 import React from 'react'
 
 // configure amplify
@@ -23,8 +24,12 @@ function App() {
   React.useEffect(() => {
       async function fetchMyAPI() {
         const apiData = await API.graphql({ query: listRecipes });
-        setData(apiData)
-        console.log(apiData)
+        const onerecipe = await API.graphql({
+          query: getRecipe,
+          variables: { id: 'd826d6b6-449f-4d78-8eab-04b2dcd22b1a' }
+        });      
+        // setData(apiData)
+        console.log(onerecipe)
       }
 
       fetchMyAPI()
