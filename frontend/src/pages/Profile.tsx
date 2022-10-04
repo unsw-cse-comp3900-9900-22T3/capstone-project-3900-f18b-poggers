@@ -1,25 +1,49 @@
-import React from 'react';
-import { useState } from 'react';
 import { Button, Typography, Container, Grid, Box } from '@mui/material';
 import ProfileRecipe from '../components/ProfileRecipe';
 
 type Props = {}
 
-// const CheckboxExample = () => {
-//   const [checked, setChecked] = useState(true)
-//   return (
-//     <FormControlLabel 
-//       control={
-//         <Checkbox 
-//         checked={checked}
-//         // onChange={(e)=>setChecked(!checked)}
-//         onChange={(e)=>setChecked(e.target.checked)}
-//         />
-//       }
-//       label="test"
-//     />
-//   )
-// }
+// Sample data for props
+
+type RecipePost = {
+  name: string,
+  description: string,
+  tag: string[],
+  src: string,
+  like: number,
+}
+
+const post1: RecipePost = {
+  name: "Bing Chilling",
+  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.",
+  tag: ['tag1','tag2','tag3'],
+  src: "https://addapinch.com/wp-content/uploads/2017/07/old-fashioned-vanilla-ice-cream-recipe-DSC_4239.jpg",
+  like: 9999,
+}
+
+const post2: RecipePost = {
+  name: "Tap Water",
+  description: "Short Description",
+  tag: ['h20','water','glass','coke'],
+  src: "https://content.instructables.com/ORIG/FU2/Y18R/IDM04U7M/FU2Y18RIDM04U7M.jpg?auto=webp&frame=1&md=f89aceca1e4b5541add572ce51715352",
+  like: 6969,
+}
+
+const post3: RecipePost = {
+  name: "Happy Meal",
+  description: "im lovin it",
+  tag: ['kfc','is','better'],
+  src: "https://www.kiis1011.com.au/wp-content/uploads/sites/3/2020/10/mymaccas-happymeal.png?crop=84px,0px,899px,1080px&resize=680,816&quality=75",
+  like: 420,
+}
+
+const post4: RecipePost = {
+  name: "Holidays",
+  description: "cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains",
+  tag: ['instagram','instagram','instagram','instagram','instagram','instagram'],
+  src: "https://images.unsplash.com/photo-1615003162333-d3ff3ce1f0f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8dWx0cmElMjB3aWRlfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+  like: 21,
+}
 
 const Profile = (props: Props) => {
   return (
@@ -44,9 +68,7 @@ const Profile = (props: Props) => {
               objectFit: "cover",
             }}
             alt="Profile Image"
-            // src="https://i.redd.it/a1zcxisgjls71.png"
-            // src="https://addapinch.com/wp-content/uploads/2017/07/old-fashioned-vanilla-ice-cream-recipe-DSC_4239.jpg"
-            src="https://images.unsplash.com/photo-1615003162333-d3ff3ce1f0f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8dWx0cmElMjB3aWRlfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+            src="https://i.redd.it/a1zcxisgjls71.png"
             mt={2}
             ml={{md: 6}}
           />
@@ -104,11 +126,17 @@ const Profile = (props: Props) => {
         ml={{md: 15}}
         mr={{md: 15}}
       >
-        <ProfileRecipe />
-        <ProfileRecipe />
-        <ProfileRecipe />
-        <ProfileRecipe />
-        <ProfileRecipe />
+        <ProfileRecipe 
+          // name={post.name}
+          // description={post.description}
+          // tag={post.tag}
+          // src={post.src}
+          // like={post.like}
+          post={post1}
+        />
+        <ProfileRecipe post={post2}/>
+        <ProfileRecipe post={post3}/>
+        <ProfileRecipe post={post4}/>
       </Grid>
 
 

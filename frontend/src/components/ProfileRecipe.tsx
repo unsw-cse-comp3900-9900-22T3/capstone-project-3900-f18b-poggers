@@ -1,15 +1,23 @@
-import React from 'react';
-import { useState } from 'react';
-import { Button, Typography, Container, Grid, Box } from '@mui/material';
-import { padding } from '@mui/system';
+import {Typography, Grid, Box } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
-type Props = {}
+
+type RecipePost = {
+  name: string,
+  description: string,
+  tag: string[],
+  src: string,
+  like: number,
+}
+
+type Props = {
+  post: RecipePost
+}
 
 const ProfileRecipe = (props: Props) => {
 
   const tagStyles = {
-    backgroundColor: 'gray',
+    backgroundColor: '#28343c',
     padding: 1,
     borderRadius: 2,
     color: '#FFF',
@@ -25,11 +33,12 @@ const ProfileRecipe = (props: Props) => {
             border: 1,
             borderRadius: '15px',
             marginTop: 2,
+            padding: 1,
           }}
         >
 
           {/* Recipe thumbnail */}
-          <Grid md={4}>
+          <Grid item md={4}>
             <Box
               component="img"
               sx={{
@@ -41,9 +50,8 @@ const ProfileRecipe = (props: Props) => {
               }}
               onClick={() => alert('Recipe page is yet to be implemented')}
               alt="Profile Image"
-              // src="https://addapinch.com/wp-content/uploads/2017/07/old-fashioned-vanilla-ice-cream-recipe-DSC_4239.jpg" 
               // src="https://i.redd.it/a1zcxisgjls71.png"
-              src="https://images.unsplash.com/photo-1615003162333-d3ff3ce1f0f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8dWx0cmElMjB3aWRlfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+              src={props.post.src}
             />
 
           </Grid>
@@ -52,11 +60,11 @@ const ProfileRecipe = (props: Props) => {
           <Grid item md={6}>
             <Grid item>
               <Typography variant="h3">
-                Bing Chilling
+                {props.post.name}
               </Typography>
 
-              <Typography variant="body2">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.
+              <Typography variant="body2" pl={0.5}>
+                {props.post.description}
               </Typography>
             </Grid>
 
@@ -67,21 +75,19 @@ const ProfileRecipe = (props: Props) => {
               direction="row"
               alignItems="flex-end"
             >
-              <Box sx={tagStyles}>
-                Tag
-              </Box>
-
-              <Box sx={tagStyles}>
-                Tag
-              </Box>
-
-              <Box sx={tagStyles}>
-                Tag
-              </Box>
+              { 
+                props.post.tag.map((item, index) => {
+                  return (
+                    <Box sx={tagStyles}>
+                      {item}
+                    </Box>
+                  )
+                })
+              }
 
               <Box sx={tagStyles}>
                 <Grid container direction="row" alignItems="center">
-                  <FavoriteIcon/> 9999
+                  <FavoriteIcon fontSize='small'/> {props.post.like}
                 </Grid>
               </Box>
 
