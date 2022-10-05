@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import { Button, Typography, Container, Grid, Box } from '@mui/material';
 import ProfileRecipe from '../components/ProfileRecipe';
 
@@ -46,6 +47,14 @@ const post4: RecipePost = {
 }
 
 const Profile = (props: Props) => {
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [buttonText, setButtonText] = useState("Subscribe")
+
+  const subscribe = () => {
+    setIsSubscribed(!isSubscribed);
+    isSubscribed ? setButtonText("Subscribe") : setButtonText("Unsubscribe");
+  }
+
   return (
     <Container 
       maxWidth="md"
@@ -80,12 +89,12 @@ const Profile = (props: Props) => {
             mt={1}
           >
             <Button
-              onClick={() => alert('subscribe')}
+              onClick={() => subscribe()}
               variant="contained"
               color="secondary"
               size="small"
             >
-              Subscribe
+              {buttonText}
             </Button>
           </Box>
 
