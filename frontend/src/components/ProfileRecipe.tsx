@@ -38,7 +38,7 @@ const ProfileRecipe = (props: Props) => {
         >
 
           {/* Recipe thumbnail */}
-          <Grid item md={4} mr={2} ml={{md: -11}}>
+          <Grid item md={4} mr={2} ml={{md: -4, xs:1.5}}>
             <Box
               component="img"
               sx={{
@@ -47,6 +47,7 @@ const ProfileRecipe = (props: Props) => {
                 maxHeight: 200,
                 maxWidth: 200,
                 objectFit: "cover",
+                borderRadius: '10px',
               }}
               onClick={() => alert('Recipe page is yet to be implemented')}
               alt="Profile Image"
@@ -56,7 +57,7 @@ const ProfileRecipe = (props: Props) => {
           </Grid>
 
           {/* Recipe title and description */}
-          <Grid item md={6} xs={12}>
+          <Grid item md={7} xs={12}>
             <Grid item>
               <Typography variant="h3" mb={1}>
                 {props.post.name}
