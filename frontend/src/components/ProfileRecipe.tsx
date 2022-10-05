@@ -33,12 +33,12 @@ const ProfileRecipe = (props: Props) => {
             border: 1,
             borderRadius: '15px',
             marginTop: 2,
-            padding: 1,
+            padding: 0.75,
           }}
         >
 
           {/* Recipe thumbnail */}
-          <Grid item md={4} mr={2}>
+          <Grid item md={4} mr={2} ml={{md: -11}}>
             <Box
               component="img"
               sx={{
@@ -56,7 +56,7 @@ const ProfileRecipe = (props: Props) => {
           </Grid>
 
           {/* Recipe title and description */}
-          <Grid item md={6}>
+          <Grid item md={6} xs={12}>
             <Grid item>
               <Typography variant="h3" mb={1}>
                 {props.post.name}
