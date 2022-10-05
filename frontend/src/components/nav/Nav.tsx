@@ -13,10 +13,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Avatar, Button, Divider, Drawer, Tooltip } from '@mui/material';
-import avatar from '../static/images/avatar.jpg'
-import SidebarButtonItem from './SidebarButtonItem';
-import SidebarSubheading from './SidebarSubheading';
+import avatar from '../../static/images/avatar.jpg'
 import { Link } from 'react-router-dom';
+import SidebarSubheading from './SidebarSubheading';
+import SidebarButtonItem from './SidebarButtonItem';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
