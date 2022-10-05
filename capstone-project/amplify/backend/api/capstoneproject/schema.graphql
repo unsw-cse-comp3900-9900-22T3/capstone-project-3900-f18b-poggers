@@ -18,6 +18,7 @@ type Recipe
   name: String!
   content: String
   contributor: AWSEmail
-  datetime: AWSDateTime
-  timestamp: AWSTimestamp
+  fileImage:  String 
 }
+
+

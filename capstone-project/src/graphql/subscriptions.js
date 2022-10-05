@@ -8,8 +8,7 @@ export const onCreateRecipe = /* GraphQL */ `
       name
       content
       contributor
-      datetime
-      timestamp
+      fileImage
       createdAt
       updatedAt
       owner
@@ -23,8 +22,7 @@ export const onUpdateRecipe = /* GraphQL */ `
       name
       content
       contributor
-      datetime
-      timestamp
+      fileImage
       createdAt
       updatedAt
       owner
@@ -38,8 +36,7 @@ export const onDeleteRecipe = /* GraphQL */ `
       name
       content
       contributor
-      datetime
-      timestamp
+      fileImage
       createdAt
       updatedAt
       owner

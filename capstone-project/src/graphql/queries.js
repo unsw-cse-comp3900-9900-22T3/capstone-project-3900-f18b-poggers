@@ -8,8 +8,10 @@ export const getRecipe = /* GraphQL */ `
       name
       content
       contributor
+      fileImage
       createdAt
       updatedAt
+      owner
     }
   }
 `;
@@ -25,10 +27,10 @@ export const listRecipes = /* GraphQL */ `
         name
         content
         contributor
-        datetime
-        timestamp
+        fileImage
         createdAt
         updatedAt
+        owner
       }
       nextToken
     }
