@@ -1,8 +1,9 @@
 import React from 'react'
 import CircleIcon from '@mui/icons-material/Circle';
-import { CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Button, Checkbox, Container, createTheme, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
+import { Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Button, Checkbox, Container, createTheme, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
 import Carousel from 'react-material-ui-carousel'
 import testimg from '../static/images/authbackground.jpeg'
+import Input from '@mui/material/Input';
 type Props = {}
 
 const Recipe = (props: Props) => {
@@ -11,6 +12,7 @@ const Recipe = (props: Props) => {
   const [ingredients, setIngredients] = React.useState(["2 x 400g beef fillets", "Olive oil, for frying", "500g mixture of wild mushrooms, cleaned", "1 thyme sprig, leaves only", "500g puff pastry", "8 slices of Parma ham", "2 egg yolks, beaten with 1 tbsp water and a pinch of salt", "Sea salt and freshly ground black peppe"]);
   const [instructions, setInstruction] = React.useState(["Wrap each piece of beef tightly in a triple layer of cling film to set its shape, then chill overnight.", "Remove the cling film, then quickly sear the beef fillets in a hot pan with a little olive oil for 30-60 seconds until browned all over and rare in the middle. Remove from the pan and leave to cool.", "Finely chop the mushrooms and fry in a hot pan with a little olive oil, the thyme leaves and some seasoning. When the mushrooms begin to release their juices, continue to cook over a high heat for about 10 minutes until all the excess moisture has evaporated and you are left with a mushroom paste (known as a duxelle). Remove the duxelle from the pan and leave to cool.", "Cut the pastry in half, place on a lightly floured surface and roll each piece into a rectangle large enough to envelop one of the beef fillets. Chill in the refrigerator.", "Lay a large sheet of cling film on a work surface and place 4 slices of Parma ham in the middle, overlapping them slightly, to create a square. Spread half the duxelle evenly over the ham."]);
   const [similarRecipes, setSimilarRecipes] = React.useState([1,2,3,4,5,6,7])
+  const [comments, setComments] = React.useState([{Author: "Gordon Ramsay", Comment: "This lamb is so undercooked, it’s following Mary to school!"}, {Author: "Gordon Ramsay", Comment: "My gran could do better! And she’s dead!"}, {Author: "Gordon Ramsay", Comment: "This pizza is so disgusting, if you take it to Italy you’ll get arrested."}])
   const listIngredient = ingredients.map((ingredient) =>
     <li>
       <ListItemText primary={ingredient} />
@@ -53,6 +55,27 @@ const Recipe = (props: Props) => {
       </CardActionArea>
     </Card>
   </Grid>
+  );
+
+  const listComments = comments.map((comment) =>
+  <div>
+    <ListItem alignItems="flex-start">
+      <ListItemAvatar>
+        <Avatar alt={comment.Author} src="/static/images/avatar/1.jpg" />
+      </ListItemAvatar>
+      <ListItemText
+        primary={comment.Author}
+        secondary={
+          <React.Fragment>
+            <Typography variant="body2">
+              {comment.Comment}
+            </Typography>
+          </React.Fragment>
+        }
+      />
+    </ListItem>
+    <Divider variant="inset" component="li" />
+  </div>
   );
 
   var items = []
@@ -172,9 +195,41 @@ const Recipe = (props: Props) => {
             alignItems: 'center',
           }}
           >
-          <Typography variant="h5">
+          <Typography variant="h5" sx={{
+            paddingBottom:3
+          }}>
             Comments
           </Typography>
+          <Box
+          sx={{
+            display: 'flex',
+            alignItems: "flex-start"
+          }}
+          >
+          <ListItemAvatar>
+            <Avatar sx={{maring:"5"}} alt="R" src={testimg}/>
+          </ListItemAvatar>
+          <Input fullWidth id="comment" placeholder="Add a Comment"/>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: "flex-end"
+            }}
+          >
+          <Button
+              type="submit"
+              size="medium"
+              variant="contained"
+              color="secondary"
+            >
+              Comment
+            </Button>
+          </Box>
+          <List sx={{ width: '100%', maxWidth: '100%', bgcolor: 'background.paper' }}>
+            {listComments}
+          </List>
         </Box>
       </Container>
     </Grid>

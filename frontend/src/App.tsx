@@ -60,7 +60,7 @@ const App = () => {
             <Route path="/" element={<Main />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/recipe" element={<Recipe />} />
+            <Route path="/recipe/:recipeId" element={<Recipe />} />
           </Routes>
         </ThemeProvider>
       </Router>
