@@ -1,6 +1,6 @@
-import { Box, Button, Checkbox, Container, createTheme, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
-import React, { useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material'
+import React from 'react'
+import { Link } from 'react-router-dom';
 import authbackground from '../static/images/authbackground.jpeg'
 import { Auth } from 'aws-amplify';
 import VerifyRegisterModal from '../components/register/VerifyRegisterModal';
@@ -12,6 +12,10 @@ const Register = (props: Props) => {
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [user, setUser] = React.useState("");
+  const displayError = (message: string) => {
+    setShowErrorMessage(true);
+    setErrorMessage(message);
+  }
 
   const signUp = async (username: string, password: string, email: string) => {
     try {
@@ -26,16 +30,19 @@ const Register = (props: Props) => {
           enabled: false,
         }
       });
+      console.log("successful signup");
       console.log(user);
-    } catch (error) {
-      console.log('error signing up:', error);
+    } catch (e) {
+      if (typeof e === "string") {
+        displayError(e);
+      } else if (e instanceof Error) {
+        displayError(e.message)
+      }
+      console.log('error signing up:', e);
+      throw e;
     }
   }
 
-  const displayError = (message: string) => {
-    setShowErrorMessage(true);
-    setErrorMessage(message);
-  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -75,16 +82,19 @@ const Register = (props: Props) => {
       await signUp(username.toString(), password.toString(), email.toString());
     } catch (e) {
       console.log("an unexpected error has occured: ", e);
-      displayError("An unexpected error has occured.")
+      if (typeof e === "string") {
+        displayError(e);
+        return;
+      } else if (e instanceof Error) {
+        displayError(e.message);
+        return;
+      }
       return;
     }
 
 
     // remove error msg
     setShowErrorMessage(false);
-
-    // send to login page after successful registration
-    // navigate('/login');
 
     // open confirmation modal
     setOpen(true);
