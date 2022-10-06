@@ -1,13 +1,17 @@
-import React from 'react'
-import CircleIcon from '@mui/icons-material/Circle';
-import { Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Button, Checkbox, Container, createTheme, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
+import React, { useEffect } from 'react'
+import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Button, Checkbox, Container, createTheme, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
 import Carousel from 'react-material-ui-carousel'
 import testimg from '../static/images/authbackground.jpeg'
-import Input from '@mui/material/Input';
+import SendIcon from '@mui/icons-material/Send';
 type Props = {}
 
+type Comment = {
+  author: string,
+  comment: string,
+}
+
 const Recipe = (props: Props) => {
-  const [recipeName, setRecipeName] = React.useState<string>("GORDON'S 10 MILLIONTH YOUTUBE SUBSCRIBER BURGER");
+  const [recipeName, setRecipeName] = React.useState<string>("Beef Wellington");
   const [contributorName, setContributorName] = React.useState<string>("Matthew");
   const [ingredients, setIngredients] = React.useState(["2 x 400g beef fillets", "Olive oil, for frying", "500g mixture of wild mushrooms, cleaned", "1 thyme sprig, leaves only", "500g puff pastry", "8 slices of Parma ham", "2 egg yolks, beaten with 1 tbsp water and a pinch of salt", "Sea salt and freshly ground black peppe"]);
   const [instructions, setInstruction] = React.useState(["Wrap each piece of beef tightly in a triple layer of cling film to set its shape, then chill overnight.", "Remove the cling film, then quickly sear the beef fillets in a hot pan with a little olive oil for 30-60 seconds until browned all over and rare in the middle. Remove from the pan and leave to cool.", "Finely chop the mushrooms and fry in a hot pan with a little olive oil, the thyme leaves and some seasoning. When the mushrooms begin to release their juices, continue to cook over a high heat for about 10 minutes until all the excess moisture has evaporated and you are left with a mushroom paste (known as a duxelle). Remove the duxelle from the pan and leave to cool.", "Cut the pastry in half, place on a lightly floured surface and roll each piece into a rectangle large enough to envelop one of the beef fillets. Chill in the refrigerator.", "Lay a large sheet of cling film on a work surface and place 4 slices of Parma ham in the middle, overlapping them slightly, to create a square. Spread half the duxelle evenly over the ham."]);
@@ -76,8 +80,8 @@ const Recipe = (props: Props) => {
   </div>
   );
 
-  var items = []
-  var carouselTab: string | any[] = []
+  let items = []
+  let carouselTab: any[] = []
   for (let i = 0; i < similarRecipesCarousel.length; i++) {
     carouselTab.push(similarRecipesCarousel[i]);
     if (carouselTab.length % 4 === 0) {
@@ -95,13 +99,13 @@ const Recipe = (props: Props) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     console.log(formData.get("comment"))
-    const data = {
+    const data: Comment = {
       author: "Raymond Chung",
       comment: JSON.parse(JSON.stringify(formData.get("comment"))),
     };
-    comments.unshift(data);
-    setComments(comments);
+    setComments([data, ...comments]);
   };
+
 
   return (
     <Grid
@@ -187,7 +191,7 @@ const Recipe = (props: Props) => {
           <Carousel
             autoPlay={false}
             animation={"slide"}
-            navButtonsAlwaysVisible={true}
+            // navButtonsAlwaysVisible={true}
           >
               {
                   items.map( (item, key) =>
@@ -220,11 +224,19 @@ const Recipe = (props: Props) => {
           <ListItemAvatar>
             <Avatar sx={{maring:"5"}} alt="R" src={testimg}/>
           </ListItemAvatar>
-          <Input
+          <TextField
             fullWidth
+            variant='standard'
+            InputProps={{ endAdornment:
+            <IconButton
+            color='secondary'
+            type="submit">
+              <SendIcon />
+            </IconButton> }}
             name="comment"
             id="comment"
-            placeholder="Add a Comment"/>
+            placeholder="Add a Comment"
+          />
           </Box>
           <Box
             sx={{
@@ -233,14 +245,14 @@ const Recipe = (props: Props) => {
               alignItems: "flex-end"
             }}
           >
-          <Button
+          {/* <Button
               type="submit"
               size="medium"
               variant="contained"
               color="secondary"
             >
               Comment
-            </Button>
+            </Button> */}
           </Box>
           <List sx={{ width: '100%', maxWidth: '100%', bgcolor: 'background.paper' }}>
             {listComments}
