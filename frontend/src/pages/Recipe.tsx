@@ -12,69 +12,67 @@ const Recipe = (props: Props) => {
   const [ingredients, setIngredients] = React.useState(["2 x 400g beef fillets", "Olive oil, for frying", "500g mixture of wild mushrooms, cleaned", "1 thyme sprig, leaves only", "500g puff pastry", "8 slices of Parma ham", "2 egg yolks, beaten with 1 tbsp water and a pinch of salt", "Sea salt and freshly ground black peppe"]);
   const [instructions, setInstruction] = React.useState(["Wrap each piece of beef tightly in a triple layer of cling film to set its shape, then chill overnight.", "Remove the cling film, then quickly sear the beef fillets in a hot pan with a little olive oil for 30-60 seconds until browned all over and rare in the middle. Remove from the pan and leave to cool.", "Finely chop the mushrooms and fry in a hot pan with a little olive oil, the thyme leaves and some seasoning. When the mushrooms begin to release their juices, continue to cook over a high heat for about 10 minutes until all the excess moisture has evaporated and you are left with a mushroom paste (known as a duxelle). Remove the duxelle from the pan and leave to cool.", "Cut the pastry in half, place on a lightly floured surface and roll each piece into a rectangle large enough to envelop one of the beef fillets. Chill in the refrigerator.", "Lay a large sheet of cling film on a work surface and place 4 slices of Parma ham in the middle, overlapping them slightly, to create a square. Spread half the duxelle evenly over the ham."]);
   const [similarRecipes, setSimilarRecipes] = React.useState([1,2,3,4,5,6,7])
-  const [comments, setComments] = React.useState([{Author: "Gordon Ramsay", Comment: "This lamb is so undercooked, it’s following Mary to school!"}, {Author: "Gordon Ramsay", Comment: "My gran could do better! And she’s dead!"}, {Author: "Gordon Ramsay", Comment: "This pizza is so disgusting, if you take it to Italy you’ll get arrested."}])
-  const listIngredient = ingredients.map((ingredient) =>
-    <li>
+  const [comments, setComments] = React.useState([{author: "Gordon Ramsay", comment: "This lamb is so undercooked, it’s following Mary to school!"}, {author: "Gordon Ramsay", comment: "My gran could do better! And she’s dead!"}, {author: "Gordon Ramsay", comment: "This pizza is so disgusting, if you take it to Italy you’ll get arrested."}])
+  const listIngredient = ingredients.map((ingredient, key) =>
+    <li key={key}>
       <ListItemText primary={ingredient} />
     </li>
   );
   const listInstructions = instructions.map((instruction, key) =>
-    <ListItem>
+    <ListItem key={key}>
       <Grid
         container
         spacing={0}
         direction="row"
       >
-        <Grid sm={0} sx={{paddingTop: 0.75}}>
+        <Grid item sm={0} sx={{paddingTop: 0.75}}>
           <Typography variant="h5">
             {key + 1}
           </Typography>
         </Grid>
-        <Grid sm={10} sx={{borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1}}>
+        <Grid item sm={10} sx={{borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1}}>
           {instruction}
         </Grid>
       </Grid>
     </ListItem>
   );
 
-  const similarRecipesCarousel = similarRecipes.map((recipe) =>
-    <Grid item sm={3}>
-    <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="140"
-          image={testimg}
-          alt="similar recipe"
-        />
-        <CardContent>
-          <Typography variant="h5">
-            Similar Recipe {recipe}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
-  </Grid>
+  const similarRecipesCarousel = similarRecipes.map((recipe, key) =>
+    <Grid key={key} item sm={3}>
+      <Card sx={{ maxWidth: 345 }}>
+        <CardActionArea>
+          <CardMedia
+            component="img"
+            height="140"
+            image={testimg}
+            alt="similar recipe"
+          />
+          <CardContent>
+            <Typography variant="h5">
+              Similar Recipe {recipe}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+    </Grid>
   );
 
-  const listComments = comments.map((comment) =>
-  <div>
-    <ListItem alignItems="flex-start">
+  const listComments = comments.map((comment, key) =>
+  <div key={key}>
+    <ListItem  alignItems="flex-start">
       <ListItemAvatar>
-        <Avatar alt={comment.Author} src="/static/images/avatar/1.jpg" />
+        <Avatar alt={comment.author} src="/static/images/avatar/1.jpg" />
       </ListItemAvatar>
       <ListItemText
-        primary={comment.Author}
+        primary={comment.author}
         secondary={
-          <React.Fragment>
             <Typography variant="body2">
-              {comment.Comment}
+              {comment.comment}
             </Typography>
-          </React.Fragment>
         }
       />
     </ListItem>
-    <Divider variant="inset" component="li" />
+    <Divider variant="inset"/>
   </div>
   );
 
@@ -92,6 +90,18 @@ const Recipe = (props: Props) => {
   const bgStyles = {
     backgroundColor: "#d3d3d3",
   }
+
+  const handleComment = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    console.log(formData.get("comment"))
+    const data = {
+      author: "Raymond Chung",
+      comment: JSON.parse(JSON.stringify(formData.get("comment"))),
+    };
+    comments.unshift(data);
+    setComments(comments);
+  };
 
   return (
     <Grid
@@ -153,7 +163,8 @@ const Recipe = (props: Props) => {
                 Ingredients
               </Typography>
               <ul>
-                {listIngredient}</ul>
+                {listIngredient}
+              </ul>
             </Grid>
             <Grid item sm={9}>
               <Typography variant="h5">
@@ -166,8 +177,6 @@ const Recipe = (props: Props) => {
         </Box>
         <Box
           sx={{
-            // display: 'flex',
-            // flexDirection: 'column',
             padding: 2,
             alignItems: 'center',
           }}
@@ -181,8 +190,8 @@ const Recipe = (props: Props) => {
             navButtonsAlwaysVisible={true}
           >
               {
-                  items.map( (item, i) =>
-                      <Grid container spacing={2} sx={{padding: 3}}>
+                  items.map( (item, key) =>
+                      <Grid key={key} container spacing={2} sx={{padding: 3}}>
                         {item}
                       </Grid>
                   )
@@ -190,6 +199,8 @@ const Recipe = (props: Props) => {
           </Carousel>
         </Box>
         <Box
+          component="form"
+          onSubmit={handleComment}
           sx={{
             padding: 2,
             alignItems: 'center',
@@ -209,7 +220,11 @@ const Recipe = (props: Props) => {
           <ListItemAvatar>
             <Avatar sx={{maring:"5"}} alt="R" src={testimg}/>
           </ListItemAvatar>
-          <Input fullWidth id="comment" placeholder="Add a Comment"/>
+          <Input
+            fullWidth
+            name="comment"
+            id="comment"
+            placeholder="Add a Comment"/>
           </Box>
           <Box
             sx={{
