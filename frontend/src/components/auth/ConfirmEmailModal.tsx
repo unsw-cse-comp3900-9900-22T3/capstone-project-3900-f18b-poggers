@@ -9,9 +9,11 @@ import { useNavigate } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 
 type Props = {
-  username: string,
+  email: string,
   open: boolean,
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  redirectPage: string
+
 }
 
 const style = {
@@ -25,7 +27,7 @@ const style = {
   p: 4,
 };
 
-const VerifyRegisterModal = (props: Props) => {
+const ConfirmEmailModal = (props: Props) => {
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [code, setCode] = React.useState("");
@@ -47,10 +49,10 @@ const VerifyRegisterModal = (props: Props) => {
 
   const handleConfirm = async () => {
     try {
-      console.log(props.username, code)
-      await Auth.confirmSignUp(props.username, code);
+      console.log(props.email, code)
+      await Auth.confirmSignUp(props.email, code);
       handleClose();
-      navigate('/login');
+      navigate(props.redirectPage);
     } catch (e) {
       console.log('error confirming sign up', e);
       if (typeof e === "string") {
@@ -90,7 +92,7 @@ const VerifyRegisterModal = (props: Props) => {
             name="code"
             autoFocus
             onChange={(e) => { setCode(e.target.value) }}
-            InputProps={{ endAdornment: <ResendCodeButton displayError={displayError} displayInfo={displayInfo} username={props.username} /> }}
+            InputProps={{ endAdornment: <ResendCodeButton displayError={displayError} displayInfo={displayInfo} username={props.email} /> }}
           />
 
           <Button
@@ -109,4 +111,4 @@ const VerifyRegisterModal = (props: Props) => {
   )
 }
 
-export default VerifyRegisterModal
+export default ConfirmEmailModal

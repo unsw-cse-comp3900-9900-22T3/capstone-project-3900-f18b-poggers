@@ -3,7 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import authbackground from '../static/images/authbackground.jpeg'
 import { Auth } from 'aws-amplify';
-import VerifyRegisterModal from '../components/register/VerifyRegisterModal';
+import ConfirmEmailModal from '../components/auth/ConfirmEmailModal';
 
 type Props = {}
 
@@ -11,7 +11,8 @@ const Register = (props: Props) => {
   const [open, setOpen] = React.useState(false);
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [user, setUser] = React.useState("");
+  const [email, setEmail] = React.useState("");
+
   const displayError = (message: string) => {
     setShowErrorMessage(true);
     setErrorMessage(message);
@@ -33,12 +34,12 @@ const Register = (props: Props) => {
       console.log("successful signup");
       console.log(user);
     } catch (e) {
+      console.log('error signing up:', e);
       if (typeof e === "string") {
         displayError(e);
       } else if (e instanceof Error) {
         displayError(e.message)
       }
-      console.log('error signing up:', e);
       throw e;
     }
   }
@@ -48,16 +49,21 @@ const Register = (props: Props) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-
-    const email = formData.get('email');
     const username = formData.get('username');
     const password = formData.get('password');
     const confirmPassword = formData.get('confirm-password');
 
     console.log("Form Data: " + email + ' ' + username + ' ' + password + ' ' + confirmPassword)
 
-    if (!email) {
+    if (email.length === 0) {
       displayError("The email field cannot be empty.");
+      return;
+    }
+
+    const emailRegex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
+    if (!emailRegex.test(email)) {
+      displayError("Invalid email address format.");
       return;
     }
 
@@ -75,8 +81,6 @@ const Register = (props: Props) => {
       displayError("Passwords do not match");
       return;
     }
-
-    setUser(username.toString());
 
     try {
       await signUp(username.toString(), password.toString(), email.toString());
@@ -129,7 +133,7 @@ const Register = (props: Props) => {
               Register
             </Typography>
             <Typography color="error" variant="body1" sx={{ marginTop: 1, display: `${showErrorMessage ? "block" : "none"}` }}>
-              Error: {errorMessage}
+              {errorMessage}
             </Typography>
 
             <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -142,6 +146,7 @@ const Register = (props: Props) => {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange={(e) => setEmail(e.target.value)}
                 autoFocus
               />
               <TextField
@@ -197,7 +202,7 @@ const Register = (props: Props) => {
           </Box>
         </Container>
       </Grid>
-      <VerifyRegisterModal username={user} open={open} setOpen={setOpen} />
+      <ConfirmEmailModal email={email} open={open} setOpen={setOpen} redirectPage="/login" />
     </>
   )
 }
