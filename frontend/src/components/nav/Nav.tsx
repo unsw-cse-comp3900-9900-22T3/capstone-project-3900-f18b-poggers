@@ -6,18 +6,15 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { Avatar, Button, Divider, Drawer, Tooltip } from '@mui/material';
+import { Avatar, Button, Drawer, Tooltip } from '@mui/material';
 import avatar from '../../static/images/avatar.jpg'
-import { Link, useNavigate } from 'react-router-dom';
-import SidebarSubheading from './SidebarSubheading';
-import SidebarButtonItem from './SidebarButtonItem';
-import { Auth } from 'aws-amplify';
+import { Link } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import MobileMenu from './MobileMenu';
+import ProfileMenu from './ProfileMenu';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -63,13 +60,9 @@ export default function Nav() {
   const [loggedInUsername, setLoggedInUsername] = React.useState<string>("");
   const [sidebarOpen, setSidebarOpen] = React.useState<boolean>(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
-  const navigate = useNavigate();
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
-
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -101,140 +94,13 @@ export default function Nav() {
       setSidebarOpen(open);
     };
 
-  const renderSidebar = () => (
-    <Box
-      sx={{ width: 250 }}
-      role="presentation"
-      onClick={toggleSidebar(false)}
-      onKeyDown={toggleSidebar(false)}
-    >
-      {!loggedIn && <>
-        <Box sx={{ padding: 1, display: { xs: 'block', sm: 'block', md: 'none' } }}>
-          <Button
-            variant="contained"
-            sx={{ display: { xs: 'block', sm: 'block', md: 'none' }, width: '100%', marginTop: 1 }}
-            color="secondary"
-            component={Link}
-            to={"/login"}
-          >
-            <Typography align="center">Log In</Typography>
-          </Button>
-        </Box>
-      </>}
-      <Divider />
-
-      <SidebarSubheading text="Meals" />
-      <SidebarButtonItem text="Breakfast/Brunch Recipes" />
-      <SidebarButtonItem text="Dinner Recipes" />
-      <SidebarButtonItem text="Lunch Recipes" />
-      <Divider />
-      <SidebarSubheading text="Meat" />
-      <SidebarButtonItem text="Beef Recipes" />
-      <SidebarButtonItem text="Chicken Recipes" />
-      <SidebarButtonItem text="Pork Recipes" />
-      <Divider />
-      <SidebarSubheading text="Drinks" />
-      <SidebarButtonItem text="Cocktail Recipes" />
-      <SidebarButtonItem text="Coffee Recipes" />
-      <SidebarButtonItem text="Smoothie Recipes" />
-      <SidebarButtonItem text="Tea Recipes" />
-      <Divider />
-      <SidebarSubheading text="Desserts" />
-      <SidebarButtonItem text="Cake Recipes" />
-      <SidebarButtonItem text="Cookie Recipes" />
-      <SidebarButtonItem text="Ice Cream Recipes" />
-      <Divider />
-      <SidebarSubheading text="Cuisines" />
-      <SidebarButtonItem text="Australian Recipes" />
-      <SidebarButtonItem text="Chinese Recipes" />
-      <SidebarButtonItem text="Indian Recipes" />
-      <SidebarButtonItem text="Middle Eastern Recipes" />
-      <SidebarButtonItem text="Vietnamese Recipes" />
-
-    </Box>
-  );
-
-  async function handleSignOut() {
-    try {
-      await Auth.signOut();
-
-      // close menu, log out and redirect to /login
-      handleMenuClose();
-      // navigate('/login');
-    } catch (error) {
-      console.log('error signing out: ', error);
-    }
-  }
-
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id='primary-search-account-menu'
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Signed in as {loggedInUsername}</MenuItem>
-      <Divider />
-      <MenuItem onClick={handleMenuClose}>Your Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Your Recipes</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Your Liked Recipes</MenuItem>
-      <Divider />
-      <MenuItem onClick={handleMenuClose}>Account Settings</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Preferences</MenuItem>
-      <Divider />
-      <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
-    </Menu>
-
-  );
-
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id='primary-search-account-menu-mobile'
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Signed in as {loggedInUsername}</MenuItem>
-      <Divider />
-      <Divider />
-      <MenuItem onClick={handleProfileMenuOpen}>
-        Your Profile
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Your Recipes</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Your Liked Recipes</MenuItem>
-      <Divider></Divider>
-      <MenuItem onClick={handleMenuClose}>Account Settings</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Preferences</MenuItem>
-      <Divider></Divider>
-      <MenuItem onClick={handleMenuClose}>Sign Out</MenuItem>
-    </Menu >
-  );
-
   return (
     <>
       <Drawer
         open={sidebarOpen}
         onClose={toggleSidebar(false)}
       >
-        {renderSidebar()}
+        <Sidebar loggedIn={loggedIn} toggleSidebar={toggleSidebar} />
       </Drawer>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
@@ -310,8 +176,18 @@ export default function Nav() {
               </>}
           </Toolbar>
         </AppBar>
-        {renderMobileMenu}
-        {renderMenu}
+        <MobileMenu
+          handleMenuClose={handleMenuClose}
+          handleProfileMenuOpen={handleProfileMenuOpen}
+          loggedInUsername={loggedInUsername}
+          mobileMoreAnchorEl={mobileMoreAnchorEl}
+          setMobileMoreAnchorEl={setMobileMoreAnchorEl}
+        />
+        <ProfileMenu
+          handleMenuClose={handleMenuClose}
+          loggedInUsername={loggedInUsername}
+          anchorEl={anchorEl}
+        />
       </Box>
     </>
   );
