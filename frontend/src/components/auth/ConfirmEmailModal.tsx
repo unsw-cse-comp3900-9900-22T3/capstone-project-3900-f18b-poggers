@@ -13,7 +13,6 @@ type Props = {
   open: boolean,
   setOpen: React.Dispatch<React.SetStateAction<boolean>>,
   redirectPage: string
-
 }
 
 const style = {

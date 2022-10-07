@@ -20,6 +20,7 @@ const Login = (props: Props) => {
 
   const logIn = async (email: string, password: string) => {
     try {
+      // successful login
       const user = await Auth.signIn(email, password);
       navigate('/feed')
     } catch (e) {
@@ -49,6 +50,7 @@ const Login = (props: Props) => {
     }
 
     try {
+      // attempt to log in
       await logIn(email.toString(), password.toString());
     } catch (e) {
       console.log('error signing in:', e);
@@ -73,6 +75,7 @@ const Login = (props: Props) => {
     background: `url(${authbackground}) no-repeat center center fixed`,
     backgroundSize: "cover"
   }
+
   return (
     <>
       <Grid
@@ -118,7 +121,7 @@ const Login = (props: Props) => {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="current-password"
+                autoComplete=" password"
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="secondary" />}

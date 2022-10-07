@@ -6,6 +6,7 @@ import {
   Route
 } from "react-router-dom";
 import Nav from './components/nav/Nav';
+import Feed from './pages/Feed';
 import Login from './pages/Login';
 import Main from './pages/Main';
 import Register from './pages/Register';
@@ -58,6 +59,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/feed" element={<Feed />} />
             <Route path="/register" element={<Register />} />
           </Routes>
         </ThemeProvider>

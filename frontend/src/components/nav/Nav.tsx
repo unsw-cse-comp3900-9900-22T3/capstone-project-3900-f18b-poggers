@@ -14,9 +14,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Avatar, Button, Divider, Drawer, Tooltip } from '@mui/material';
 import avatar from '../../static/images/avatar.jpg'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SidebarSubheading from './SidebarSubheading';
 import SidebarButtonItem from './SidebarButtonItem';
+import { Auth } from 'aws-amplify';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -59,9 +60,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function Nav() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [loggedInUsername, setLoggedInUsername] = React.useState<string>("Matthew");
-  const [loggedIn, setLoggedIn] = React.useState<boolean>(false);
+  const [loggedInUsername, setLoggedInUsername] = React.useState<string>("");
   const [sidebarOpen, setSidebarOpen] = React.useState<boolean>(false);
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  const navigate = useNavigate();
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -98,9 +100,6 @@ export default function Nav() {
 
       setSidebarOpen(open);
     };
-
-
-  const menuId = 'primary-search-account-menu';
 
   const renderSidebar = () => (
     <Box
@@ -155,6 +154,18 @@ export default function Nav() {
     </Box>
   );
 
+  async function handleSignOut() {
+    try {
+      await Auth.signOut();
+
+      // close menu, log out and redirect to /login
+      handleMenuClose();
+      // navigate('/login');
+    } catch (error) {
+      console.log('error signing out: ', error);
+    }
+  }
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -162,7 +173,7 @@ export default function Nav() {
         vertical: 'top',
         horizontal: 'right',
       }}
-      id={menuId}
+      id='primary-search-account-menu'
       keepMounted
       transformOrigin={{
         vertical: 'top',
@@ -180,12 +191,11 @@ export default function Nav() {
       <MenuItem onClick={handleMenuClose}>Account Settings</MenuItem>
       <MenuItem onClick={handleMenuClose}>Preferences</MenuItem>
       <Divider />
-      <MenuItem onClick={handleMenuClose}>Sign Out</MenuItem>
+      <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
     </Menu>
 
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -193,7 +203,7 @@ export default function Nav() {
         vertical: 'top',
         horizontal: 'right',
       }}
-      id={mobileMenuId}
+      id='primary-search-account-menu-mobile'
       keepMounted
       transformOrigin={{
         vertical: 'top',
@@ -265,7 +275,7 @@ export default function Nav() {
                     <IconButton
                       edge="end"
                       aria-label="account of current user"
-                      aria-controls={menuId}
+                      aria-controls='primary-search-account-menu'
                       aria-haspopup="true"
                       onClick={handleProfileMenuOpen}
                       color="inherit"
@@ -278,7 +288,7 @@ export default function Nav() {
                   <IconButton
                     size="large"
                     aria-label="show more"
-                    aria-controls={mobileMenuId}
+                    aria-controls='primary-search-account-menu-mobile'
                     aria-haspopup="true"
                     onClick={handleMobileMenuOpen}
                     color="inherit"
