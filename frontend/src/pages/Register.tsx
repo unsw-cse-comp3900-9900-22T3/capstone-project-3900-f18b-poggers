@@ -1,15 +1,16 @@
-import { Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
+import { Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import authbackground from '../static/images/authbackground.jpeg'
 import { Auth } from 'aws-amplify';
 import ConfirmEmailModal from '../components/auth/ConfirmEmailModal';
+
 type Props = {}
 
-const Login = (props: Props) => {
+const Register = (props: Props) => {
+  const [open, setOpen] = React.useState(false);
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [open, setOpen] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const navigate = useNavigate();
 
@@ -18,13 +19,23 @@ const Login = (props: Props) => {
     setErrorMessage(message);
   }
 
-  const logIn = async (email: string, password: string) => {
+  const signUp = async (username: string, password: string, email: string) => {
     try {
-      // successful login
-      await Auth.signIn(email, password);
-      navigate('/feed')
+      const { user } = await Auth.signUp({
+        'username': email,
+        'password': password,
+        attributes: {
+          'email': email,
+          'custom:displayName': username
+        },
+        autoSignIn: { // optional - enables auto sign in after user is confirmed
+          enabled: false,
+        }
+      });
+      console.log("successful signup");
+      console.log(user);
     } catch (e) {
-      console.log('error signing in:', e);
+      console.log('error signing up:', e);
       if (typeof e === "string") {
         displayError(e);
       } else if (e instanceof Error) {
@@ -34,40 +45,64 @@ const Login = (props: Props) => {
     }
   }
 
-  const handleLogIn = async (event: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+
+    const username = formData.get('username');
     const password = formData.get('password');
+    const confirmPassword = formData.get('confirm-password');
+
+    console.log("Form Data: " + email + ' ' + username + ' ' + password + ' ' + confirmPassword)
 
     if (email.length === 0) {
       displayError("The email field cannot be empty.");
       return;
     }
 
-    if (!password) {
-      displayError("The password field cannot be empty.");
+    const emailRegex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
+    if (!emailRegex.test(email)) {
+      displayError("Invalid email address format.");
+      return;
+    }
+
+    if (!username) {
+      displayError("The username field cannot be empty.");
+      return;
+    }
+
+    if (!password || !confirmPassword) {
+      displayError("The password fields cannot be empty.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      displayError("Passwords do not match");
       return;
     }
 
     try {
-      // attempt to log in
-      await logIn(email.toString(), password.toString());
+      await signUp(username.toString(), password.toString(), email.toString());
     } catch (e) {
-      console.log('error signing in:', e);
-      if (e instanceof Error) {
-        if (e.name === 'UserNotConfirmedException') {
-          setOpen(true);
-          return;
-        }
-        displayError(e.message)
-      } else if (typeof e === "string") {
+      console.log("an unexpected error has occured: ", e);
+      if (typeof e === "string") {
         displayError(e);
+        return;
+      } else if (e instanceof Error) {
+        displayError(e.message);
+        return;
       }
       return;
     }
 
+
+    // remove error msg
     setShowErrorMessage(false);
 
+    // open confirmation modal
+    setOpen(true);
   };
 
   const bgStyles = {
@@ -114,12 +149,14 @@ const Login = (props: Props) => {
             }}
           >
             <Typography component="h1" variant="h5">
-              Log In
+              Register
             </Typography>
             <Typography color="error" variant="body1" sx={{ marginTop: 1, display: `${showErrorMessage ? "block" : "none"}` }}>
               {errorMessage}
             </Typography>
-            <Box component="form" onSubmit={handleLogIn} noValidate sx={{ mt: 1 }}>
+
+            <Box component="form" onSubmit={handleSubmit} noValidate>
+
               <TextField
                 margin="normal"
                 required
@@ -128,9 +165,19 @@ const Login = (props: Props) => {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                autoFocus
                 onChange={(e) => setEmail(e.target.value)}
+                autoFocus
               />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+              />
+
               <TextField
                 margin="normal"
                 required
@@ -139,11 +186,17 @@ const Login = (props: Props) => {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete=" password"
+                autoComplete="password"
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="secondary" />}
-                label="Remember me"
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="confirm-password"
+                label="Confirm Password"
+                type="password"
+                id="confirm-password"
+                autoComplete="password"
               />
               <Button
                 type="submit"
@@ -152,15 +205,15 @@ const Login = (props: Props) => {
                 sx={{ mt: 3, mb: 2 }}
                 color="secondary"
               >
-                Log In
+                Register
               </Button>
               <Grid container>
                 <Grid item>
                   <Typography sx={{ display: "inline", mr: 1 }} variant="subtitle1">
-                    Not registered?
+                    Already registered?
                   </Typography>
-                  <Link to="/register">
-                    {"Create an Account"}
+                  <Link to="/login">
+                    {"Log In"}
                   </Link>
                 </Grid>
               </Grid>
@@ -168,9 +221,9 @@ const Login = (props: Props) => {
           </Box>
         </Container>
       </Grid>
-      <ConfirmEmailModal email={email} open={open} setOpen={setOpen} redirectPage="/feed" />
+      <ConfirmEmailModal email={email} open={open} setOpen={setOpen} redirectPage="/login" />
     </>
   )
 }
 
-export default Login
+export default Register
