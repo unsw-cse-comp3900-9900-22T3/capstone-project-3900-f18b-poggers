@@ -25,74 +25,74 @@ const ProfileRecipe = (props: Props) => {
   }
 
   return (
-        <Grid 
-          container
-          justifyContent="center"
-          alignItems="center"
+    <Grid 
+      container
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        border: 1,
+        borderRadius: '15px',
+        marginTop: 2,
+        padding: 0.75,
+      }}
+    >
+
+      {/* Recipe thumbnail */}
+      <Grid item md={4} mr={2} ml={{md: -4, xs:1.5}}>
+        <Box
+          component="img"
           sx={{
-            border: 1,
-            borderRadius: '15px',
-            marginTop: 2,
-            padding: 0.75,
+            minHeight: 200,
+            minWeight: 200,
+            maxHeight: 200,
+            maxWidth: 200,
+            objectFit: "cover",
+            borderRadius: '10px',
           }}
-        >
+          onClick={() => alert('Recipe page is yet to be implemented')}
+          alt="Profile Image"
+          src={props.post.src}
+        />
 
-          {/* Recipe thumbnail */}
-          <Grid item md={4} mr={2} ml={{md: -4, xs:1.5}}>
-            <Box
-              component="img"
-              sx={{
-                minHeight: 200,
-                minWeight: 200,
-                maxHeight: 200,
-                maxWidth: 200,
-                objectFit: "cover",
-                borderRadius: '10px',
-              }}
-              onClick={() => alert('Recipe page is yet to be implemented')}
-              alt="Profile Image"
-              src={props.post.src}
-            />
+      </Grid>
 
-          </Grid>
+      {/* Recipe title and description */}
+      <Grid item md={7} xs={12}>
+        <Grid item>
+          <Typography variant="h3" mb={1}>
+            {props.post.name}
+          </Typography>
 
-          {/* Recipe title and description */}
-          <Grid item md={7} xs={12}>
-            <Grid item>
-              <Typography variant="h3" mb={1}>
-                {props.post.name}
-              </Typography>
-
-              <Typography variant="body2" pl={0.5} mb={1}>
-                {props.post.description}
-              </Typography>
-            </Grid>
-
-            {/* Tags and likes */}
-            <Grid
-              container
-              direction="row"
-              alignItems="flex-end"
-            >
-              { 
-                props.post.tag.map((item, index) => {
-                  return (
-                    <Box sx={tagStyles}>
-                      {item}
-                    </Box>
-                  )
-                })
-              }
-
-              <Box sx={tagStyles}>
-                <Grid container direction="row" alignItems="center">
-                  <FavoriteIcon fontSize='small'/> {props.post.like}
-                </Grid>
-              </Box>
-            </Grid>
-          </Grid>
+          <Typography variant="body2" pl={0.5} mb={1}>
+            {props.post.description}
+          </Typography>
         </Grid>
-    
+
+        {/* Tags and likes */}
+        <Grid
+          container
+          direction="row"
+          alignItems="flex-end"
+        >
+          { 
+            props.post.tag.map((item, index) => {
+              return (
+                <Box sx={tagStyles}>
+                  {item}
+                </Box>
+              )
+            })
+          }
+
+          <Box sx={tagStyles}>
+            <Grid container direction="row" alignItems="center">
+              <FavoriteIcon fontSize='small'/> {props.post.like}
+            </Grid>
+          </Box>
+        </Grid>
+      </Grid>
+    </Grid>
+
 
   )
 }

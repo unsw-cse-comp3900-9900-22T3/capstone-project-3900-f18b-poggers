@@ -15,7 +15,7 @@ type RecipePost = {
 }
 
 const post1: RecipePost = {
-  name: "Bing Chilling",
+  name: "Sample Post",
   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.",
   tag: ['vanilla'],
   src: "https://cdn.discordapp.com/attachments/206003287093149696/1026867082610085898/unknown.png",
@@ -103,7 +103,7 @@ const Profile = (props: Props) => {
         {/* Username and description */}
         <Grid item xs={12} md={8}> 
           <Typography variant="h3" mb={1}>
-            John Xina
+            Test User
           </Typography>
 
           <Typography variant="subtitle1" pr={4}>
