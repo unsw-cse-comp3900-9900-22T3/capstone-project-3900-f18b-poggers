@@ -21,7 +21,7 @@ const Login = (props: Props) => {
   const logIn = async (email: string, password: string) => {
     try {
       // successful login
-      const user = await Auth.signIn(email, password);
+      await Auth.signIn(email, password);
       navigate('/feed')
     } catch (e) {
       console.log('error signing in:', e);
@@ -75,6 +75,24 @@ const Login = (props: Props) => {
     background: `url(${authbackground}) no-repeat center center fixed`,
     backgroundSize: "cover"
   }
+
+  React.useEffect(() => {
+    const checkLoggedIn = async () => {
+      console.log("checkIfLoggedIn in Login.tsx called");
+      try {
+        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
+        await Auth.currentAuthenticatedUser({
+          // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+          bypassCache: false
+        })
+        // redirect if already logged in
+        navigate('/feed');
+      } catch (e) {
+        // should do nothing if they aren't logged in
+      }
+    }
+    checkLoggedIn()
+  }, [navigate])
 
   return (
     <>

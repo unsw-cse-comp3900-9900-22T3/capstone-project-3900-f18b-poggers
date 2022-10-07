@@ -113,10 +113,7 @@ export default function Nav() {
         } else {
           console.log(e);
         }
-
         setLoggedIn(false);
-        // go to login page if not authenticated
-        navigate('/login');
       }
     }
     setUserData()
