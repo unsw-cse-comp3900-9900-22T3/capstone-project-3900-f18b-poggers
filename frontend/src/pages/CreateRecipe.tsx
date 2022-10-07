@@ -2,7 +2,10 @@ import React, { useEffect } from 'react'
 import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Button, Checkbox, Container, createTheme, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
 import Carousel from 'react-material-ui-carousel'
 import testimg from '../static/images/authbackground.jpeg'
-import SendIcon from '@mui/icons-material/Send';
+import AddIcon from '@mui/icons-material/Add';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import Amplify, { API, Auth, Storage } from "aws-amplify";
+
 type Props = {}
 
 type Comment = {
@@ -13,8 +16,8 @@ type Comment = {
 const CreateRecipe = (props: Props) => {
   const [recipeName, setRecipeName] = React.useState<string>("Beef Wellington");
   const [contributorName, setContributorName] = React.useState<string>("Matthew");
-  const [ingredients, setIngredients] = React.useState(["2 x 400g beef fillets", "Olive oil, for frying", "500g mixture of wild mushrooms, cleaned", "1 thyme sprig, leaves only", "500g puff pastry", "8 slices of Parma ham", "2 egg yolks, beaten with 1 tbsp water and a pinch of salt", "Sea salt and freshly ground black peppe"]);
-  const [instructions, setInstruction] = React.useState(["Wrap each piece of beef tightly in a triple layer of cling film to set its shape, then chill overnight.", "Remove the cling film, then quickly sear the beef fillets in a hot pan with a little olive oil for 30-60 seconds until browned all over and rare in the middle. Remove from the pan and leave to cool.", "Finely chop the mushrooms and fry in a hot pan with a little olive oil, the thyme leaves and some seasoning. When the mushrooms begin to release their juices, continue to cook over a high heat for about 10 minutes until all the excess moisture has evaporated and you are left with a mushroom paste (known as a duxelle). Remove the duxelle from the pan and leave to cool.", "Cut the pastry in half, place on a lightly floured surface and roll each piece into a rectangle large enough to envelop one of the beef fillets. Chill in the refrigerator.", "Lay a large sheet of cling film on a work surface and place 4 slices of Parma ham in the middle, overlapping them slightly, to create a square. Spread half the duxelle evenly over the ham."]);
+  const [ingredients, setIngredients] = React.useState<string[]>([]);
+  const [instructions, setInstructions] = React.useState<string[]>([]);
   const [similarRecipes, setSimilarRecipes] = React.useState([1,2,3,4,5,6,7])
   const [comments, setComments] = React.useState([{author: "Gordon Ramsay", comment: "This lamb is so undercooked, it’s following Mary to school!"}, {author: "Gordon Ramsay", comment: "My gran could do better! And she’s dead!"}, {author: "Gordon Ramsay", comment: "This pizza is so disgusting, if you take it to Italy you’ll get arrested."}])
   const listIngredient = ingredients.map((ingredient, key) =>
@@ -92,10 +95,11 @@ const CreateRecipe = (props: Props) => {
   items.push(carouselTab);
 
   const bgStyles = {
+    minHeight: `calc(100vh - 64px)`,
     backgroundColor: "#d3d3d3",
   }
 
-  const handleComment = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     console.log(formData.get("comment"))
@@ -106,6 +110,30 @@ const CreateRecipe = (props: Props) => {
     setComments([data, ...comments]);
   };
 
+  const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    console.log(formData.get("instruction"))
+    // formData.set("")
+    setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
+  };
+
+  const handleIngredient = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    console.log(formData.get("ingredient"))
+    setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
+  };
+
+  // const handleIngredient= (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   const formData = new FormData(event.currentTarget);
+  //   console.log(formData.get("comment"))
+  //   const data: Comment = {
+  //     author: "Raymond Chung",
+  //     comment: JSON.parse(JSON.stringify(formData.get("comment"))),
+  //   };
+  // };
 
   return (
     <Grid
@@ -119,8 +147,8 @@ const CreateRecipe = (props: Props) => {
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
         <Box
-          component="form"
-          onSubmit={handleComment}
+          // component="form"
+          // onSubmit={handleSubmit}
         >
 
           <Box
@@ -156,20 +184,37 @@ const CreateRecipe = (props: Props) => {
               flexDirection: 'column',
             }}
             >
-            <Card
-              variant="outlined"
-              >
-              <CardMedia
-                image={testimg}
-                style={{
-                  height: 0,
-                  paddingLeft: 0,
-                  paddingRight: 0,
-                  paddingTop: '56.25%', // 16:9,
-                  marginTop:'30'
-                }}
-              />
-            </Card>
+
+              <Box>
+                <IconButton color="primary" aria-label="upload picture" component="label"
+                              // style={{
+                              //   height: 0,
+                              //   paddingLeft: 0,
+                              //   paddingRight: 0,
+                              //   paddingTop: '56.25%', // 16:9,
+                              //   marginTop:'30'
+                              // }}
+                >
+                  <input hidden accept="image/*" type="file" onChange={(e) => {
+                  e.preventDefault();
+                  console.log(e.target.value)}}/>
+                  <AddPhotoAlternateIcon fontSize='large' sx={{}}/>
+                </IconButton>
+              </Box>
+              {/* <Card
+            variant="outlined"
+            >
+            <CardMedia
+              image={testimg}
+              style={{
+                height: 0,
+                paddingLeft: 0,
+                paddingRight: 0,
+                paddingTop: '56.25%', // 16:9,
+                marginTop:'30'
+              }}
+            />
+          </Card> */}
             <Grid container spacing={5} sx={{padding: 3}}>
               <Grid item sm={3}>
                 <Typography variant="h5">
@@ -178,6 +223,24 @@ const CreateRecipe = (props: Props) => {
                 <ul>
                   {listIngredient}
                 </ul>
+                <Box
+                  component="form"
+                  onSubmit={handleIngredient}
+                >
+                  <TextField
+                    fullWidth
+                    variant='standard'
+                    InputProps={{ endAdornment:
+                    <IconButton
+                    color='secondary'
+                    type="submit">
+                      <AddIcon />
+                    </IconButton> }}
+                    name="ingredient"
+                    id="ingredient"
+                    placeholder="Add another ingredient"
+                  />
+                </Box>
               </Grid>
               <Grid item sm={9}>
                 <Typography variant="h5">
@@ -185,6 +248,25 @@ const CreateRecipe = (props: Props) => {
                 </Typography>
                 <List>
                   {listInstructions}</List>
+                  <Box
+                    component="form"
+                    onSubmit={handleInstruction}
+                  >
+                    <TextField
+                      fullWidth
+                      variant='standard'
+                      InputProps={{ endAdornment:
+                      <IconButton
+                      color='secondary'
+                      type="submit"
+                      >
+                        <AddIcon />
+                      </IconButton> }}
+                      name="instruction"
+                      id="instruction"
+                      placeholder="Add another cooking instruction"
+                    />
+                  </Box>
               </Grid>
             </Grid>
           </Box>
@@ -194,10 +276,10 @@ const CreateRecipe = (props: Props) => {
               alignItems: 'center',
             }}
             >
-            <Typography variant="h5">
+            {/* <Typography variant="h5">
               Similar Recipes
-            </Typography>
-            <Carousel
+            </Typography> */}
+            {/* <Carousel
               autoPlay={false}
               animation={"slide"}
               // navButtonsAlwaysVisible={true}
@@ -209,7 +291,7 @@ const CreateRecipe = (props: Props) => {
                         </Grid>
                     )
                 }
-            </Carousel>
+            </Carousel> */}
           </Box>
         </Box>
       </Container>

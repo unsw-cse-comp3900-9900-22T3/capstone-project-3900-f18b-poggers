@@ -3,6 +3,8 @@ import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionAre
 import Carousel from 'react-material-ui-carousel'
 import testimg from '../static/images/authbackground.jpeg'
 import SendIcon from '@mui/icons-material/Send';
+import { graphqlOperation } from "aws-amplify";
+import Amplify, { API, Auth, Storage } from "aws-amplify";
 type Props = {}
 
 type Comment = {
@@ -11,6 +13,70 @@ type Comment = {
 }
 
 const Recipe = (props: Props) => {
+
+  // React.useEffect(() => {
+  //   fetchRecipe();
+  // }, []);
+
+  const [recipes, setRecipes] = React.useState([]);
+
+  const listRecipes = /* GraphQL */ `
+  query ListRecipes(
+    $filter: ModelRecipeFilterInput
+    $limit: Int
+    $nextToken: String
+    ) {
+    listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        content
+        contributor
+        fileImage
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+  }
+  `;
+  const getRecipe = /* GraphQL */ `
+  query GetRecipe($id: ID!) {
+    getRecipe(id: $id) {
+      id
+      name
+      content
+      contributor
+      fileImage
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+  `;
+  // const fetchRecipe = async () => {
+  //   try {
+  //     const apiData: any = await API.graphql({
+  //     query: getRecipe,
+  //     variables: { id: '826ee6a4-0891-4732-aa84-2c47cfce255d' }
+  //     });
+
+  //     const recipes = apiData.data.getRecipe;
+
+  //     console.log(recipes)
+  //   } catch (error) {
+  //     console.log("error on fetching recipe", error);
+  //   }
+  // };
+
+  // try {
+  //   const apiData: any = await API.graphql({ query: listRecipes });
+  //   const recipeData = apiData.data;
+  //   console.log(recipeData)
+  // } catch (error) {
+  //   console.log("error on fetching recipe", error);
+  // }
   const [recipeName, setRecipeName] = React.useState<string>("Beef Wellington");
   const [contributorName, setContributorName] = React.useState<string>("Matthew");
   const [ingredients, setIngredients] = React.useState(["2 x 400g beef fillets", "Olive oil, for frying", "500g mixture of wild mushrooms, cleaned", "1 thyme sprig, leaves only", "500g puff pastry", "8 slices of Parma ham", "2 egg yolks, beaten with 1 tbsp water and a pinch of salt", "Sea salt and freshly ground black peppe"]);
