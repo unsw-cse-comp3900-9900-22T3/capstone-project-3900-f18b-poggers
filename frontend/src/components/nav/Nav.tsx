@@ -10,11 +10,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Avatar, Button, Drawer, Tooltip } from '@mui/material';
-import avatar from '../../static/images/avatar.jpg'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import MobileMenu from './MobileMenu';
 import ProfileMenu from './ProfileMenu';
+import { Auth } from 'aws-amplify';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -57,12 +57,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function Nav() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [loggedInUsername, setLoggedInUsername] = React.useState<string>("");
+  const [username, setUsername] = React.useState<string>("");
   const [sidebarOpen, setSidebarOpen] = React.useState<boolean>(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
-
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-    React.useState<null | HTMLElement>(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -94,6 +93,35 @@ export default function Nav() {
       setSidebarOpen(open);
     };
 
+  React.useEffect(() => {
+    const setUserData = async () => {
+      console.log("setUserData in Nav.tsx called");
+      try {
+        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
+        const user = await Auth.currentAuthenticatedUser({
+          // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+          bypassCache: false
+        })
+        setUsername(user.attributes["custom:displayName"]);
+        setLoggedIn(true);
+        console.log("Nav: Logged In User: ", username);
+      } catch (e) {
+        if (typeof e === "string") {
+          console.log(e);
+        } else if (e instanceof Error) {
+          console.log(e.message);
+        } else {
+          console.log(e);
+        }
+
+        setLoggedIn(false);
+        // go to login page if not authenticated
+        navigate('/login');
+      }
+    }
+    setUserData()
+  }, [navigate, username])
+
   return (
     <>
       <Drawer
@@ -120,7 +148,6 @@ export default function Nav() {
               noWrap
               component="div"
               sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
-              onClick={() => setLoggedIn(!loggedIn)} // remove this later
             >
               Instacook
             </Typography>
@@ -146,7 +173,7 @@ export default function Nav() {
                       onClick={handleProfileMenuOpen}
                       color="inherit"
                     >
-                      <Avatar alt={loggedInUsername} src={avatar} />
+                      <Avatar alt={username} src={''} />
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -179,13 +206,13 @@ export default function Nav() {
         <MobileMenu
           handleMenuClose={handleMenuClose}
           handleProfileMenuOpen={handleProfileMenuOpen}
-          loggedInUsername={loggedInUsername}
+          username={username}
           mobileMoreAnchorEl={mobileMoreAnchorEl}
           setMobileMoreAnchorEl={setMobileMoreAnchorEl}
         />
         <ProfileMenu
           handleMenuClose={handleMenuClose}
-          loggedInUsername={loggedInUsername}
+          username={username}
           anchorEl={anchorEl}
         />
       </Box>

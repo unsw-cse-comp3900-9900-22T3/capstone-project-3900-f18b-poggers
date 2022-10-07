@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 type Props = {
   handleMenuClose: () => void,
-  loggedInUsername: string,
+  username: string,
   anchorEl: HTMLElement | null,
 }
 
@@ -41,7 +41,7 @@ const ProfileMenu = (props: Props) => {
       open={isMenuOpen}
       onClose={props.handleMenuClose}
     >
-      <MenuItem onClick={props.handleMenuClose}>Signed in as {props.loggedInUsername}</MenuItem>
+      <MenuItem onClick={props.handleMenuClose}>Signed in as {props.username}</MenuItem>
       <Divider />
       <MenuItem onClick={props.handleMenuClose}>Your Profile</MenuItem>
       <MenuItem onClick={props.handleMenuClose}>Your Recipes</MenuItem>

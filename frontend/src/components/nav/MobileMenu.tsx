@@ -5,7 +5,7 @@ import { Divider } from '@mui/material';
 
 type Props = {
   handleMenuClose: () => void,
-  loggedInUsername: string,
+  username: string,
   handleProfileMenuOpen: (event: React.MouseEvent<HTMLElement>) => void,
   setMobileMoreAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>,
   mobileMoreAnchorEl: HTMLElement | null
@@ -35,7 +35,7 @@ const MobileMenu = (props: Props) => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={props.handleMenuClose}>Signed in as {props.loggedInUsername}</MenuItem>
+      <MenuItem onClick={props.handleMenuClose}>Signed in as {props.username}</MenuItem>
       <Divider />
       <Divider />
       <MenuItem onClick={props.handleProfileMenuOpen}>
