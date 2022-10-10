@@ -1,52 +1,62 @@
 import React, {useState, useEffect} from 'react';
 import { Button, Typography, Container, Grid, Box } from '@mui/material';
 import ProfileRecipe from '../components/ProfileRecipe';
-import Amplify, { API, Auth, Storage, graphqlOperation } from "aws-amplify";
+import { API } from "aws-amplify";
+import { GraphQLResult } from '@aws-amplify/api-graphql';
 
 
 type Props = {}
 
 // Sample data for props
 
-type RecipePost = {
-  name: string,
-  description: string,
-  tag: string[],
-  src: string,
-  like: number,
+// type RecipeObject = {
+//   id: string,
+//   name: string,
+//   content: string,
+//   fileImage: string,
+//   like: number,
+//   tag: string[],
+// }
+
+// const post1: RecipeObject = {
+//   id: "1239udfasd8f",
+//   name: "Sample Post",
+//   content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.",
+//   tag: ['vanilla'],
+//   fileImage: "https://cdn.discordapp.com/attachments/206003287093149696/1026867082610085898/unknown.png",
+//   like: 9999,
+// }
+
+const post2: Recipe = {
+  id: "2239udfasd8f",
+  name: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  content: "Short Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  contributor: "z",
+  // tag: ['h20','water','glass','coke'],
+  fileImage: "https://media.discordapp.net/attachments/206003287093149696/1026867303154978906/unknown.png?width=1080&height=60",
+  // like: 6969,
+  createdAt: "asd",
+  updatedAt: "dsa",
+  owner: "a",
 }
 
-const post1: RecipePost = {
-  name: "Sample Post",
-  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.",
-  tag: ['vanilla'],
-  src: "https://cdn.discordapp.com/attachments/206003287093149696/1026867082610085898/unknown.png",
-  like: 9999,
-}
+// const post3: RecipeObject = {
+//   id: "3239udfasd8f",
+//   name: "Happy Meal",
+//   content: "im lovin it",
+//   tag: ['kfc','is','better'],
+//   fileImage: "https://www.kiis1011.com.au/wp-content/uploads/sites/3/2020/10/mymaccas-happymeal.png?crop=84px,0px,899px,1080px&resize=680,816&quality=75",
+//   like: 420,
+// }
 
-const post2: RecipePost = {
-  name: "Tap Water",
-  description: "Short Description",
-  tag: ['h20','water','glass','coke'],
-  src: "https://media.discordapp.net/attachments/206003287093149696/1026867303154978906/unknown.png?width=1080&height=60",
-  like: 6969,
-}
-
-const post3: RecipePost = {
-  name: "Happy Meal",
-  description: "im lovin it",
-  tag: ['kfc','is','better'],
-  src: "https://www.kiis1011.com.au/wp-content/uploads/sites/3/2020/10/mymaccas-happymeal.png?crop=84px,0px,899px,1080px&resize=680,816&quality=75",
-  like: 420,
-}
-
-const post4: RecipePost = {
-  name: "Holidays",
-  description: "cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains",
-  tag: ['instagram','instagram','instagram','instagram','instagram','instagram'],
-  src: "https://images.unsplash.com/photo-1615003162333-d3ff3ce1f0f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8dWx0cmElMjB3aWRlfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-  like: 21,
-}
+// const post4: RecipeObject = {
+//   id: "4239udfasd8f",
+//   name: "Holidays",
+//   content: "cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains",
+//   tag: ['instagram','instagram','instagram','instagram','instagram','instagram'],
+//   fileImage: "https://images.unsplash.com/photo-1615003162333-d3ff3ce1f0f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8dWx0cmElMjB3aWRlfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+//   like: 21,
+// }
 
 const listRecipes = /* GraphQL */ `
 query ListRecipes(
@@ -70,24 +80,55 @@ query ListRecipes(
 }
 `;
 
+type Recipe = {
+  id: string,
+  name: string,
+  content: string,
+  contributor: string,
+  fileImage: string,
+  createdAt: string,
+  updatedAt: string,
+  owner: string,
+}
+
 const Profile = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [buttonText, setButtonText] = useState("Subscribe")
+  const [buttonText, setButtonText] = useState("Subscribe");
+  const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
 
-  React.useEffect(() => {
+
+
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const apiData: GraphQLResult<any> = await API.graphql({
+          query: listRecipes,
+        });
+        const recipes: Recipe[] = apiData.data.listRecipes.items;
+        const newList: Recipe[] = recipes.map((item) => ({
+          id: item.id,
+          name: item.name,
+          content: item.content,
+          fileImage: item.fileImage.slice(5).slice(0,-1),
+          contributor: item.contributor,
+          owner: item.owner,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt
+          // tag: ['kfc', 'is', 'better'],
+          // like: 21,
+        }))
+        console.log(newList);
+        setRecipeList([...newList]);
+        console.log(recipeList);
+        
+      } catch (error) {
+        console.log("Error on fetching recipe", error);
+      }
+    };
     fetchRecipes();
-  }, []);
+  },[]);
 
-  const fetchRecipes = async () => {
-    try {
-      const apiData: any = await API.graphql({ query: listRecipes });
-      const recipes = apiData.data.listRecipes.items;
-      console.log("zap");
-      console.log(recipes);
-    } catch (error) {
-      console.log("error on fetching recipe", error);
-    }
-  };
+
 
   const subscribe = () => {
     setIsSubscribed(!isSubscribed);
@@ -168,6 +209,7 @@ const Profile = (props: Props) => {
       {/* Recipe Posts */}
       <Grid 
         container
+        item
         direction="column"
         justifyContent="center"
         alignItems="center"
@@ -175,10 +217,16 @@ const Profile = (props: Props) => {
         ml={{md: 15}}
         mr={{md: 15}}
       >
-        <ProfileRecipe post={post1}/>
+
+        {
+          recipeList.map((item, index) => {
+            return (
+              <ProfileRecipe key={index} post={item}/>
+            )
+          })
+        }
+
         <ProfileRecipe post={post2}/>
-        <ProfileRecipe post={post3}/>
-        <ProfileRecipe post={post4}/>
       </Grid>
     </Container>
   )

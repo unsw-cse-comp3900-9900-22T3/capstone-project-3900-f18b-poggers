@@ -1,28 +1,52 @@
-import {Typography, Grid, Box } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import { Typography, Grid, Box } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Storage } from "aws-amplify";
+import { useNavigate } from "react-router-dom";
 
+// type RecipeObject = {
+//   id: string,
+//   name: string,
+//   content: string,
+//   fileImage: string,
+//   like: number,
+//   tag: string[],
+// }
 
-type RecipePost = {
+type Recipe = {
+  id: string,
   name: string,
-  description: string,
-  tag: string[],
-  src: string,
-  like: number,
+  content: string,
+  contributor: string,
+  fileImage: string,
+  createdAt: string,
+  updatedAt: string,
+  owner: string,
 }
 
 type Props = {
-  post: RecipePost
+  post: Recipe,
 }
 
 const ProfileRecipe = (props: Props) => {
 
-  const tagStyles = {
-    backgroundColor: '#28343c',
-    padding: 1,
-    borderRadius: 2,
-    color: '#FFF',
-    margin: 0.5,
-  }
+  const [imageURL, setImageURL] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getImageUrl = async () => {
+      const fileAccessURL = await Storage.get(props.post.fileImage, { expires: 30 ,level: "public"});
+      setImageURL(fileAccessURL);
+    };
+    getImageUrl();
+  },[props.post.fileImage]) 
+
+  // const tagStyles = {
+  //   backgroundColor: '#28343c',
+  //   padding: 1,
+  //   borderRadius: 2,
+  //   color: '#FFF',
+  //   margin: 0.5,
+  // }
 
   return (
     <Grid 
@@ -49,9 +73,9 @@ const ProfileRecipe = (props: Props) => {
             objectFit: "cover",
             borderRadius: '10px',
           }}
-          onClick={() => alert('Recipe page is yet to be implemented')}
-          alt="Profile Image"
-          src={props.post.src}
+          onClick={() => navigate(`/recipe/${props.post.id}`)}
+          alt="Recipe Thumbnail"
+          src={imageURL}
         />
 
       </Grid>
@@ -59,17 +83,26 @@ const ProfileRecipe = (props: Props) => {
       {/* Recipe title and description */}
       <Grid item md={7} xs={12}>
         <Grid item>
-          <Typography variant="h3" mb={1}>
+          <Typography noWrap variant="h4" mb={1} ml={0.25}>
             {props.post.name}
           </Typography>
 
-          <Typography variant="body2" pl={0.5} mb={1}>
-            {props.post.description}
+          <Typography sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: '3',
+            WebkitBoxOrient: 'vertical',
+          }} 
+          variant="body2" 
+          pl={0.5} 
+          mb={1}>
+            {props.post.content}
           </Typography>
         </Grid>
 
         {/* Tags and likes */}
-        <Grid
+        {/* <Grid
           container
           direction="row"
           alignItems="flex-end"
@@ -89,7 +122,7 @@ const ProfileRecipe = (props: Props) => {
               <FavoriteIcon fontSize='small'/> {props.post.like}
             </Grid>
           </Box>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Grid>
 
