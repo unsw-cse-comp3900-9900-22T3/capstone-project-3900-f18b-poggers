@@ -4,6 +4,7 @@ import Carousel from 'react-material-ui-carousel'
 import testimg from '../static/images/authbackground.jpeg'
 import AddIcon from '@mui/icons-material/Add';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import RemoveIcon from '@mui/icons-material/Remove';
 import Amplify, { API, Auth, Storage } from "aws-amplify";
 import { graphqlOperation } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
@@ -174,6 +175,25 @@ const UpdateRecipe = (props: Props) => {
     setIngredientText("");
   };
 
+  const handleRemoveIngredient = () => {
+    const copy = [...ingredients];
+    const copyData = [...ingredientsData];
+    copy.pop();
+    copyData.pop();
+    setIngredients(copy);
+    setIngredientsData(copyData);
+
+  };
+
+  const handleRemoveInstruction = () => {
+    const copy = [...instructions];
+    const copyData = [...instructionsData];
+    copy.pop();
+    copyData.pop();
+    setInstructions(copy);
+    setInstructionsData(copyData);
+
+  };
 
   return (
     <Grid
@@ -272,11 +292,20 @@ const UpdateRecipe = (props: Props) => {
                     variant='standard'
                     onChange={(e) => {setIngredientText(e.target.value)}}
                     InputProps={{ endAdornment:
+                    <>
+                    <IconButton
+                    color='secondary'
+                    onClick={(e) => {handleRemoveIngredient()}}>
+                      <RemoveIcon />
+                    </IconButton>
                     <IconButton
                     color='secondary'
                     type="submit">
                       <AddIcon />
-                    </IconButton> }}
+                    </IconButton>
+                    </>
+
+                    }}
                     name="ingredient"
                     id="ingredient"
                     placeholder="Add another ingredient"
@@ -299,12 +328,18 @@ const UpdateRecipe = (props: Props) => {
                       variant='standard'
                       onChange={(e) => {setInstructionText(e.target.value)}}
                       InputProps={{ endAdornment:
-                      <IconButton
-                      color='secondary'
-                      type="submit"
-                      >
-                        <AddIcon />
-                      </IconButton> }}
+                        <>
+                        <IconButton
+                        color='secondary'
+                        onClick={(e) => {handleRemoveInstruction()}}>
+                          <RemoveIcon />
+                        </IconButton>
+                        <IconButton
+                        color='secondary'
+                        type="submit">
+                          <AddIcon />
+                        </IconButton>
+                        </>}}
                       name="instruction"
                       id="instruction"
                       placeholder="Add another cooking instruction"
