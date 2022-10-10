@@ -1,6 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Button, Typography, Container, Grid, Box } from '@mui/material';
 import ProfileRecipe from '../components/ProfileRecipe';
+import Amplify, { API, Auth, Storage, graphqlOperation } from "aws-amplify";
+
 
 type Props = {}
 
@@ -46,9 +48,46 @@ const post4: RecipePost = {
   like: 21,
 }
 
+const listRecipes = /* GraphQL */ `
+query ListRecipes(
+  $filter: ModelRecipeFilterInput
+  $limit: Int
+  $nextToken: String
+  ) {
+  listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      content
+      contributor
+      fileImage
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+`;
+
 const Profile = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [buttonText, setButtonText] = useState("Subscribe")
+
+  React.useEffect(() => {
+    fetchRecipes();
+  }, []);
+
+  const fetchRecipes = async () => {
+    try {
+      const apiData: any = await API.graphql({ query: listRecipes });
+      const recipes = apiData.data.listRecipes.items;
+      console.log("zap");
+      console.log(recipes);
+    } catch (error) {
+      console.log("error on fetching recipe", error);
+    }
+  };
 
   const subscribe = () => {
     setIsSubscribed(!isSubscribed);
