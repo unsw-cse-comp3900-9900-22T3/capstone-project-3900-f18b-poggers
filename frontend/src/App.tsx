@@ -10,7 +10,8 @@ import Login from './pages/Login';
 import Main from './pages/Main';
 import Register from './pages/Register';
 import Recipe from './pages/Recipe';
-import CreateRecipe from './pages/CreateRecipe'
+import CreateRecipe from './pages/CreateRecipe';
+import UpdateRecipe from './pages/UpdateRecipe'
 
 
 const theme = createTheme({
@@ -62,7 +63,9 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/createrecipe" element={<CreateRecipe />} />
-            <Route path="/recipe" element={<Recipe />} />
+            <Route path="/updaterecipe/:listingId" element={<UpdateRecipe />} />
+            <Route path="/recipe" element={<Recipe />} /> {/* remove this */}
+            <Route path="/recipe/:listingId" element={<Recipe />} />
           </Routes>
         </ThemeProvider>
       </Router>

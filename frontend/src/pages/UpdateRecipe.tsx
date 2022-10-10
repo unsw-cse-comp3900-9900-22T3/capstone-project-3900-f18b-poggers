@@ -10,13 +10,28 @@ import { useNavigate } from 'react-router-dom';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
+type Comment = {
+  author: string,
+  comment: string,
+}
 
-const createRecipe = /* GraphQL */ `
-  mutation CreateRecipe(
-    $input: CreateRecipeInput!
+type Recipe = {
+  id: string,
+  name: string,
+  content: string,
+  contributor: string,
+  fileImage: string,
+  createdAt: string,
+  updatatedAt: string,
+  owner: string,
+}
+
+const updateRecipe = /* GraphQL */ `
+  mutation UpdateRecipe(
+    $input: UpdateRecipeInput!
     $condition: ModelRecipeConditionInput
   ) {
-    createRecipe(input: $input, condition: $condition) {
+    updateRecipe(input: $input, condition: $condition) {
       id
       name
       content
@@ -29,14 +44,82 @@ const createRecipe = /* GraphQL */ `
   }
 `;
 
-const CreateRecipe = (props: Props) => {
+const getRecipe = /* GraphQL */ `
+query GetRecipe($id: ID!) {
+  getRecipe(id: $id) {
+    id
+    name
+    content
+    contributor
+    fileImage
+    createdAt
+    updatedAt
+    owner
+  }
+}
+`;
+
+const UpdateRecipe = (props: Props) => {
+  React.useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const apiData2: any = await API.graphql({
+          query: getRecipe,
+          variables: { id: recipeId }
+          });
+        const recipeById = apiData2.data.getRecipe;
+        console.log(recipeById);
+        setRecipeName(recipeById.name);
+        setContributorName(recipeById.contributor);
+        if (recipeById.content[0] != null) {
+          console.log(JSON.parse(recipeById.content)[0].length);
+          setIngredients(JSON.parse(recipeById.content)[0]);
+          let tempIngredients = [];
+          for (let x of (JSON.parse(recipeById.content)[0])) {
+            tempIngredients.push(JSON.stringify(x));
+          }
+          setIngredientsData([...ingredientsData, ...tempIngredients]);
+          // setIngredientsData(JSON.parse(recipeById.content)[0]);
+        }
+        if (recipeById.content[1] != null) {
+          setInstructions(JSON.parse(recipeById.content)[1]);
+          let tempInstructions = [];
+          for (let x of (JSON.parse(recipeById.content)[1])) {
+            tempInstructions.push(JSON.stringify(x));
+          }
+          setInstructionsData([...instructionsData, ...tempInstructions]);
+
+        }
+        const fileAccessURL = await Storage.get(recipeById.fileImage.slice(5,-1), { expires: 30 ,level: "public"});
+        setRecipeImage(fileAccessURL);
+        setImgKey(recipeById.fileImage);
+        if (recipeById != null) {
+          recipeById.name = "hi";
+        }
+        setRecipe(recipeById);
+        // console.log(recipeById);
+        // console.log(recipeById);
+
+      } catch (error) {
+        console.log("error on fetching recipe", error);
+      }
+    };
+    fetchRecipes();
+  }, []);
+
+  const pathname = window.location.pathname;
+  const recipeId = pathname.slice(14);
+
   const navigate = useNavigate();
+  const [recipe, setRecipe] = React.useState<Recipe>();
+  const [recipeImage, setRecipeImage] = React.useState<string>("");
   const [recipeName, setRecipeName] = React.useState<string>("");
   const [contributorName, setContributorName] = React.useState<string>("Matthew");
   const [ingredients, setIngredients] = React.useState<string[]>([]);
   const [instructions, setInstructions] = React.useState<string[]>([]);
   const [selectedImage, setSelectedImage] = React.useState<File>();
   const [preview, setPreview] = React.useState<string>("");
+  const [imgKey, setImgKey] = React.useState<boolean>(false);
   const [ingredientText, setIngredientText] = React.useState<string>("");
   const [instructionText, setInstructionText] = React.useState<string>("");
 
@@ -116,10 +199,11 @@ const CreateRecipe = (props: Props) => {
             }}
             >
             <TextField
+              value={recipeName}
               fullWidth
               id="recipeName"
               name="recipeName"
-              label="Enter Recipe Name Here"
+              // label="Enter Recipe Name Here"
               variant="standard"
               onChange={(e) => {
                 setRecipeName(e.target.value);
@@ -161,6 +245,7 @@ const CreateRecipe = (props: Props) => {
                   if (e.target.files != null) {
                     setSelectedImage(e.target.files[0]);
                     setPreview(e.target.files[0].name);
+                    setImgKey(true);
                     console.log(e.target.files[0]);
                   }
                 }}/>
@@ -237,24 +322,36 @@ const CreateRecipe = (props: Props) => {
                   >
                     <Button variant="contained"
                       onClick={async () => {
-                        const storageResult = await Storage.put(
-                          uuidv4(),
-                          selectedImage
-                        );
-                        // Insert predictions code here later
-                        console.log(storageResult);
-                        const newRecipe = {
-                          name: recipeName,
-                          content: [ingredientsData, instructionsData],
-                          contributor: contributorName,
-                          fileImage: storageResult,
-                        };
-                        const data: any = await API.graphql(graphqlOperation(createRecipe,{input:newRecipe}));
-                        const id = data.data.createRecipe.id;
+                        if (recipe !== undefined) {
 
-                        navigate(`/recipe/${id}`)
+                          let newRecipe = {
+                            id: recipe.id,
+                            name: recipeName,
+                            content: [ingredientsData, instructionsData],
+                            contributor: contributorName,
+                            fileImage: recipe.fileImage,
+                          };
+                          if (imgKey === true) {
+                            const storageResult = await Storage.put(
+                              uuidv4(),
+                              selectedImage
+                            );
+                            newRecipe.fileImage = `{key=${storageResult.key}}`;
+                          }
+                          console.log(recipe);
+                          try {
+                            const data: any = await API.graphql(graphqlOperation(updateRecipe,{input:newRecipe}));
+                            const id = data.data.updateRecipe.id;
+                            navigate(`/recipe/${id}`)
+                            console.log(newRecipe);
+
+                          } catch (error) {
+                            console.log("error on fetching recipe", error);
+                          }
+                        }
+
                       }}
-                    >Done</Button>
+                    >Update</Button>
                   </Box>
           </Box>
         </Box>
@@ -262,4 +359,4 @@ const CreateRecipe = (props: Props) => {
     </Grid>
   )
 }
-export default CreateRecipe
+export default UpdateRecipe

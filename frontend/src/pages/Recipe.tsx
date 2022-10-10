@@ -5,6 +5,7 @@ import testimg from '../static/images/authbackground.jpeg'
 import SendIcon from '@mui/icons-material/Send';
 import { graphqlOperation } from "aws-amplify";
 import Amplify, { API, Auth, Storage } from "aws-amplify";
+import { ConnectingAirportsOutlined } from '@mui/icons-material';
 type Props = {}
 
 type Comment = {
@@ -60,29 +61,54 @@ const Recipe = (props: Props) => {
     fetchRecipes();
   }, []);
 
+const testingj = "{ingredients: [3 eggs, ¼ cup granulated sugar, divided, About ¼ cup heavy cream, divided, 2 small red apples, cores removed and chopped into large pieces, Unsalted butter, 1 tablespoon apple cognac, 3 thick slices white sandwich bread, Olive oil, Thimbleberry jam, 1 ½ tablespoons crème fraîche], instructions: [Start by placing two large nonstick skillets over medium-high heat., Crack the eggs into a bowl and whisk, then continue whisking while adding about 1 ½ tablespoons sugar, followed by heavy cream. Set aside., Add remaining sugar to one skillet and let sit for a moment so it begins to caramelize. Add the apples to the pan along with about a tablespoon of butter, tossing to coat. , Drizzle the apple cognac over the apples, followed by another tablespoon or so of heavy cream., Bring the mixture to a low boil., Quickly dip each slice of bread into the egg mixture to coat, but don’t let it soak. , Add a tablespoon of olive oil to the other skillet along with about a tablespoon of butter. Once melted, add the coated slices to the hot pan and let brown. Add a few teaspoons of butter around the edges of the pan. Carefully flip each bread slice (only flip once!) to lightly brown the other side, then remove from heat. , Once the apples have absorbed the cream and are jammy and almost candied, remove from heat. , To serve, spread a couple of tablespoons of thimbleberry jam onto one slice of bread on a plate, then top with a few tablespoons of the caramel apples., Place another slice of bread on top of the apples and repeat. Place the third slice of bread on top, then top with a dollop with crème fraîche, followed by a small bit of thimbleberry jam. Scatter any remaining apples around the plate and serve.]}"
+
+// const jsonobj = JSON.parse(testingj);
+// console.log(jsonobj);
+
+  const pathname = window.location.pathname;
+  const recipeId = pathname.slice(8);
   const fetchRecipes = async () => {
     try {
       const apiData: any = await API.graphql({ query: listRecipes });
       const recipes = apiData.data.listRecipes.items;
-
+      console.log(recipes);
       const apiData2: any = await API.graphql({
         query: getRecipe,
-        variables: { id: "fbc0732b-d48b-4f91-a6b0-af55974484e0" }
+        variables: { id: recipeId }
         });
-      const recipes2 = apiData2.data;
-      console.log("HELLO");
-      console.log(recipes);
-      console.log(recipes2);
-      setRecipes(recipes);
+      const recipeById = apiData2.data.getRecipe;
+      // console.log("HELLO");
+      // console.log(recipes);
+      // console.log(recipeById);
+      setRecipes(recipeById);
+      setRecipeName(recipeById.name);
+      setContributorName(recipeById.contributor);
+      if (recipeById.content[0] != null) {
+        setIngredients(JSON.parse(recipeById.content)[0]);
+      }
+      if (recipeById.content[1] != null) {
+        setInstructions(JSON.parse(recipeById.content)[1]);
+      }
+      // console.log('TESING')
+      // console.log(recipeById.content[0])
+      // console.log(JSON.parse(recipeById.content))
+      // console.log(JSON.parse('[["bacon", "egg"], ["cook", "serve"]]'));
+      // console.log(JSON.stringify("bacon"))
+      // const testing = recipeById.fileImage.slice(5,-1);
+      // console.log(testing);
+      const fileAccessURL = await Storage.get(recipeById.fileImage.slice(5,-1), { expires: 30 ,level: "public"});
+      setRecipeImage(fileAccessURL);
     } catch (error) {
       console.log("error on fetching recipe", error);
     }
   };
 
+  const [recipeImage, setRecipeImage] = React.useState<string>("");
   const [recipeName, setRecipeName] = React.useState<string>("Beef Wellington");
   const [contributorName, setContributorName] = React.useState<string>("Matthew");
   const [ingredients, setIngredients] = React.useState(["2 x 400g beef fillets", "Olive oil, for frying", "500g mixture of wild mushrooms, cleaned", "1 thyme sprig, leaves only", "500g puff pastry", "8 slices of Parma ham", "2 egg yolks, beaten with 1 tbsp water and a pinch of salt", "Sea salt and freshly ground black peppe"]);
-  const [instructions, setInstruction] = React.useState(["Wrap each piece of beef tightly in a triple layer of cling film to set its shape, then chill overnight.", "Remove the cling film, then quickly sear the beef fillets in a hot pan with a little olive oil for 30-60 seconds until browned all over and rare in the middle. Remove from the pan and leave to cool.", "Finely chop the mushrooms and fry in a hot pan with a little olive oil, the thyme leaves and some seasoning. When the mushrooms begin to release their juices, continue to cook over a high heat for about 10 minutes until all the excess moisture has evaporated and you are left with a mushroom paste (known as a duxelle). Remove the duxelle from the pan and leave to cool.", "Cut the pastry in half, place on a lightly floured surface and roll each piece into a rectangle large enough to envelop one of the beef fillets. Chill in the refrigerator.", "Lay a large sheet of cling film on a work surface and place 4 slices of Parma ham in the middle, overlapping them slightly, to create a square. Spread half the duxelle evenly over the ham."]);
+  const [instructions, setInstructions] = React.useState(["Wrap each piece of beef tightly in a triple layer of cling film to set its shape, then chill overnight.", "Remove the cling film, then quickly sear the beef fillets in a hot pan with a little olive oil for 30-60 seconds until browned all over and rare in the middle. Remove from the pan and leave to cool.", "Finely chop the mushrooms and fry in a hot pan with a little olive oil, the thyme leaves and some seasoning. When the mushrooms begin to release their juices, continue to cook over a high heat for about 10 minutes until all the excess moisture has evaporated and you are left with a mushroom paste (known as a duxelle). Remove the duxelle from the pan and leave to cool.", "Cut the pastry in half, place on a lightly floured surface and roll each piece into a rectangle large enough to envelop one of the beef fillets. Chill in the refrigerator.", "Lay a large sheet of cling film on a work surface and place 4 slices of Parma ham in the middle, overlapping them slightly, to create a square. Spread half the duxelle evenly over the ham."]);
   const [similarRecipes, setSimilarRecipes] = React.useState([1,2,3,4,5,6,7])
   const [comments, setComments] = React.useState([{author: "Gordon Ramsay", comment: "This lamb is so undercooked, it’s following Mary to school!"}, {author: "Gordon Ramsay", comment: "My gran could do better! And she’s dead!"}, {author: "Gordon Ramsay", comment: "This pizza is so disgusting, if you take it to Italy you’ll get arrested."}])
   const listIngredient = ingredients.map((ingredient, key) =>
@@ -219,7 +245,9 @@ const Recipe = (props: Props) => {
             variant="outlined"
             >
             <CardMedia
-              image={testimg}
+            component={"div"}
+            image={recipeImage}
+            // src={recipeImage}
               style={{
                 height: 0,
                 paddingLeft: 0,
@@ -332,8 +360,6 @@ const Recipe = (props: Props) => {
 }
 
 // content: {
-//   recipeName: "",
-//   image:"",
 //   ingredients: [],
 //   cookingInstructions: []
 // }
