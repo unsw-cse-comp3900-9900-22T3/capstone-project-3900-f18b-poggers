@@ -1,8 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Typography, Container, Grid, Box } from '@mui/material';
-import ProfileRecipe from '../components/ProfileRecipe';
-import { API } from "aws-amplify";
+import ProfileRecipe from '../components/profile/ProfileRecipe';
+import { API, Auth } from "aws-amplify";
 import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { Recipe } from '../types/instacook-types';
+import { useNavigate } from 'react-router-dom';
 
 
 type Props = {}
@@ -80,23 +82,14 @@ query ListRecipes(
 }
 `;
 
-type Recipe = {
-  id: string,
-  name: string,
-  content: string,
-  contributor: string,
-  fileImage: string,
-  createdAt: string,
-  updatedAt: string,
-  owner: string,
-}
 
 const Profile = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [buttonText, setButtonText] = useState("Subscribe");
   const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
-
-
+  const [username, setUsername] = React.useState("");
+  const [id, setId] = React.useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -109,7 +102,7 @@ const Profile = (props: Props) => {
           id: item.id,
           name: item.name,
           content: item.content,
-          fileImage: item.fileImage.slice(5).slice(0,-1),
+          fileImage: item.fileImage.slice(5).slice(0, -1),
           contributor: item.contributor,
           owner: item.owner,
           createdAt: item.createdAt,
@@ -120,15 +113,37 @@ const Profile = (props: Props) => {
         console.log(newList);
         setRecipeList([...newList]);
         console.log(recipeList);
-        
+
       } catch (error) {
         console.log("Error on fetching recipe", error);
       }
     };
+
+    const setUserData = async () => {
+      try {
+        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
+        const user = await Auth.currentAuthenticatedUser({
+          bypassCache: false
+        })
+        console.log(user)
+        setUsername(user.attributes["custom:displayName"]);
+        setId(user.attributes.sub);
+      } catch (e) {
+        if (typeof e === "string") {
+          console.log(e);
+        } else if (e instanceof Error) {
+          console.log(e.message);
+        } else {
+          console.log(e);
+        }
+
+        // go to login page if not authenticated
+        navigate('/login');
+      }
+    }
+    setUserData()
     fetchRecipes();
-  },[]);
-
-
+  }, [navigate]);
 
   const subscribe = () => {
     setIsSubscribed(!isSubscribed);
@@ -136,10 +151,11 @@ const Profile = (props: Props) => {
   }
 
   return (
-    <Container 
+    <Container
       maxWidth="md"
-      >
-      <Grid 
+      sx={{ backgroundColor: 'white' }}
+    >
+      <Grid
         container
         justifyContent="center"
         alignItems="center"
@@ -159,13 +175,13 @@ const Profile = (props: Props) => {
             alt="Profile Image"
             src="https://i.redd.it/a1zcxisgjls71.png"
             mt={2}
-            ml={{md: 6}}
+            ml={{ md: 6 }}
           />
 
           {/* Subscribe button */}
-          <Box 
+          <Box
             textAlign='center'
-            mr={{md: 4}}
+            mr={{ md: 4 }}
             mt={1}
           >
             <Button
@@ -181,52 +197,49 @@ const Profile = (props: Props) => {
         </Grid>
 
         {/* Username and description */}
-        <Grid item xs={12} md={8}> 
+        <Grid item xs={12} md={8}>
           <Typography variant="h3" mb={1}>
-            Test User
+            {username}
           </Typography>
 
           <Typography variant="subtitle1" pr={4}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros. {id}
           </Typography>
         </Grid>
 
         {/* Recipe header */}
         <Grid item md={12} xs={12}>
-            <Box sx={{
-              borderBottom: 1,
-              marginTop: 3,
-              paddingBottom: 1,
-            }}>
-              <Typography variant="h5" ml={2}>
-                Recipes
-              </Typography>
-            </Box>
+          <Box sx={{
+            borderBottom: 1,
+            marginTop: 3,
+            paddingBottom: 1,
+          }}>
+            <Typography variant="h5" ml={2}>
+              Recipes
+            </Typography>
+          </Box>
         </Grid>
 
-      </Grid>  
+      </Grid>
 
       {/* Recipe Posts */}
-      <Grid 
+      <Grid
         container
         item
         direction="column"
         justifyContent="center"
         alignItems="center"
         md={9}
-        ml={{md: 15}}
-        mr={{md: 15}}
+        ml={{ md: 15 }}
+        mr={{ md: 15 }}
       >
 
-        {
-          recipeList.map((item, index) => {
-            return (
-              <ProfileRecipe key={index} post={item}/>
-            )
-          })
-        }
-
-        <ProfileRecipe post={post2}/>
+        {recipeList.map((item, index) => {
+          return (
+            <ProfileRecipe key={index} post={item} />
+          )
+        })}
+        <ProfileRecipe post={post2} />
       </Grid>
     </Container>
   )

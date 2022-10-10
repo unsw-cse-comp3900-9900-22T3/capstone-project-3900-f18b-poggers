@@ -2,26 +2,8 @@ import { Typography, Grid, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Storage } from "aws-amplify";
 import { useNavigate } from "react-router-dom";
-
-// type RecipeObject = {
-//   id: string,
-//   name: string,
-//   content: string,
-//   fileImage: string,
-//   like: number,
-//   tag: string[],
-// }
-
-type Recipe = {
-  id: string,
-  name: string,
-  content: string,
-  contributor: string,
-  fileImage: string,
-  createdAt: string,
-  updatedAt: string,
-  owner: string,
-}
+import { Recipe } from '../../types/instacook-types';
+import { Image } from 'mui-image'
 
 type Props = {
   post: Recipe,
@@ -34,11 +16,11 @@ const ProfileRecipe = (props: Props) => {
 
   useEffect(() => {
     const getImageUrl = async () => {
-      const fileAccessURL = await Storage.get(props.post.fileImage, { expires: 30 ,level: "public"});
+      const fileAccessURL = await Storage.get(props.post.fileImage, { expires: 30, level: "public" });
       setImageURL(fileAccessURL);
     };
     getImageUrl();
-  },[props.post.fileImage]) 
+  }, [props.post.fileImage])
 
   // const tagStyles = {
   //   backgroundColor: '#28343c',
@@ -49,31 +31,30 @@ const ProfileRecipe = (props: Props) => {
   // }
 
   return (
-    <Grid 
+    <Grid
       container
-      justifyContent="center"
+      justifyContent={{ xs: 'center', md: 'left' }}
       alignItems="center"
       sx={{
         border: 1,
         borderRadius: '15px',
         marginTop: 2,
-        padding: 0.75,
+        padding: 0
       }}
     >
 
       {/* Recipe thumbnail */}
-      <Grid item md={4} mr={2} ml={{md: -4, xs:1.5}}>
-        <Box
-          component="img"
-          sx={{
+      <Grid item md={4} mr={2} ml={{ md: 0, xs: 1.5 }} onClick={() => navigate(`/recipe/${props.post.id}`)}>
+        <Image
+          style={{
             minHeight: 200,
-            minWeight: 200,
             maxHeight: 200,
-            maxWidth: 200,
+            padding: 0,
             objectFit: "cover",
-            borderRadius: '10px',
+            borderRadius: '15px',
+            cursor: 'pointer'
           }}
-          onClick={() => navigate(`/recipe/${props.post.id}`)}
+          duration={1000}
           alt="Recipe Thumbnail"
           src={imageURL}
         />
@@ -93,10 +74,10 @@ const ProfileRecipe = (props: Props) => {
             display: '-webkit-box',
             WebkitLineClamp: '3',
             WebkitBoxOrient: 'vertical',
-          }} 
-          variant="body2" 
-          pl={0.5} 
-          mb={1}>
+          }}
+            variant="body2"
+            pl={0.5}
+            mb={1}>
             {props.post.content}
           </Typography>
         </Grid>
@@ -107,7 +88,7 @@ const ProfileRecipe = (props: Props) => {
           direction="row"
           alignItems="flex-end"
         >
-          { 
+          {
             props.post.tag.map((item, index) => {
               return (
                 <Box sx={tagStyles}>

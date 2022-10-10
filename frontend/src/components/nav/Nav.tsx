@@ -128,7 +128,7 @@ export default function Nav() {
         <Sidebar loggedIn={loggedIn} toggleSidebar={toggleSidebar} />
       </Drawer>
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+        <AppBar style={{ boxShadow: 'none' }} position="static">
           <Toolbar>
             <IconButton
               size="large"
@@ -143,8 +143,8 @@ export default function Nav() {
             <Typography
               variant="h6"
               noWrap
-              component="div"
-              sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
+              onClick={() => { navigate('/feed') }}
+              sx={{ display: { xs: 'none', sm: 'none', md: 'block' }, cursor: 'pointer' }}
             >
               Instacook
             </Typography>

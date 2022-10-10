@@ -6,6 +6,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: url('./static/images/authbackground.jpeg') no-repeat center center fixed;
+  background-size: "cover";
 }
 
 code {
