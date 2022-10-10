@@ -10,6 +10,7 @@ import Feed from './pages/Feed';
 import Login from './pages/Login';
 import Main from './pages/Main';
 import Register from './pages/Register';
+import Profile from './pages/Profile';
 
 
 const theme = createTheme({
@@ -61,6 +62,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/feed" element={<Feed />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </ThemeProvider>
       </Router>
