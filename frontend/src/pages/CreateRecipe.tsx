@@ -14,12 +14,14 @@ type Comment = {
 }
 
 const CreateRecipe = (props: Props) => {
-  const [recipeName, setRecipeName] = React.useState<string>("Beef Wellington");
+  const [recipeName, setRecipeName] = React.useState<string>("");
   const [contributorName, setContributorName] = React.useState<string>("Matthew");
   const [ingredients, setIngredients] = React.useState<string[]>([]);
   const [instructions, setInstructions] = React.useState<string[]>([]);
-  const [similarRecipes, setSimilarRecipes] = React.useState([1,2,3,4,5,6,7])
   const [comments, setComments] = React.useState([{author: "Gordon Ramsay", comment: "This lamb is so undercooked, it’s following Mary to school!"}, {author: "Gordon Ramsay", comment: "My gran could do better! And she’s dead!"}, {author: "Gordon Ramsay", comment: "This pizza is so disgusting, if you take it to Italy you’ll get arrested."}])
+  const [selectedImage, setSelectedImage] = React.useState<File>();
+  const [preview, setPreview] = React.useState<string>("");
+
   const listIngredient = ingredients.map((ingredient, key) =>
     <li key={key}>
       <ListItemText primary={ingredient} />
@@ -43,56 +45,6 @@ const CreateRecipe = (props: Props) => {
       </Grid>
     </ListItem>
   );
-
-  const similarRecipesCarousel = similarRecipes.map((recipe, key) =>
-    <Grid key={key} item sm={3}>
-      <Card sx={{ maxWidth: 345 }}>
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            height="140"
-            image={testimg}
-            alt="similar recipe"
-          />
-          <CardContent>
-            <Typography variant="h5">
-              Similar Recipe {recipe}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    </Grid>
-  );
-
-  const listComments = comments.map((comment, key) =>
-  <div key={key}>
-    <ListItem  alignItems="flex-start">
-      <ListItemAvatar>
-        <Avatar alt={comment.author} src="/static/images/avatar/1.jpg" />
-      </ListItemAvatar>
-      <ListItemText
-        primary={comment.author}
-        secondary={
-            <Typography variant="body2">
-              {comment.comment}
-            </Typography>
-        }
-      />
-    </ListItem>
-    <Divider variant="inset"/>
-  </div>
-  );
-
-  let items = []
-  let carouselTab: any[] = []
-  for (let i = 0; i < similarRecipesCarousel.length; i++) {
-    carouselTab.push(similarRecipesCarousel[i]);
-    if (carouselTab.length % 4 === 0) {
-      items.push(carouselTab);
-      carouselTab = [];
-    }
-  }
-  items.push(carouselTab);
 
   const bgStyles = {
     minHeight: `calc(100vh - 64px)`,
@@ -164,6 +116,9 @@ const CreateRecipe = (props: Props) => {
               name="recipeName"
               label="Enter Recipe Name Here"
               variant="standard"
+              onChange={(e) => {
+                setRecipeName(e.target.value);
+              }}
             />
           </Box>
           <Box
@@ -197,9 +152,35 @@ const CreateRecipe = (props: Props) => {
                 >
                   <input hidden accept="image/*" type="file" onChange={(e) => {
                   e.preventDefault();
-                  console.log(e.target.value)}}/>
+                  console.log(e.target.value);
+                  if (e.target.files != null) {
+                    setSelectedImage(e.target.files[0]);
+                    setPreview(e.target.files[0].name);
+                    console.log(e.target.files[0]);
+                  }
+                }}/>
                   <AddPhotoAlternateIcon fontSize='large' sx={{}}/>
                 </IconButton>
+                {preview}
+                {/* {console.log(selectedImage)} */}
+                {/* {e.target.files[0].name} */}
+
+                {/* <Card
+                  variant="outlined"
+
+                  >
+                  <img
+                    // style={{
+                    //   height: 0,
+                    //   paddingLeft: 0,
+                    //   paddingRight: 0,
+                    //   paddingTop: '56.25%', // 16:9,
+                    //   marginTop:'30'
+                    // }}
+                    src={preview}
+                    alt={"hi"}
+                  />
+                </Card> */}
               </Box>
               {/* <Card
             variant="outlined"
@@ -214,7 +195,7 @@ const CreateRecipe = (props: Props) => {
                 marginTop:'30'
               }}
             />
-          </Card> */}
+            </Card> */}
             <Grid container spacing={5} sx={{padding: 3}}>
               <Grid item sm={3}>
                 <Typography variant="h5">
@@ -269,29 +250,16 @@ const CreateRecipe = (props: Props) => {
                   </Box>
               </Grid>
             </Grid>
-          </Box>
-          <Box
-            sx={{
-              padding: 2,
-              alignItems: 'center',
-            }}
-            >
-            {/* <Typography variant="h5">
-              Similar Recipes
-            </Typography> */}
-            {/* <Carousel
-              autoPlay={false}
-              animation={"slide"}
-              // navButtonsAlwaysVisible={true}
-            >
-                {
-                    items.map( (item, key) =>
-                        <Grid key={key} container spacing={2} sx={{padding: 3}}>
-                          {item}
-                        </Grid>
-                    )
-                }
-            </Carousel> */}
+                  <Box
+                    paddingTop={0}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: "flex-end"
+                    }}
+                  >
+                    <Button variant="contained">Contained</Button>
+                  </Box>
           </Box>
         </Box>
       </Container>
