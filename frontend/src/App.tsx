@@ -10,13 +10,10 @@ import Feed from './pages/Feed';
 import Login from './pages/Login';
 import Main from './pages/Main';
 import Register from './pages/Register';
-<<<<<<< HEAD
 import Profile from './pages/Profile';
-=======
 import Recipe from './pages/Recipe';
 import CreateRecipe from './pages/CreateRecipe';
-import UpdateRecipe from './pages/UpdateRecipe'
->>>>>>> 6b647085d813843d437f69100059a91e717ca86b
+import UpdateRecipe from './pages/UpdateRecipe';
 
 
 const theme = createTheme({
@@ -68,14 +65,11 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/feed" element={<Feed />} />
             <Route path="/register" element={<Register />} />
-<<<<<<< HEAD
             <Route path="/profile" element={<Profile />} />
-=======
             <Route path="/createrecipe" element={<CreateRecipe />} />
             <Route path="/updaterecipe/:listingId" element={<UpdateRecipe />} />
             <Route path="/recipe" element={<Recipe />} /> {/* remove this */}
             <Route path="/recipe/:listingId" element={<Recipe />} />
->>>>>>> 6b647085d813843d437f69100059a91e717ca86b
           </Routes>
         </ThemeProvider>
       </Router>

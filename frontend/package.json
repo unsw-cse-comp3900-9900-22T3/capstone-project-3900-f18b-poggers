@@ -15,10 +15,7 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "aws-amplify": "^4.3.37",
-<<<<<<< HEAD
     "mui-image": "^1.0.7",
-=======
->>>>>>> 6b647085d813843d437f69100059a91e717ca86b
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-material-ui-carousel": "^3.4.2",
@@ -53,10 +50,7 @@
     ]
   },
   "devDependencies": {
-<<<<<<< HEAD
-    "@types/mui-image": "^1.0.1"
-=======
+    "@types/mui-image": "^1.0.1",
     "@types/uuid": "^8.3.4"
->>>>>>> 6b647085d813843d437f69100059a91e717ca86b
   }
 }
