@@ -126,7 +126,7 @@ const Profile = (props: Props) => {
           bypassCache: false
         })
         console.log(user)
-        setUsername(user.attributes["custom:displayName"]);
+        setUsername(user.username);
         setId(user.attributes.sub);
       } catch (e) {
         if (typeof e === "string") {

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 
 type Props = {
-  email: string,
+  username: string,
   open: boolean,
   setOpen: React.Dispatch<React.SetStateAction<boolean>>,
   redirectPage: string
@@ -48,8 +48,8 @@ const ConfirmEmailModal = (props: Props) => {
 
   const handleConfirm = async () => {
     try {
-      console.log(props.email, code)
-      await Auth.confirmSignUp(props.email, code);
+      console.log(props.username, code)
+      await Auth.confirmSignUp(props.username, code);
       handleClose();
       navigate(props.redirectPage);
     } catch (e) {
@@ -91,7 +91,7 @@ const ConfirmEmailModal = (props: Props) => {
             name="code"
             autoFocus
             onChange={(e) => { setCode(e.target.value) }}
-            InputProps={{ endAdornment: <ResendCodeButton displayError={displayError} displayInfo={displayInfo} username={props.email} /> }}
+            InputProps={{ endAdornment: <ResendCodeButton displayError={displayError} displayInfo={displayInfo} username={props.username} /> }}
           />
 
           <Button

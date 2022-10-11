@@ -168,7 +168,7 @@ const Login = (props: Props) => {
           </Box>
         </Container>
       </Grid>
-      <ConfirmEmailModal email={email} open={open} setOpen={setOpen} redirectPage="/feed" />
+      <ConfirmEmailModal username={email} open={open} setOpen={setOpen} redirectPage="/feed" />
     </>
   )
 }
