@@ -10,7 +10,7 @@ const Login = (props: Props) => {
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
-  const [email, setEmail] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const navigate = useNavigate();
 
   const displayError = (message: string) => {
@@ -18,10 +18,10 @@ const Login = (props: Props) => {
     setErrorMessage(message);
   }
 
-  const logIn = async (email: string, password: string) => {
+  const logIn = async (password: string) => {
     try {
       // successful login
-      await Auth.signIn(email, password);
+      await Auth.signIn(username, password);
       navigate('/feed')
     } catch (e) {
       console.log('error signing in:', e);
@@ -39,7 +39,7 @@ const Login = (props: Props) => {
     const formData = new FormData(event.currentTarget);
     const password = formData.get('password');
 
-    if (email.length === 0) {
+    if (username.length === 0) {
       displayError("The email field cannot be empty.");
       return;
     }
@@ -51,7 +51,7 @@ const Login = (props: Props) => {
 
     try {
       // attempt to log in
-      await logIn(email.toString(), password.toString());
+      await logIn(password.toString());
     } catch (e) {
       console.log('error signing in:', e);
       if (e instanceof Error) {
@@ -124,12 +124,12 @@ const Login = (props: Props) => {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
                 autoFocus
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setUsername(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -168,7 +168,7 @@ const Login = (props: Props) => {
           </Box>
         </Container>
       </Grid>
-      <ConfirmEmailModal username={email} open={open} setOpen={setOpen} redirectPage="/feed" />
+      <ConfirmEmailModal username={username} open={open} setOpen={setOpen} redirectPage="/feed" />
     </>
   )
 }
