@@ -78,11 +78,10 @@ const testingj = "{ingredients: [3 eggs, ¼ cup granulated sugar, divided, About
         variables: { id: recipeId }
         });
       const recipeById = apiData2.data.getRecipe;
-      // console.log("HELLO");
-      // console.log(recipes);
-      // console.log(recipeById);
+
       setRecipes(recipeById);
       setRecipeName(recipeById.name);
+      setDescription(JSON.parse(recipeById.content)[2])
       setContributorName(recipeById.contributor);
       if (recipeById.content[0] != null) {
         setIngredients(JSON.parse(recipeById.content)[0]);
@@ -90,13 +89,7 @@ const testingj = "{ingredients: [3 eggs, ¼ cup granulated sugar, divided, About
       if (recipeById.content[1] != null) {
         setInstructions(JSON.parse(recipeById.content)[1]);
       }
-      // console.log('TESING')
-      // console.log(recipeById.content[0])
-      // console.log(JSON.parse(recipeById.content))
-      // console.log(JSON.parse('[["bacon", "egg"], ["cook", "serve"]]'));
-      // console.log(JSON.stringify("bacon"))
-      // const testing = recipeById.fileImage.slice(5,-1);
-      // console.log(testing);
+
       const fileAccessURL = await Storage.get(recipeById.fileImage.slice(5,-1), { expires: 30 ,level: "public"});
       setRecipeImage(fileAccessURL);
     } catch (error) {
@@ -104,6 +97,7 @@ const testingj = "{ingredients: [3 eggs, ¼ cup granulated sugar, divided, About
     }
   };
 
+  const [description, setDescription] = React.useState<string>("");
   const [recipeImage, setRecipeImage] = React.useState<string>("");
   const [recipeName, setRecipeName] = React.useState<string>("Beef Wellington");
   const [contributorName, setContributorName] = React.useState<string>("Matthew");
@@ -233,7 +227,15 @@ const testingj = "{ingredients: [3 eggs, ¼ cup granulated sugar, divided, About
           <Typography variant="caption">
             posted by {contributorName}
           </Typography>
-
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+          }}
+        >
+          {description}
         </Box>
         <Box
           sx={{

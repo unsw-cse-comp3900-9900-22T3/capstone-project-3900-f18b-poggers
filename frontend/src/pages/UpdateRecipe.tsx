@@ -8,6 +8,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import Amplify, { API, Auth, Storage } from "aws-amplify";
 import { graphqlOperation } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
+import { DescriptionTwoTone } from '@mui/icons-material';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
@@ -71,6 +72,7 @@ const UpdateRecipe = (props: Props) => {
         const recipeById = apiData2.data.getRecipe;
         console.log(recipeById);
         setRecipeName(recipeById.name);
+        setDescription(JSON.parse(recipeById.content)[2])
         setContributorName(recipeById.contributor);
         if (recipeById.content[0] != null) {
           console.log(JSON.parse(recipeById.content)[0].length);
@@ -114,6 +116,7 @@ const UpdateRecipe = (props: Props) => {
   const navigate = useNavigate();
   const [recipe, setRecipe] = React.useState<Recipe>();
   const [recipeImage, setRecipeImage] = React.useState<string>("");
+  const [description, setDescription] = React.useState<string>("");
   const [recipeName, setRecipeName] = React.useState<string>("");
   const [contributorName, setContributorName] = React.useState<string>("Matthew");
   const [ingredients, setIngredients] = React.useState<string[]>([]);
@@ -215,9 +218,12 @@ const UpdateRecipe = (props: Props) => {
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
+              alignItems: 'flex-start',
             }}
             >
+            <Typography variant="h5">
+              Recipe Name
+            </Typography>
             <TextField
               value={recipeName}
               fullWidth
@@ -241,6 +247,28 @@ const UpdateRecipe = (props: Props) => {
               posted by {contributorName}
             </Typography>
 
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: "flex-start"
+            }}
+            >
+                <Typography variant="h5">
+                  Description
+                </Typography>
+                <TextField
+              fullWidth
+              value={description}
+              id="description"
+              name="description"
+              label=""
+              variant="standard"
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
+            />
           </Box>
           <Box
             sx={{
@@ -362,7 +390,7 @@ const UpdateRecipe = (props: Props) => {
                           let newRecipe = {
                             id: recipe.id,
                             name: recipeName,
-                            content: [ingredientsData, instructionsData],
+                            content: [ingredientsData, instructionsData, JSON.stringify(description)],
                             contributor: contributorName,
                             fileImage: recipe.fileImage,
                           };

@@ -7,6 +7,7 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import Amplify, { API, Auth, Storage } from "aws-amplify";
 import { graphqlOperation } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
+import RemoveIcon from '@mui/icons-material/Remove';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
@@ -32,6 +33,7 @@ const createRecipe = /* GraphQL */ `
 const CreateRecipe = (props: Props) => {
   const navigate = useNavigate();
   const [recipeName, setRecipeName] = React.useState<string>("");
+  const [description, setDescription] = React.useState<string>("");
   const [contributorName, setContributorName] = React.useState<string>("Matthew");
   const [ingredients, setIngredients] = React.useState<string[]>([]);
   const [instructions, setInstructions] = React.useState<string[]>([]);
@@ -42,6 +44,8 @@ const CreateRecipe = (props: Props) => {
 
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
+
+
 
   const listIngredient = ingredients.map((ingredient, key) =>
     <li key={key}>
@@ -91,6 +95,25 @@ const CreateRecipe = (props: Props) => {
     setIngredientText("");
   };
 
+  const handleRemoveIngredient = () => {
+    const copy = [...ingredients];
+    const copyData = [...ingredientsData];
+    copy.pop();
+    copyData.pop();
+    setIngredients(copy);
+    setIngredientsData(copyData);
+
+  };
+
+  const handleRemoveInstruction = () => {
+    const copy = [...instructions];
+    const copyData = [...instructionsData];
+    copy.pop();
+    copyData.pop();
+    setInstructions(copy);
+    setInstructionsData(copyData);
+
+  };
 
   return (
     <Grid
@@ -112,9 +135,12 @@ const CreateRecipe = (props: Props) => {
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
+              alignItems: 'flex-start',
             }}
             >
+            <Typography variant="h5">
+              Recipe Name
+            </Typography>
             <TextField
               fullWidth
               id="recipeName"
@@ -137,6 +163,27 @@ const CreateRecipe = (props: Props) => {
               posted by {contributorName}
             </Typography>
 
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: "flex-start"
+            }}
+            >
+                <Typography variant="h5">
+                  Description
+                </Typography>
+                <TextField
+              fullWidth
+              id="description"
+              name="description"
+              label="Enter Description Here"
+              variant="standard"
+              onChange={(e) => {
+                setDescription(JSON.stringify(e.target.value));
+              }}
+            />
           </Box>
           <Box
             sx={{
@@ -187,11 +234,19 @@ const CreateRecipe = (props: Props) => {
                     variant='standard'
                     onChange={(e) => {setIngredientText(e.target.value)}}
                     InputProps={{ endAdornment:
+                    <>
+                      <IconButton
+                      color='secondary'
+                      onClick={(e) => {handleRemoveIngredient()}}>
+                        <RemoveIcon />
+                      </IconButton>
                     <IconButton
                     color='secondary'
                     type="submit">
                       <AddIcon />
-                    </IconButton> }}
+                    </IconButton>
+                    </>
+                    }}
                     name="ingredient"
                     id="ingredient"
                     placeholder="Add another ingredient"
@@ -214,12 +269,19 @@ const CreateRecipe = (props: Props) => {
                       variant='standard'
                       onChange={(e) => {setInstructionText(e.target.value)}}
                       InputProps={{ endAdornment:
-                      <IconButton
-                      color='secondary'
-                      type="submit"
-                      >
-                        <AddIcon />
-                      </IconButton> }}
+                        <>
+                        <IconButton
+                        color='secondary'
+                        onClick={(e) => {handleRemoveInstruction()}}>
+                          <RemoveIcon />
+                        </IconButton>
+                        <IconButton
+                        color='secondary'
+                        type="submit">
+                          <AddIcon />
+                        </IconButton>
+                        </>
+                      }}
                       name="instruction"
                       id="instruction"
                       placeholder="Add another cooking instruction"
@@ -241,11 +303,12 @@ const CreateRecipe = (props: Props) => {
                           uuidv4(),
                           selectedImage
                         );
+
                         // Insert predictions code here later
                         console.log(storageResult);
                         const newRecipe = {
                           name: recipeName,
-                          content: [ingredientsData, instructionsData],
+                          content: [ingredientsData, instructionsData, description],
                           contributor: contributorName,
                           fileImage: storageResult,
                         };
