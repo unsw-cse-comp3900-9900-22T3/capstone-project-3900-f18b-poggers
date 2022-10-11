@@ -5,7 +5,6 @@ import testimg from '../static/images/authbackground.jpeg'
 import SendIcon from '@mui/icons-material/Send';
 import { graphqlOperation } from "aws-amplify";
 import Amplify, { API, Auth, Storage } from "aws-amplify";
-import { ConnectingAirportsOutlined } from '@mui/icons-material';
 type Props = {}
 
 type Comment = {
@@ -61,18 +60,12 @@ const Recipe = (props: Props) => {
     fetchRecipes();
   }, []);
 
-const testingj = "{ingredients: [3 eggs, ¼ cup granulated sugar, divided, About ¼ cup heavy cream, divided, 2 small red apples, cores removed and chopped into large pieces, Unsalted butter, 1 tablespoon apple cognac, 3 thick slices white sandwich bread, Olive oil, Thimbleberry jam, 1 ½ tablespoons crème fraîche], instructions: [Start by placing two large nonstick skillets over medium-high heat., Crack the eggs into a bowl and whisk, then continue whisking while adding about 1 ½ tablespoons sugar, followed by heavy cream. Set aside., Add remaining sugar to one skillet and let sit for a moment so it begins to caramelize. Add the apples to the pan along with about a tablespoon of butter, tossing to coat. , Drizzle the apple cognac over the apples, followed by another tablespoon or so of heavy cream., Bring the mixture to a low boil., Quickly dip each slice of bread into the egg mixture to coat, but don’t let it soak. , Add a tablespoon of olive oil to the other skillet along with about a tablespoon of butter. Once melted, add the coated slices to the hot pan and let brown. Add a few teaspoons of butter around the edges of the pan. Carefully flip each bread slice (only flip once!) to lightly brown the other side, then remove from heat. , Once the apples have absorbed the cream and are jammy and almost candied, remove from heat. , To serve, spread a couple of tablespoons of thimbleberry jam onto one slice of bread on a plate, then top with a few tablespoons of the caramel apples., Place another slice of bread on top of the apples and repeat. Place the third slice of bread on top, then top with a dollop with crème fraîche, followed by a small bit of thimbleberry jam. Scatter any remaining apples around the plate and serve.]}"
-
-// const jsonobj = JSON.parse(testingj);
-// console.log(jsonobj);
-
   const pathname = window.location.pathname;
   const recipeId = pathname.slice(8);
   const fetchRecipes = async () => {
     try {
       const apiData: any = await API.graphql({ query: listRecipes });
       const recipes = apiData.data.listRecipes.items;
-      console.log(recipes);
       const apiData2: any = await API.graphql({
         query: getRecipe,
         variables: { id: recipeId }
@@ -186,7 +179,6 @@ const testingj = "{ingredients: [3 eggs, ¼ cup granulated sugar, divided, About
   const handleComment = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("comment"))
     const data: Comment = {
       author: "Raymond Chung",
       comment: JSON.parse(JSON.stringify(formData.get("comment"))),

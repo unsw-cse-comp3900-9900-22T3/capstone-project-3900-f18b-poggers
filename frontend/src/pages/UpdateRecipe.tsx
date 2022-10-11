@@ -70,19 +70,16 @@ const UpdateRecipe = (props: Props) => {
           variables: { id: recipeId }
           });
         const recipeById = apiData2.data.getRecipe;
-        console.log(recipeById);
         setRecipeName(recipeById.name);
         setDescription(JSON.parse(recipeById.content)[2])
         setContributorName(recipeById.contributor);
         if (recipeById.content[0] != null) {
-          console.log(JSON.parse(recipeById.content)[0].length);
           setIngredients(JSON.parse(recipeById.content)[0]);
           let tempIngredients = [];
           for (let x of (JSON.parse(recipeById.content)[0])) {
             tempIngredients.push(JSON.stringify(x));
           }
           setIngredientsData([...ingredientsData, ...tempIngredients]);
-          // setIngredientsData(JSON.parse(recipeById.content)[0]);
         }
         if (recipeById.content[1] != null) {
           setInstructions(JSON.parse(recipeById.content)[1]);
@@ -100,8 +97,6 @@ const UpdateRecipe = (props: Props) => {
           recipeById.name = "hi";
         }
         setRecipe(recipeById);
-        // console.log(recipeById);
-        // console.log(recipeById);
 
       } catch (error) {
         console.log("error on fetching recipe", error);
@@ -162,8 +157,6 @@ const UpdateRecipe = (props: Props) => {
   const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("instruction"))
-    // formData.set("")
     setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
     setInstructionText("");
@@ -172,7 +165,6 @@ const UpdateRecipe = (props: Props) => {
   const handleIngredient = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("ingredient"))
     setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
     setIngredientText("");
@@ -209,11 +201,7 @@ const UpdateRecipe = (props: Props) => {
     >
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
-        <Box
-          // component="form"
-          // onSubmit={handleSubmit}
-        >
-
+        <Box>
           <Box
             sx={{
               display: 'flex',
@@ -229,7 +217,6 @@ const UpdateRecipe = (props: Props) => {
               fullWidth
               id="recipeName"
               name="recipeName"
-              // label="Enter Recipe Name Here"
               variant="standard"
               onChange={(e) => {
                 setRecipeName(e.target.value);
@@ -278,23 +265,13 @@ const UpdateRecipe = (props: Props) => {
             >
 
               <Box>
-                <IconButton color="primary" aria-label="upload picture" component="label"
-                              // style={{
-                              //   height: 0,
-                              //   paddingLeft: 0,
-                              //   paddingRight: 0,
-                              //   paddingTop: '56.25%', // 16:9,
-                              //   marginTop:'30'
-                              // }}
-                >
+                <IconButton color="primary" aria-label="upload picture" component="label">
                   <input hidden accept="image/*" type="file" onChange={(e) => {
                   e.preventDefault();
-                  console.log(e.target.value);
                   if (e.target.files != null) {
                     setSelectedImage(e.target.files[0]);
                     setPreview(e.target.files[0].name);
                     setImgKey(true);
-                    console.log(e.target.files[0]);
                   }
                 }}/>
                   <AddPhotoAlternateIcon fontSize='large' sx={{}}/>
@@ -367,7 +344,8 @@ const UpdateRecipe = (props: Props) => {
                         type="submit">
                           <AddIcon />
                         </IconButton>
-                        </>}}
+                        </>
+                        }}
                       name="instruction"
                       id="instruction"
                       placeholder="Add another cooking instruction"
@@ -401,15 +379,13 @@ const UpdateRecipe = (props: Props) => {
                             );
                             newRecipe.fileImage = `{key=${storageResult.key}}`;
                           }
-                          console.log(recipe);
                           try {
                             const data: any = await API.graphql(graphqlOperation(updateRecipe,{input:newRecipe}));
                             const id = data.data.updateRecipe.id;
                             navigate(`/recipe/${id}`)
-                            console.log(newRecipe);
 
                           } catch (error) {
-                            console.log("error on fetching recipe", error);
+                            console.log("error on updating recipe", error);
                           }
                         }
 

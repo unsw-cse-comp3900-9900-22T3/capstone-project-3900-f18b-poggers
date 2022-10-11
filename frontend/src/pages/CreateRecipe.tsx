@@ -79,8 +79,6 @@ const CreateRecipe = (props: Props) => {
   const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("instruction"))
-    // formData.set("")
     setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
     setInstructionText("");
@@ -89,7 +87,6 @@ const CreateRecipe = (props: Props) => {
   const handleIngredient = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("ingredient"))
     setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
     setIngredientText("");
@@ -126,11 +123,7 @@ const CreateRecipe = (props: Props) => {
     >
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
-        <Box
-          // component="form"
-          // onSubmit={handleSubmit}
-        >
-
+        <Box>
           <Box
             sx={{
               display: 'flex',
@@ -194,21 +187,12 @@ const CreateRecipe = (props: Props) => {
 
               <Box>
                 <IconButton color="primary" aria-label="upload picture" component="label"
-                              // style={{
-                              //   height: 0,
-                              //   paddingLeft: 0,
-                              //   paddingRight: 0,
-                              //   paddingTop: '56.25%', // 16:9,
-                              //   marginTop:'30'
-                              // }}
                 >
                   <input hidden accept="image/*" type="file" onChange={(e) => {
                   e.preventDefault();
-                  console.log(e.target.value);
                   if (e.target.files != null) {
                     setSelectedImage(e.target.files[0]);
                     setPreview(e.target.files[0].name);
-                    console.log(e.target.files[0]);
                   }
                 }}/>
                   <AddPhotoAlternateIcon fontSize='large' sx={{}}/>
@@ -304,8 +288,6 @@ const CreateRecipe = (props: Props) => {
                           selectedImage
                         );
 
-                        // Insert predictions code here later
-                        console.log(storageResult);
                         const newRecipe = {
                           name: recipeName,
                           content: [ingredientsData, instructionsData, description],
