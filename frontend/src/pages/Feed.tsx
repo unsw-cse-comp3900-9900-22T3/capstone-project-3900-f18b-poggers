@@ -19,7 +19,7 @@ const Feed = (props: Props) => {
           bypassCache: false
         })
         console.log(user)
-        setUsername(user.attributes["custom:displayName"]);
+        setUsername(user.username);
         setUserEmail(user.attributes.email);
         setId(user.attributes.sub);
       } catch (e) {

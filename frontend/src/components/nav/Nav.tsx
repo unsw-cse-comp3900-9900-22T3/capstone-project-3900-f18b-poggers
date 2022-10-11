@@ -102,7 +102,7 @@ export default function Nav() {
           // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
           bypassCache: false
         })
-        setUsername(user.attributes["custom:displayName"]);
+        setUsername(user.username);
         setLoggedIn(true);
         console.log("Nav: Logged In User: ", username);
       } catch (e) {

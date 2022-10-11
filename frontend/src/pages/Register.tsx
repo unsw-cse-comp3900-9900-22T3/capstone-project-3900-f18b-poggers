@@ -12,6 +12,7 @@ const Register = (props: Props) => {
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const navigate = useNavigate();
 
   const displayError = (message: string) => {
@@ -22,11 +23,10 @@ const Register = (props: Props) => {
   const signUp = async (username: string, password: string, email: string) => {
     try {
       const { user } = await Auth.signUp({
-        'username': email,
+        'username': username,
         'password': password,
         attributes: {
           'email': email,
-          'custom:displayName': username
         },
         autoSignIn: { // optional - enables auto sign in after user is confirmed
           enabled: false,
@@ -176,6 +176,7 @@ const Register = (props: Props) => {
                 label="Username"
                 name="username"
                 autoComplete="username"
+                onChange={(e) => setUsername(e.target.value)}
               />
 
               <TextField
@@ -221,7 +222,7 @@ const Register = (props: Props) => {
           </Box>
         </Container>
       </Grid>
-      <ConfirmEmailModal email={email} open={open} setOpen={setOpen} redirectPage="/login" />
+      <ConfirmEmailModal username={username} open={open} setOpen={setOpen} redirectPage="/login" />
     </>
   )
 }
