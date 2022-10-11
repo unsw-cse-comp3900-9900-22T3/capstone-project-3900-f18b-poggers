@@ -17,8 +17,15 @@ const ProfileRecipe = (props: Props) => {
 
   useEffect(() => {
     const getDescription = async () => {
-      const desc = JSON.parse(props.post.content);
-      desc[2] === undefined ? setDescription(props.post.content) : setDescription(desc[2]);
+      try {
+        // if description array doesn't exist, display ingredients
+        const desc = JSON.parse(props.post.content);
+        desc[2] === undefined ? setDescription(desc[0]) : setDescription(desc[2]);
+      } catch (e) {
+        // if its not parsable at all, display as it is
+        setDescription(props.post.content);
+      }
+      
     }
     const getImageUrl = async () => {
       const fileAccessURL = await Storage.get(props.post.fileImage, { expires: 30, level: "public" });
