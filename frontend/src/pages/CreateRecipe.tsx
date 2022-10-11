@@ -31,6 +31,7 @@ const createRecipe = /* GraphQL */ `
 `;
 
 const CreateRecipe = (props: Props) => {
+
   const navigate = useNavigate();
   const [recipeName, setRecipeName] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
@@ -45,7 +46,38 @@ const CreateRecipe = (props: Props) => {
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
 
+  const [userEmail, setUserEmail] = React.useState("");
+  const [username, setUsername] = React.useState("");
+  const [id, setId] = React.useState("");
 
+  React.useEffect(() => {
+    const setUserData = async () => {
+      console.log("setUserData in Feed.tsx called");
+      try {
+        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
+        const user = await Auth.currentAuthenticatedUser({
+          bypassCache: false
+        })
+        console.log(user)
+        setUsername(user.username);
+        setUserEmail(user.attributes.email);
+        setId(user.attributes.sub);
+        setContributorName(user.username);
+      } catch (e) {
+        if (typeof e === "string") {
+          console.log(e);
+        } else if (e instanceof Error) {
+          console.log(e.message);
+        } else {
+          console.log(e);
+        }
+
+        // go to login page if not authenticated
+        navigate('/login');
+      }
+    }
+    setUserData()
+  }, [navigate])
 
   const listIngredient = ingredients.map((ingredient, key) =>
     <li key={key}>
