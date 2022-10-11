@@ -110,10 +110,13 @@ const Profile = (props: Props) => {
           // tag: ['kfc', 'is', 'better'],
           // like: 21,
         }))
+
+        newList.sort((a,b) => {
+          return Date.parse(b.updatedAt) - Date.parse(a.updatedAt);
+        })
+
         console.log(newList);
         setRecipeList([...newList]);
-        console.log(recipeList);
-
       } catch (error) {
         console.log("Error on fetching recipe", error);
       }
