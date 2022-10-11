@@ -21,7 +21,7 @@ const ProfileRecipe = (props: Props) => {
       console.log(props.post.content);
       const desc = JSON.parse(props.post.content);
       console.log(desc[2]);
-      if (desc[2] === undefined || Array.isArray(desc)) {
+      if (desc[2] === undefined) {
         setDescription(props.post.content);
       } else {
         setDescription(desc[2]);
