@@ -12,14 +12,27 @@ type Props = {
 const ProfileRecipe = (props: Props) => {
 
   const [imageURL, setImageURL] = useState("");
+  const [description, setDescription] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
+    const getDescription = async () => {
+
+      console.log(props.post.content);
+      const desc = JSON.parse(props.post.content);
+      console.log(desc[2]);
+      if (desc[2] === undefined || Array.isArray(desc)) {
+        setDescription(props.post.content);
+      } else {
+        setDescription(desc[2]);
+      }
+    }
     const getImageUrl = async () => {
       const fileAccessURL = await Storage.get(props.post.fileImage, { expires: 30, level: "public" });
       setImageURL(fileAccessURL);
     };
     getImageUrl();
+    getDescription();
   }, [props.post.fileImage])
 
   // const tagStyles = {
@@ -78,7 +91,7 @@ const ProfileRecipe = (props: Props) => {
             variant="body2"
             pl={0.5}
             mb={1}>
-            {props.post.content}
+            {description}
           </Typography>
         </Grid>
 
