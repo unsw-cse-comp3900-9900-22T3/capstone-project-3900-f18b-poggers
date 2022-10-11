@@ -6,6 +6,10 @@ import reportWebVitals from './reportWebVitals';
 import { Amplify } from 'aws-amplify';
 import awsconfig from './aws-exports';
 Amplify.configure(awsconfig);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6b647085d813843d437f69100059a91e717ca86b
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
