@@ -82,7 +82,6 @@ const UpdateRecipe = (props: Props) => {
             tempIngredients.push(JSON.stringify(x));
           }
           setIngredientsData([...ingredientsData, ...tempIngredients]);
-          // setIngredientsData(JSON.parse(recipeById.content)[0]);
         }
         if (recipeById.content[1] != null) {
           setInstructions(JSON.parse(recipeById.content)[1]);
@@ -100,9 +99,6 @@ const UpdateRecipe = (props: Props) => {
           recipeById.name = "hi";
         }
         setRecipe(recipeById);
-        // console.log(recipeById);
-        // console.log(recipeById);
-
       } catch (error) {
         console.log("error on fetching recipe", error);
       }
@@ -163,7 +159,6 @@ const UpdateRecipe = (props: Props) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     console.log(formData.get("instruction"))
-    // formData.set("")
     setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
     setInstructionText("");
@@ -209,11 +204,7 @@ const UpdateRecipe = (props: Props) => {
     >
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
-        <Box
-          // component="form"
-          // onSubmit={handleSubmit}
-        >
-
+        <Box>
           <Box
             sx={{
               display: 'flex',
@@ -229,7 +220,6 @@ const UpdateRecipe = (props: Props) => {
               fullWidth
               id="recipeName"
               name="recipeName"
-              // label="Enter Recipe Name Here"
               variant="standard"
               onChange={(e) => {
                 setRecipeName(e.target.value);
@@ -278,15 +268,7 @@ const UpdateRecipe = (props: Props) => {
             >
 
               <Box>
-                <IconButton color="primary" aria-label="upload picture" component="label"
-                              // style={{
-                              //   height: 0,
-                              //   paddingLeft: 0,
-                              //   paddingRight: 0,
-                              //   paddingTop: '56.25%', // 16:9,
-                              //   marginTop:'30'
-                              // }}
-                >
+                <IconButton color="primary" aria-label="upload picture" component="label">
                   <input hidden accept="image/*" type="file" onChange={(e) => {
                   e.preventDefault();
                   console.log(e.target.value);

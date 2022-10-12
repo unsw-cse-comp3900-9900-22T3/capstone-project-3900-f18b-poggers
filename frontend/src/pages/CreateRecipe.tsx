@@ -158,11 +158,7 @@ const CreateRecipe = (props: Props) => {
     >
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
-        <Box
-          // component="form"
-          // onSubmit={handleSubmit}
-        >
-
+        <Box>
           <Box
             sx={{
               display: 'flex',
@@ -170,9 +166,6 @@ const CreateRecipe = (props: Props) => {
               alignItems: 'flex-start',
             }}
             >
-            <Typography variant="h5">
-              Recipe Name
-            </Typography>
             <TextField
               fullWidth
               id="recipeName"
@@ -203,9 +196,9 @@ const CreateRecipe = (props: Props) => {
               alignItems: "flex-start"
             }}
             >
-                <Typography variant="h5">
+                {/* <Typography variant="h5">
                   Description
-                </Typography>
+                </Typography> */}
                 <TextField
               fullWidth
               id="description"
@@ -225,15 +218,7 @@ const CreateRecipe = (props: Props) => {
             >
 
               <Box>
-                <IconButton color="primary" aria-label="upload picture" component="label"
-                              // style={{
-                              //   height: 0,
-                              //   paddingLeft: 0,
-                              //   paddingRight: 0,
-                              //   paddingTop: '56.25%', // 16:9,
-                              //   marginTop:'30'
-                              // }}
-                >
+                <IconButton color="primary" aria-label="upload picture" component="label">
                   <input hidden accept="image/*" type="file" onChange={(e) => {
                   e.preventDefault();
                   console.log(e.target.value);
