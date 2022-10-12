@@ -66,8 +66,8 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:profileUsername" element={<Profile />} />
             <Route path="/createrecipe" element={<CreateRecipe />} />
-            <Route path="/updaterecipe/:listingId" element={<UpdateRecipe />} />
-            <Route path="/recipe/:listingId" element={<Recipe />} />
+            <Route path="/updaterecipe/:recipeId" element={<UpdateRecipe />} />
+            <Route path="/recipe/:recipeId" element={<Recipe />} />
             <Route path="*" element={<Login />} />
           </Routes>
         </ThemeProvider>

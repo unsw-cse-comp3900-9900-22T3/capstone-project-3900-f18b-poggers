@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react'
-import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Button, Checkbox, Container, createTheme, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
+import React from 'react'
+import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material'
 import Carousel from 'react-material-ui-carousel'
 import testimg from '../static/images/authbackground.jpeg'
 import SendIcon from '@mui/icons-material/Send';
-import { graphqlOperation } from "aws-amplify";
-import { useNavigate } from 'react-router-dom';
-import Amplify, { API, Auth, Storage } from "aws-amplify";
-import { ConnectingAirportsOutlined } from '@mui/icons-material';
+import { useNavigate, useParams } from 'react-router-dom';
+import { API, Auth, Storage } from "aws-amplify";
 import EditIcon from '@mui/icons-material/Edit';
 import Image from 'mui-image';
 type Props = {}
@@ -16,35 +14,14 @@ type Comment = {
   comment: string,
 }
 
-const Recipe = (props: Props) => {
-
-  const [recipes, setRecipes] = React.useState([]);
-  const navigate = useNavigate();
-
-  const listRecipes = /* GraphQL */ `
-  query ListRecipes(
-    $filter: ModelRecipeFilterInput
-    $limit: Int
-    $nextToken: String
-    ) {
-    listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        name
-        content
-        contributor
-        fileImage
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-  }
-  `;
-  const getRecipe = /* GraphQL */ `
-  query GetRecipe($id: ID!) {
-    getRecipe(id: $id) {
+const listRecipes = /* GraphQL */ `
+query ListRecipes(
+  $filter: ModelRecipeFilterInput
+  $limit: Int
+  $nextToken: String
+  ) {
+  listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
       id
       name
       content
@@ -54,8 +31,44 @@ const Recipe = (props: Props) => {
       updatedAt
       owner
     }
+    nextToken
   }
-  `;
+}
+`;
+
+const getRecipe = /* GraphQL */ `
+query GetRecipe($id: ID!) {
+  getRecipe(id: $id) {
+    id
+    name
+    content
+    contributor
+    fileImage
+    createdAt
+    updatedAt
+    owner
+  }
+}
+`;
+
+const sampleComments = [
+  { author: "Gordon Ramsay", comment: "This lamb is so undercooked, it’s following Mary to school!" },
+  { author: "Gordon Ramsay", comment: "My gran could do better! And she’s dead!" },
+  { author: "Gordon Ramsay", comment: "This pizza is so disgusting, if you take it to Italy you’ll get arrested." }
+]
+
+const Recipe = (props: Props) => {
+  const navigate = useNavigate();
+  const { recipeId } = useParams();
+  const [username, setUsername] = React.useState("");
+  const [description, setDescription] = React.useState<string>("");
+  const [recipeImage, setRecipeImage] = React.useState<string>("");
+  const [recipeName, setRecipeName] = React.useState<string>("");
+  const [contributorName, setContributorName] = React.useState<string>("");
+  const [ingredients, setIngredients] = React.useState([""]);
+  const [instructions, setInstructions] = React.useState([""]);
+  const [similarRecipes, setSimilarRecipes] = React.useState([1, 2, 3, 4, 5, 6, 7])
+  const [comments, setComments] = React.useState(sampleComments);
 
   React.useEffect(() => {
     const fetchRecipes = async () => {
@@ -69,7 +82,6 @@ const Recipe = (props: Props) => {
         });
         const recipeById = apiData2.data.getRecipe;
 
-        setRecipes(recipeById);
         setRecipeName(recipeById.name);
         setDescription(JSON.parse(recipeById.content)[2])
         setContributorName(recipeById.contributor);
@@ -86,8 +98,8 @@ const Recipe = (props: Props) => {
         console.log("error on fetching recipe", error);
       }
     };
+
     const setUserData = async () => {
-      console.log("setUserData in Feed.tsx called");
       try {
         // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
         const user = await Auth.currentAuthenticatedUser({
@@ -95,8 +107,6 @@ const Recipe = (props: Props) => {
         })
         console.log(user)
         setUsername(user.username);
-        setUserEmail(user.attributes.email);
-        setId(user.attributes.sub);
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -112,46 +122,8 @@ const Recipe = (props: Props) => {
     }
     setUserData()
     fetchRecipes();
-  }, [navigate]);
+  }, [navigate, recipeId]);
 
-  const pathname = window.location.pathname;
-  const recipeId = pathname.slice(8);
-
-
-  const [userEmail, setUserEmail] = React.useState("");
-  const [username, setUsername] = React.useState("");
-  const [id, setId] = React.useState("");
-  const [description, setDescription] = React.useState<string>("");
-  const [recipeImage, setRecipeImage] = React.useState<string>("");
-  const [recipeName, setRecipeName] = React.useState<string>("");
-  const [contributorName, setContributorName] = React.useState<string>("");
-  const [ingredients, setIngredients] = React.useState([""]);
-  const [instructions, setInstructions] = React.useState([""]);
-  const [similarRecipes, setSimilarRecipes] = React.useState([1, 2, 3, 4, 5, 6, 7])
-  const [comments, setComments] = React.useState([{ author: "Gordon Ramsay", comment: "This lamb is so undercooked, it’s following Mary to school!" }, { author: "Gordon Ramsay", comment: "My gran could do better! And she’s dead!" }, { author: "Gordon Ramsay", comment: "This pizza is so disgusting, if you take it to Italy you’ll get arrested." }])
-  const listIngredient = ingredients.map((ingredient, key) =>
-    <li key={key}>
-      <ListItemText primary={ingredient} />
-    </li>
-  );
-  const listInstructions = instructions.map((instruction, key) =>
-    <ListItem key={key}>
-      <Grid
-        container
-        spacing={0}
-        direction="row"
-      >
-        <Grid item sm={0} sx={{ paddingTop: 0.75 }}>
-          <Typography variant="h5">
-            {key + 1}
-          </Typography>
-        </Grid>
-        <Grid item sm={10} sx={{ borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1 }}>
-          {instruction}
-        </Grid>
-      </Grid>
-    </ListItem>
-  );
 
   const similarRecipesCarousel = similarRecipes.map((recipe, key) =>
     <Grid key={key} item sm={3}>
@@ -173,25 +145,7 @@ const Recipe = (props: Props) => {
     </Grid>
   );
 
-  const listComments = comments.map((comment, key) =>
-    <div key={key}>
-      <ListItem alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar alt={comment.author} src="/static/images/avatar/1.jpg" />
-        </ListItemAvatar>
-        <ListItemText
-          primary={comment.author}
-          secondary={
-            <Typography variant="body2">
-              {comment.comment}
-            </Typography>
-          }
-        />
-      </ListItem>
-      <Divider variant="inset" />
-    </div>
-  );
-
+  // REMOVE THIS
   let items = []
   let carouselTab: any[] = []
   for (let i = 0; i < similarRecipesCarousel.length; i++) {
@@ -203,11 +157,7 @@ const Recipe = (props: Props) => {
   }
   items.push(carouselTab);
 
-  const bgStyles = {
-    backgroundColor: "#d3d3d3",
-  }
-
-  const handleComment = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitComment = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     console.log(formData.get("comment"))
@@ -218,24 +168,15 @@ const Recipe = (props: Props) => {
     setComments([data, ...comments]);
   };
 
-
-  function editButton() {
-    if (contributorName === username) {
-      console.log("DANK NUGGIES")
-      return
-      (<IconButton>
-        <EditIcon />
-      </IconButton>)
-    }
-  }
-
   return (
     <Grid
       container
       spacing={0}
       direction="column"
       alignItems="center"
-      style={bgStyles}
+      style={{
+        backgroundColor: "#d3d3d3",
+      }}
       sx={{ paddingLeft: 0 }}
     >
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
@@ -267,7 +208,6 @@ const Recipe = (props: Props) => {
                 <IconButton onClick={() => { (navigate(`/updaterecipe/${recipeId}`)) }}>
                   <EditIcon />
                 </IconButton>}
-              {editButton()}
             </>
           </Typography>
 
@@ -306,7 +246,11 @@ const Recipe = (props: Props) => {
                 Ingredients
               </Typography>
               <ul>
-                {listIngredient}
+                {ingredients.map((ingredient, key) =>
+                  <li key={key}>
+                    <ListItemText primary={ingredient} />
+                  </li>
+                )}
               </ul>
             </Grid>
             <Grid item sm={9}>
@@ -314,7 +258,25 @@ const Recipe = (props: Props) => {
                 Cooking Instructions
               </Typography>
               <List>
-                {listInstructions}</List>
+                {instructions.map((instruction, key) =>
+                  <ListItem key={key}>
+                    <Grid
+                      container
+                      spacing={0}
+                      direction="row"
+                    >
+                      <Grid item sm={0} sx={{ paddingTop: 0.75 }}>
+                        <Typography variant="h5">
+                          {key + 1}
+                        </Typography>
+                      </Grid>
+                      <Grid item sm={10} sx={{ borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1 }}>
+                        {instruction}
+                      </Grid>
+                    </Grid>
+                  </ListItem>
+                )}
+              </List>
             </Grid>
           </Grid>
         </Box>
@@ -342,7 +304,7 @@ const Recipe = (props: Props) => {
         </Box>
         <Box
           component="form"
-          onSubmit={handleComment}
+          onSubmit={handleSubmitComment}
           sx={{
             padding: 2,
             alignItems: 'center',
@@ -387,7 +349,24 @@ const Recipe = (props: Props) => {
           >
           </Box>
           <List sx={{ width: '100%', maxWidth: '100%', bgcolor: 'background.paper' }}>
-            {listComments}
+            {comments.map((comment, key) =>
+              <div key={key}>
+                <ListItem alignItems="flex-start">
+                  <ListItemAvatar>
+                    <Avatar alt={comment.author} src="/static/images/avatar/1.jpg" />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={comment.author}
+                    secondary={
+                      <Typography variant="body2">
+                        {comment.comment}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+                <Divider variant="inset" />
+              </div>
+            )}
           </List>
         </Box>
       </Container>
