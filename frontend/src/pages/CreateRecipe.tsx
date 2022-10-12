@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react'
-import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Button, Checkbox, Container, createTheme, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
-import Carousel from 'react-material-ui-carousel'
-import testimg from '../static/images/authbackground.jpeg'
+import React from 'react'
+import { IconButton, ListItemText, List, ListItem, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import Amplify, { API, Auth, Storage } from "aws-amplify";
+import { API, Auth, Storage } from "aws-amplify";
 import { graphqlOperation } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -60,9 +58,6 @@ const CreateRecipe = (props: Props) => {
           bypassCache: false
         })
         console.log(user)
-        setUsername(user.username);
-        setUserEmail(user.attributes.email);
-        setId(user.attributes.sub);
         setContributorName(user.username);
       } catch (e) {
         if (typeof e === "string") {

@@ -6,7 +6,6 @@ import SendIcon from '@mui/icons-material/Send';
 import { graphqlOperation } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
 import Amplify, { API, Auth, Storage } from "aws-amplify";
-import { ConnectingAirportsOutlined } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import Image from 'mui-image';
 type Props = {}
@@ -218,17 +217,6 @@ const Recipe = (props: Props) => {
     setComments([data, ...comments]);
   };
 
-
-  function editButton() {
-    if (contributorName === username) {
-      console.log("DANK NUGGIES")
-      return
-      (<IconButton>
-        <EditIcon />
-      </IconButton>)
-    }
-  }
-
   return (
     <Grid
       container
@@ -262,12 +250,11 @@ const Recipe = (props: Props) => {
             onClick={() => { navigate(`/profile/${contributorName}`) }}
             sx={{ cursor: "pointer" }}>
             <>
-              posted by {contributorName}
-              {(contributorName === username) &&
-                <IconButton onClick={() => { (navigate(`/updaterecipe/${recipeId}`)) }}>
-                  <EditIcon />
-                </IconButton>}
-              {editButton()}
+            posted by {contributorName}
+            {(contributorName === username) &&
+            <IconButton onClick={() => {(navigate(`/updaterecipe/${recipeId}`))}}>
+              <EditIcon/>
+            </IconButton>}
             </>
           </Typography>
 
