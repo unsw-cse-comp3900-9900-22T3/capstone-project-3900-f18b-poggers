@@ -17,10 +17,6 @@ type Comment = {
 
 const Recipe = (props: Props) => {
 
-  // React.useEffect(() => {
-  //   fetchRecipe();
-  // }, []);
-
   const [recipes, setRecipes] = React.useState([]);
   const navigate = useNavigate();
 
@@ -116,9 +112,6 @@ const Recipe = (props: Props) => {
     setUserData()
     fetchRecipes();
   }, [navigate]);
-
-// const jsonobj = JSON.parse(testingj);
-// console.log(jsonobj);
 
   const pathname = window.location.pathname;
   const recipeId = pathname.slice(8);
@@ -264,7 +257,9 @@ const Recipe = (props: Props) => {
             alignItems: "flex-end"
           }}
           >
-          <Typography variant="caption">
+          <Typography variant="caption"
+            onClick={() => { navigate(`/profile/${contributorName}`) }}
+            sx={{cursor:"pointer"}}>
             <>
             posted by {contributorName}
             {(contributorName === username) &&
@@ -297,12 +292,11 @@ const Recipe = (props: Props) => {
             <CardMedia
             component={"div"}
             image={recipeImage}
-            // src={recipeImage}
               style={{
                 height: 0,
                 paddingLeft: 0,
                 paddingRight: 0,
-                paddingTop: '56.25%', // 16:9,
+                paddingTop: '56.25%',
                 marginTop:'30'
               }}
             />
@@ -337,7 +331,6 @@ const Recipe = (props: Props) => {
           <Carousel
             autoPlay={false}
             animation={"slide"}
-            // navButtonsAlwaysVisible={true}
           >
               {
                   items.map( (item, key) =>
@@ -391,14 +384,6 @@ const Recipe = (props: Props) => {
               alignItems: "flex-end"
             }}
           >
-          {/* <Button
-              type="submit"
-              size="medium"
-              variant="contained"
-              color="secondary"
-            >
-              Comment
-            </Button> */}
           </Box>
           <List sx={{ width: '100%', maxWidth: '100%', bgcolor: 'background.paper' }}>
             {listComments}
@@ -408,10 +393,5 @@ const Recipe = (props: Props) => {
     </Grid>
   )
 }
-
-// content: {
-//   ingredients: [],
-//   cookingInstructions: []
-// }
 
 export default Recipe
