@@ -1,4 +1,4 @@
-import { Typography, Grid, Box } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Storage } from "aws-amplify";
 import { useNavigate } from "react-router-dom";
@@ -25,15 +25,17 @@ const ProfileRecipe = (props: Props) => {
         // if its not parsable at all, display as it is
         setDescription(props.post.content);
       }
-      
     }
+
     const getImageUrl = async () => {
       const fileAccessURL = await Storage.get(props.post.fileImage, { expires: 30, level: "public" });
       setImageURL(fileAccessURL);
     };
+
     getImageUrl();
     getDescription();
-  }, [props.post.fileImage])
+
+  }, [props.post.fileImage, props.post.content])
 
   // const tagStyles = {
   //   backgroundColor: '#28343c',
@@ -67,7 +69,7 @@ const ProfileRecipe = (props: Props) => {
             borderRadius: '15px',
             cursor: 'pointer'
           }}
-          duration={1000}
+          duration={0}
           alt="Recipe Thumbnail"
           src={imageURL}
         />

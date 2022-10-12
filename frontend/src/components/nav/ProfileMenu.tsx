@@ -1,7 +1,7 @@
 import { Divider, Menu, MenuItem } from '@mui/material'
 import { Auth } from 'aws-amplify'
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 type Props = {
   handleMenuClose: () => void,
@@ -48,9 +48,10 @@ const ProfileMenu = (props: Props) => {
     >
       <MenuItem onClick={() => { closeMenuNavigate('/profile') }}>Signed in as {props.username}</MenuItem>
       <Divider />
+      <MenuItem onClick={() => { closeMenuNavigate('/createrecipe') }}>Upload a Recipe</MenuItem>
+      <Divider />
       <MenuItem onClick={() => { closeMenuNavigate('/profile') }}>Your Profile</MenuItem>
       <MenuItem onClick={() => { closeMenuNavigate('/feed') }}>Your Feed</MenuItem>
-      <MenuItem onClick={() => { closeMenuNavigate('/profile') }}>Your Recipes</MenuItem>
       <MenuItem onClick={() => { closeMenuNavigate('/profile') }}>Your Liked Recipes</MenuItem>
       <Divider />
       <MenuItem onClick={() => { closeMenuNavigate('/profile') }}>Account Settings</MenuItem>

@@ -8,7 +8,6 @@ import {
 import Nav from './components/nav/Nav';
 import Feed from './pages/Feed';
 import Login from './pages/Login';
-import Main from './pages/Main';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Recipe from './pages/Recipe';
@@ -61,15 +60,15 @@ const App = () => {
         <ThemeProvider theme={theme}>
           <Nav />
           <Routes>
-            <Route path="/" element={<Main />} />
             <Route path="/login" element={<Login />} />
             <Route path="/feed" element={<Feed />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:profileUsername" element={<Profile />} />
             <Route path="/createrecipe" element={<CreateRecipe />} />
             <Route path="/updaterecipe/:listingId" element={<UpdateRecipe />} />
-            <Route path="/recipe" element={<Recipe />} /> {/* remove this */}
             <Route path="/recipe/:listingId" element={<Recipe />} />
+            <Route path="*" element={<Login />} />
           </Routes>
         </ThemeProvider>
       </Router>
