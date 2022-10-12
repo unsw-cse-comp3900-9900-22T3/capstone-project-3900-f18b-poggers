@@ -46,16 +46,16 @@ const ProfileMenu = (props: Props) => {
       open={isMenuOpen}
       onClose={props.handleMenuClose}
     >
-      <MenuItem onClick={() => { closeMenuNavigate('/profile') }}>Signed in as {props.username}</MenuItem>
+      <MenuItem onClick={() => { closeMenuNavigate('/profile/' + props.username) }}>Signed in as {props.username}</MenuItem>
       <Divider />
       <MenuItem onClick={() => { closeMenuNavigate('/createrecipe') }}>Upload a Recipe</MenuItem>
       <Divider />
-      <MenuItem onClick={() => { closeMenuNavigate('/profile') }}>Your Profile</MenuItem>
+      <MenuItem onClick={() => { closeMenuNavigate('/profile/' + props.username) }}>Your Profile</MenuItem>
       <MenuItem onClick={() => { closeMenuNavigate('/feed') }}>Your Feed</MenuItem>
-      <MenuItem onClick={() => { closeMenuNavigate('/profile') }}>Your Liked Recipes</MenuItem>
+      <MenuItem onClick={() => { closeMenuNavigate('/profile/' + props.username) }}>Your Liked Recipes</MenuItem>
       <Divider />
-      <MenuItem onClick={() => { closeMenuNavigate('/profile') }}>Account Settings</MenuItem>
-      <MenuItem onClick={() => { closeMenuNavigate('/profile') }}>Preferences</MenuItem>
+      <MenuItem onClick={() => { closeMenuNavigate('/profile/' + props.username) }}>Account Settings</MenuItem>
+      <MenuItem onClick={() => { closeMenuNavigate('/profile/' + props.username) }}>Preferences</MenuItem>
       <Divider />
       <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
     </Menu >

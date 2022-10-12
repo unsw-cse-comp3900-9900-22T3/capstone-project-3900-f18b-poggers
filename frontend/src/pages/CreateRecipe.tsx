@@ -34,31 +34,26 @@ const CreateRecipe = (props: Props) => {
   const navigate = useNavigate();
   const [recipeName, setRecipeName] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
-  const [contributorName, setContributorName] = React.useState<string>("Matthew");
+  const [username, setUsername] = React.useState<string>("");
   const [ingredients, setIngredients] = React.useState<string[]>([]);
   const [instructions, setInstructions] = React.useState<string[]>([]);
   const [selectedImage, setSelectedImage] = React.useState<File>();
   const [preview, setPreview] = React.useState<string>("");
   const [ingredientText, setIngredientText] = React.useState<string>("");
   const [instructionText, setInstructionText] = React.useState<string>("");
-
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
   const [imgData, setImgData] = React.useState('');
-  const [userEmail, setUserEmail] = React.useState("");
-  const [username, setUsername] = React.useState("");
-  const [id, setId] = React.useState("");
 
   React.useEffect(() => {
     const setUserData = async () => {
-      console.log("setUserData in Feed.tsx called");
       try {
         // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
         const user = await Auth.currentAuthenticatedUser({
           bypassCache: false
         })
         console.log(user)
-        setContributorName(user.username);
+        setUsername(user.username);
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -80,6 +75,7 @@ const CreateRecipe = (props: Props) => {
       <ListItemText primary={ingredient} />
     </li>
   );
+
   const listInstructions = instructions.map((instruction, key) =>
     <ListItem key={key}>
       <Grid
@@ -181,7 +177,7 @@ const CreateRecipe = (props: Props) => {
             }}
           >
             <Typography variant="caption">
-              posted by {contributorName}
+              posted by {username}
             </Typography>
 
           </Box>
@@ -334,7 +330,7 @@ const CreateRecipe = (props: Props) => {
                   const newRecipe = {
                     name: recipeName,
                     content: [ingredientsData, instructionsData, description],
-                    contributor: contributorName,
+                    contributor: username,
                     fileImage: storageResult,
                   };
                   const data: any = await API.graphql(graphqlOperation(createRecipe, { input: newRecipe }));
