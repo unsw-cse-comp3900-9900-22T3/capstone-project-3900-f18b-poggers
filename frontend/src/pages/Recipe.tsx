@@ -122,10 +122,10 @@ const Recipe = (props: Props) => {
   const [id, setId] = React.useState("");
   const [description, setDescription] = React.useState<string>("");
   const [recipeImage, setRecipeImage] = React.useState<string>("");
-  const [recipeName, setRecipeName] = React.useState<string>("Beef Wellington");
-  const [contributorName, setContributorName] = React.useState<string>("Matthew");
-  const [ingredients, setIngredients] = React.useState(["2 x 400g beef fillets", "Olive oil, for frying", "500g mixture of wild mushrooms, cleaned", "1 thyme sprig, leaves only", "500g puff pastry", "8 slices of Parma ham", "2 egg yolks, beaten with 1 tbsp water and a pinch of salt", "Sea salt and freshly ground black peppe"]);
-  const [instructions, setInstructions] = React.useState(["Wrap each piece of beef tightly in a triple layer of cling film to set its shape, then chill overnight.", "Remove the cling film, then quickly sear the beef fillets in a hot pan with a little olive oil for 30-60 seconds until browned all over and rare in the middle. Remove from the pan and leave to cool.", "Finely chop the mushrooms and fry in a hot pan with a little olive oil, the thyme leaves and some seasoning. When the mushrooms begin to release their juices, continue to cook over a high heat for about 10 minutes until all the excess moisture has evaporated and you are left with a mushroom paste (known as a duxelle). Remove the duxelle from the pan and leave to cool.", "Cut the pastry in half, place on a lightly floured surface and roll each piece into a rectangle large enough to envelop one of the beef fillets. Chill in the refrigerator.", "Lay a large sheet of cling film on a work surface and place 4 slices of Parma ham in the middle, overlapping them slightly, to create a square. Spread half the duxelle evenly over the ham."]);
+  const [recipeName, setRecipeName] = React.useState<string>("");
+  const [contributorName, setContributorName] = React.useState<string>("");
+  const [ingredients, setIngredients] = React.useState([""]);
+  const [instructions, setInstructions] = React.useState([""]);
   const [similarRecipes, setSimilarRecipes] = React.useState([1,2,3,4,5,6,7])
   const [comments, setComments] = React.useState([{author: "Gordon Ramsay", comment: "This lamb is so undercooked, it’s following Mary to school!"}, {author: "Gordon Ramsay", comment: "My gran could do better! And she’s dead!"}, {author: "Gordon Ramsay", comment: "This pizza is so disgusting, if you take it to Italy you’ll get arrested."}])
   const listIngredient = ingredients.map((ingredient, key) =>
