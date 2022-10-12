@@ -39,12 +39,13 @@ const Feed = (props: Props) => {
   }, [navigate])
 
   return (
-    <>
+    <div style={{ backgroundColor: 'white' }}>
+      <div>This should be the feed (/feed)</div>
       <div>You are logged in as: </div>
       <div>Email: {userEmail}</div>
       <div>Username: {username}</div>
       <div>Id: {id}</div>
-    </>
+    </div>
   )
 }
 
