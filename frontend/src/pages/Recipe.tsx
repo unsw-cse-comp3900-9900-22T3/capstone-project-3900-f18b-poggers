@@ -199,17 +199,16 @@ const Recipe = (props: Props) => {
             alignItems: "flex-end"
           }}
         >
+
           <Typography variant="caption"
             onClick={() => { navigate(`/profile/${contributorName}`) }}
             sx={{ cursor: "pointer" }}>
-            <>
               posted by {contributorName}
+          </Typography>
               {(contributorName === username) &&
-                <IconButton onClick={() => { (navigate(`/updaterecipe/${recipeId}`)) }}>
+                <IconButton onClick={() => { (navigate(`/updaterecipe/${recipeId}`)) }} color={"secondary"}>
                   <EditIcon />
                 </IconButton>}
-            </>
-          </Typography>
 
         </Box>
         <Box
