@@ -8,6 +8,7 @@ import Amplify, { API, Auth, Storage } from "aws-amplify";
 import { graphqlOperation } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
 import RemoveIcon from '@mui/icons-material/Remove';
+import Image from 'mui-image';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
@@ -45,7 +46,7 @@ const CreateRecipe = (props: Props) => {
 
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
-
+  const [imgData, setImgData] = React.useState('');
   const [userEmail, setUserEmail] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [id, setId] = React.useState("");
@@ -91,12 +92,12 @@ const CreateRecipe = (props: Props) => {
         spacing={0}
         direction="row"
       >
-        <Grid item sm={0} sx={{paddingTop: 0.75}}>
+        <Grid item sm={0} sx={{ paddingTop: 0.75 }}>
           <Typography variant="h5">
             {key + 1}
           </Typography>
         </Grid>
-        <Grid item sm={10} sx={{borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1}}>
+        <Grid item sm={10} sx={{ borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1 }}>
           {instruction}
         </Grid>
       </Grid>
@@ -154,7 +155,7 @@ const CreateRecipe = (props: Props) => {
       direction="column"
       alignItems="center"
       style={bgStyles}
-      sx={{paddingLeft: 0}}
+      sx={{ paddingLeft: 0 }}
     >
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
@@ -165,7 +166,7 @@ const CreateRecipe = (props: Props) => {
               flexDirection: 'column',
               alignItems: 'flex-start',
             }}
-            >
+          >
             <TextField
               fullWidth
               id="recipeName"
@@ -183,7 +184,7 @@ const CreateRecipe = (props: Props) => {
               flexDirection: 'column',
               alignItems: "flex-end"
             }}
-            >
+          >
             <Typography variant="caption">
               posted by {contributorName}
             </Typography>
@@ -195,11 +196,11 @@ const CreateRecipe = (props: Props) => {
               flexDirection: 'column',
               alignItems: "flex-start"
             }}
-            >
-                {/* <Typography variant="h5">
+          >
+            {/* <Typography variant="h5">
                   Description
                 </Typography> */}
-                <TextField
+            <TextField
               fullWidth
               id="description"
               name="description"
@@ -215,25 +216,35 @@ const CreateRecipe = (props: Props) => {
               display: 'flex',
               flexDirection: 'column',
             }}
-            >
+          >
 
-              <Box>
-                <IconButton color="primary" aria-label="upload picture" component="label">
-                  <input hidden accept="image/*" type="file" onChange={(e) => {
+            <Box>
+              <IconButton color="primary" aria-label="upload picture" component="label">
+                <input hidden accept="image/*" type="file" onChange={(e) => {
                   e.preventDefault();
                   console.log(e.target.value);
                   if (e.target.files != null) {
                     setSelectedImage(e.target.files[0]);
                     setPreview(e.target.files[0].name);
                     console.log(e.target.files[0]);
+                    setImgData(URL.createObjectURL(e.target.files[0]));
                   }
-                }}/>
-                  <AddPhotoAlternateIcon fontSize='large' sx={{}}/>
-                </IconButton>
-                {preview}
-              </Box>
+                }} />
+                <AddPhotoAlternateIcon fontSize='large' sx={{}} />
+              </IconButton>
+              {imgData.length !== 0 && <Image
+                src={imgData}
+                duration={0}
+                style={{
+                  paddingLeft: 0,
+                  paddingRight: 0,
+                  marginTop: '30'
+                }}
+              />}
+              {preview}
+            </Box>
 
-            <Grid container spacing={5} sx={{padding: 3}}>
+            <Grid container spacing={5} sx={{ padding: 3 }}>
               <Grid item sm={3}>
                 <Typography variant="h5">
                   Ingredients
@@ -249,20 +260,21 @@ const CreateRecipe = (props: Props) => {
                     value={ingredientText}
                     fullWidth
                     variant='standard'
-                    onChange={(e) => {setIngredientText(e.target.value)}}
-                    InputProps={{ endAdornment:
-                    <>
-                      <IconButton
-                      color='secondary'
-                      onClick={(e) => {handleRemoveIngredient()}}>
-                        <RemoveIcon />
-                      </IconButton>
-                    <IconButton
-                    color='secondary'
-                    type="submit">
-                      <AddIcon />
-                    </IconButton>
-                    </>
+                    onChange={(e) => { setIngredientText(e.target.value) }}
+                    InputProps={{
+                      endAdornment:
+                        <>
+                          <IconButton
+                            color='secondary'
+                            onClick={(e) => { handleRemoveIngredient() }}>
+                            <RemoveIcon />
+                          </IconButton>
+                          <IconButton
+                            color='secondary'
+                            type="submit">
+                            <AddIcon />
+                          </IconButton>
+                        </>
                     }}
                     name="ingredient"
                     id="ingredient"
@@ -276,66 +288,67 @@ const CreateRecipe = (props: Props) => {
                 </Typography>
                 <List>
                   {listInstructions}</List>
-                  <Box
-                    component="form"
-                    onSubmit={handleInstruction}
-                  >
-                    <TextField
-                      value={instructionText}
-                      fullWidth
-                      variant='standard'
-                      onChange={(e) => {setInstructionText(e.target.value)}}
-                      InputProps={{ endAdornment:
+                <Box
+                  component="form"
+                  onSubmit={handleInstruction}
+                >
+                  <TextField
+                    value={instructionText}
+                    fullWidth
+                    variant='standard'
+                    onChange={(e) => { setInstructionText(e.target.value) }}
+                    InputProps={{
+                      endAdornment:
                         <>
-                        <IconButton
-                        color='secondary'
-                        onClick={(e) => {handleRemoveInstruction()}}>
-                          <RemoveIcon />
-                        </IconButton>
-                        <IconButton
-                        color='secondary'
-                        type="submit">
-                          <AddIcon />
-                        </IconButton>
+                          <IconButton
+                            color='secondary'
+                            onClick={(e) => { handleRemoveInstruction() }}>
+                            <RemoveIcon />
+                          </IconButton>
+                          <IconButton
+                            color='secondary'
+                            type="submit">
+                            <AddIcon />
+                          </IconButton>
                         </>
-                      }}
-                      name="instruction"
-                      id="instruction"
-                      placeholder="Add another cooking instruction"
-                    />
-                  </Box>
+                    }}
+                    name="instruction"
+                    id="instruction"
+                    placeholder="Add another cooking instruction"
+                  />
+                </Box>
               </Grid>
             </Grid>
-                  <Box
-                    paddingTop={0}
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: "flex-end"
-                    }}
-                  >
-                    <Button variant="contained"
-                      onClick={async () => {
-                        const storageResult = await Storage.put(
-                          uuidv4(),
-                          selectedImage
-                        );
+            <Box
+              paddingTop={0}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: "flex-end"
+              }}
+            >
+              <Button variant="contained"
+                onClick={async () => {
+                  const storageResult = await Storage.put(
+                    uuidv4(),
+                    selectedImage
+                  );
 
-                        // Insert predictions code here later
-                        console.log(storageResult);
-                        const newRecipe = {
-                          name: recipeName,
-                          content: [ingredientsData, instructionsData, description],
-                          contributor: contributorName,
-                          fileImage: storageResult,
-                        };
-                        const data: any = await API.graphql(graphqlOperation(createRecipe,{input:newRecipe}));
-                        const id = data.data.createRecipe.id;
+                  // Insert predictions code here later
+                  console.log(storageResult);
+                  const newRecipe = {
+                    name: recipeName,
+                    content: [ingredientsData, instructionsData, description],
+                    contributor: contributorName,
+                    fileImage: storageResult,
+                  };
+                  const data: any = await API.graphql(graphqlOperation(createRecipe, { input: newRecipe }));
+                  const id = data.data.createRecipe.id;
 
-                        navigate(`/recipe/${id}`)
-                      }}
-                    >Done</Button>
-                  </Box>
+                  navigate(`/recipe/${id}`)
+                }}
+              >Done</Button>
+            </Box>
           </Box>
         </Box>
       </Container>
