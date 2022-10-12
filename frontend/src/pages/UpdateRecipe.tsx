@@ -1,21 +1,13 @@
-import React, { useEffect } from 'react'
-import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Button, Checkbox, Container, createTheme, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material'
-import Carousel from 'react-material-ui-carousel'
-import testimg from '../static/images/authbackground.jpeg'
+import React from 'react'
+import { IconButton, ListItemText, List, ListItem, CardMedia, Card, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import RemoveIcon from '@mui/icons-material/Remove';
-import Amplify, { API, Auth, Storage } from "aws-amplify";
+import { API, Storage } from "aws-amplify";
 import { graphqlOperation } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
-import { DescriptionTwoTone } from '@mui/icons-material';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
-
-type Comment = {
-  author: string,
-  comment: string,
-}
 
 type Recipe = {
   id: string,
@@ -62,6 +54,26 @@ query GetRecipe($id: ID!) {
 `;
 
 const UpdateRecipe = (props: Props) => {
+
+  const pathname = window.location.pathname;
+  const recipeId = pathname.slice(14);
+
+  const navigate = useNavigate();
+  const [recipe, setRecipe] = React.useState<Recipe>();
+  const [description, setDescription] = React.useState<string>("");
+  const [recipeName, setRecipeName] = React.useState<string>("");
+  const [contributorName, setContributorName] = React.useState<string>("Matthew");
+  const [ingredients, setIngredients] = React.useState<string[]>([]);
+  const [instructions, setInstructions] = React.useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = React.useState<File>();
+  const [preview, setPreview] = React.useState<string>("");
+  const [imgKey, setImgKey] = React.useState<boolean>(false);
+  const [ingredientText, setIngredientText] = React.useState<string>("");
+  const [instructionText, setInstructionText] = React.useState<string>("");
+
+  const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
+  const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
+
   React.useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -92,8 +104,6 @@ const UpdateRecipe = (props: Props) => {
           setInstructionsData([...instructionsData, ...tempInstructions]);
 
         }
-        const fileAccessURL = await Storage.get(recipeById.fileImage.slice(5,-1), { expires: 30 ,level: "public"});
-        setRecipeImage(fileAccessURL);
         setImgKey(recipeById.fileImage);
         if (recipeById != null) {
           recipeById.name = "hi";
@@ -104,30 +114,10 @@ const UpdateRecipe = (props: Props) => {
       }
     };
     fetchRecipes();
-  }, []);
-
-  const pathname = window.location.pathname;
-  const recipeId = pathname.slice(14);
-
-  const navigate = useNavigate();
-  const [recipe, setRecipe] = React.useState<Recipe>();
-  const [recipeImage, setRecipeImage] = React.useState<string>("");
-  const [description, setDescription] = React.useState<string>("");
-  const [recipeName, setRecipeName] = React.useState<string>("");
-  const [contributorName, setContributorName] = React.useState<string>("Matthew");
-  const [ingredients, setIngredients] = React.useState<string[]>([]);
-  const [instructions, setInstructions] = React.useState<string[]>([]);
-  const [selectedImage, setSelectedImage] = React.useState<File>();
-  const [preview, setPreview] = React.useState<string>("");
-  const [imgKey, setImgKey] = React.useState<boolean>(false);
-  const [ingredientText, setIngredientText] = React.useState<string>("");
-  const [instructionText, setInstructionText] = React.useState<string>("");
-
-  const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
-  const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
+  }, [ingredientsData, instructionsData, recipeId]);
 
   const listIngredient = ingredients.map((ingredient, key) =>
-    <li key={key}>
+  <li key={key}>
       <ListItemText primary={ingredient} />
     </li>
   );
@@ -276,13 +266,33 @@ const UpdateRecipe = (props: Props) => {
                     setSelectedImage(e.target.files[0]);
                     setPreview(e.target.files[0].name);
                     setImgKey(true);
-                    console.log(e.target.files[0]);
                   }
                 }}/>
                   <AddPhotoAlternateIcon fontSize='large' sx={{}}/>
                 </IconButton>
                 {preview}
               </Box>
+            <>
+              {console.log("hello")}
+              {(selectedImage !== undefined) &&
+                <Card
+                variant="outlined"
+                >
+                <CardMedia
+                component={"div"}
+                src={URL.createObjectURL(selectedImage)}
+                  style={{
+                    height: 0,
+                    paddingLeft: 0,
+                    paddingRight: 0,
+                    paddingTop: '56.25%',
+                    marginTop:'30'
+                  }}
+                />
+              </Card>
+              }
+              {console.log(selectedImage)}
+            </>
 
             <Grid container spacing={5} sx={{padding: 3}}>
               <Grid item sm={3}>
