@@ -60,6 +60,7 @@ export default function Nav() {
   const [username, setUsername] = React.useState<string>("");
   const [sidebarOpen, setSidebarOpen] = React.useState<boolean>(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
+  const [searchbarValue, setSearchbarValue] = React.useState("");
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
@@ -130,7 +131,7 @@ export default function Nav() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar style={{ boxShadow: 'none' }} position="static">
           <Toolbar>
-            <IconButton
+            {loggedIn && <IconButton
               size="large"
               edge="start"
               color="inherit"
@@ -139,7 +140,7 @@ export default function Nav() {
               onClick={toggleSidebar(true)}
             >
               <MenuIcon />
-            </IconButton>
+            </IconButton>}
             <Typography
               variant="h6"
               noWrap
@@ -148,15 +149,19 @@ export default function Nav() {
             >
               Instacook
             </Typography>
-            <Search>
+            {loggedIn && <Search>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-                placeholder="Find Recipes or Users"
+                placeholder="Find Users"
+                onKeyPress={(event) => {
+                  event.key === 'Enter' && navigate('/profile/' + searchbarValue)
+                }}
+                onChange={(e) => { setSearchbarValue(e.target.value) }}
                 inputProps={{ 'aria-label': 'search' }}
               />
-            </Search>
+            </Search>}
             <Box sx={{ flexGrow: 1 }} />
             {loggedIn ?
               <>

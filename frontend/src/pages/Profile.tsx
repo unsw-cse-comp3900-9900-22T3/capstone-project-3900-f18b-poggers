@@ -1,64 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Typography, Container, Grid, Box } from '@mui/material';
+import { Button, Typography, Container, Grid, Box, Avatar } from '@mui/material';
 import ProfileRecipe from '../components/profile/ProfileRecipe';
 import { API, Auth } from "aws-amplify";
 import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Recipe } from '../types/instacook-types';
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate, useParams } from 'react-router-dom';
 
 type Props = {}
-
-// Sample data for props
-
-// type RecipeObject = {
-//   id: string,
-//   name: string,
-//   content: string,
-//   fileImage: string,
-//   like: number,
-//   tag: string[],
-// }
-
-// const post1: RecipeObject = {
-//   id: "1239udfasd8f",
-//   name: "Sample Post",
-//   content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.",
-//   tag: ['vanilla'],
-//   fileImage: "https://cdn.discordapp.com/attachments/206003287093149696/1026867082610085898/unknown.png",
-//   like: 9999,
-// }
-
-const post2: Recipe = {
-  id: "2239udfasd8f",
-  name: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  content: "Short Descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  contributor: "z",
-  // tag: ['h20','water','glass','coke'],
-  fileImage: "https://media.discordapp.net/attachments/206003287093149696/1026867303154978906/unknown.png?width=1080&height=60",
-  // like: 6969,
-  createdAt: "asd",
-  updatedAt: "dsa",
-  owner: "a",
-}
-
-// const post3: RecipeObject = {
-//   id: "3239udfasd8f",
-//   name: "Happy Meal",
-//   content: "im lovin it",
-//   tag: ['kfc','is','better'],
-//   fileImage: "https://www.kiis1011.com.au/wp-content/uploads/sites/3/2020/10/mymaccas-happymeal.png?crop=84px,0px,899px,1080px&resize=680,816&quality=75",
-//   like: 420,
-// }
-
-// const post4: RecipeObject = {
-//   id: "4239udfasd8f",
-//   name: "Holidays",
-//   content: "cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains cool mountains",
-//   tag: ['instagram','instagram','instagram','instagram','instagram','instagram'],
-//   fileImage: "https://images.unsplash.com/photo-1615003162333-d3ff3ce1f0f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8dWx0cmElMjB3aWRlfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-//   like: 21,
-// }
 
 const listRecipes = /* GraphQL */ `
 query ListRecipes(
@@ -88,14 +36,16 @@ const Profile = (props: Props) => {
   const [buttonText, setButtonText] = useState("Subscribe");
   const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
   const [username, setUsername] = React.useState("");
-  const [id, setId] = React.useState("");
+  const { profileUsername } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
+        const filter = { 'contributor': { eq: profileUsername === undefined ? username : profileUsername } };
         const apiData: GraphQLResult<any> = await API.graphql({
           query: listRecipes,
+          variables: { filter: filter },
         });
         const recipes: Recipe[] = apiData.data.listRecipes.items;
         const newList: Recipe[] = recipes.map((item) => ({
@@ -111,7 +61,7 @@ const Profile = (props: Props) => {
           // like: 21,
         }))
 
-        newList.sort((a,b) => {
+        newList.sort((a, b) => {
           return Date.parse(b.updatedAt) - Date.parse(a.updatedAt);
         })
 
@@ -128,9 +78,16 @@ const Profile = (props: Props) => {
         const user = await Auth.currentAuthenticatedUser({
           bypassCache: false
         })
-        console.log(user)
-        setUsername(user.username);
-        setId(user.attributes.sub);
+
+        if (profileUsername === undefined) {
+          // username not in params
+          console.log(user)
+          setUsername(user.username);
+
+        } else {
+          // username param provided
+          setUsername(profileUsername);
+        }
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -146,7 +103,7 @@ const Profile = (props: Props) => {
     }
     setUserData()
     fetchRecipes();
-  }, [navigate]);
+  }, [navigate, profileUsername]);
 
   const subscribe = () => {
     setIsSubscribed(!isSubscribed);
@@ -156,7 +113,7 @@ const Profile = (props: Props) => {
   return (
     <Container
       maxWidth="md"
-      sx={{ backgroundColor: 'white' }}
+      sx={{ backgroundColor: 'white', paddingBottom: 2, minHeight: 'calc(100vh - 64px)' }}
     >
       <Grid
         container
@@ -166,20 +123,19 @@ const Profile = (props: Props) => {
         {/* Profile image */}
         <Grid item md={4}>
           <Box
-            component="img"
-            sx={{
-              minHeight: 150,
-              minWidth: 150,
-              maxHeight: 150,
-              maxWidth: 150,
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
-            alt="Profile Image"
-            src="https://i.redd.it/a1zcxisgjls71.png"
             mt={2}
             ml={{ md: 6 }}
-          />
+          >
+            <Avatar
+              sx={{
+                minHeight: 150,
+                minWidth: 150,
+                maxHeight: 150,
+                maxWidth: 150,
+              }}
+              alt={"Profile Image"}
+            />
+          </Box>
 
           {/* Subscribe button */}
           <Box
@@ -206,7 +162,7 @@ const Profile = (props: Props) => {
           </Typography>
 
           <Typography variant="subtitle1" pr={4}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros. {id}
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.
           </Typography>
         </Grid>
 
@@ -236,13 +192,9 @@ const Profile = (props: Props) => {
         ml={{ md: 15 }}
         mr={{ md: 15 }}
       >
-
-        {recipeList.map((item, index) => {
-          return (
-            <ProfileRecipe key={index} post={item} />
-          )
-        })}
-        <ProfileRecipe post={post2} />
+        {recipeList.map((item, index) => (
+          <ProfileRecipe key={index} post={item} />
+        ))}
       </Grid>
     </Container>
   )
