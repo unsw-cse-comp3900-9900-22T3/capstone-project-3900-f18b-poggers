@@ -2,7 +2,7 @@
   "providers": [
     "awscloudformation"
   ],
-  "projectName": "comp3900",
+  "projectName": "capstoneProject",
   "version": "3.1",
   "frontend": "javascript",
   "javascript": {
