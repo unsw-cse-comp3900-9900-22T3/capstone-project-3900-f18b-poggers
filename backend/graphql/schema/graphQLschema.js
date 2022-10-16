@@ -7,6 +7,21 @@ type User {
   username: String!
   password: String
 }
+
+type Recipe{
+  _id: ID!
+  title: String!
+  dateCreated: String!
+  content: String!
+  contributor: User!
+}
+
+input RecipeInput{
+  title: String!
+  dateCreated : String!
+  content: String!
+}
+
 type AuthData {
   userId: ID!
   username: String!
@@ -24,6 +39,7 @@ type RootQuery {
 }
 type RootMutation {
     createUser(userInput: UserInput): User
+    createRecipe(recipeInput: RecipeInput): Recipe
 }
 schema {
     query: RootQuery

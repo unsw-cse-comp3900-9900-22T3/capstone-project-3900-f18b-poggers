@@ -34,6 +34,7 @@ module.exports = {
     }
   },
   login: async ({ username, password }) => {
+    // Look at the database to find existing user
     const user = await User.findOne({ username: username });
     if (!user) {
       throw new Error("User does not exist!");

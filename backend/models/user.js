@@ -15,6 +15,12 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  listRecipes:[
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Recipe'
+    }
+  ]
 });
 
 module.exports = mongoose.model("User", userSchema);
