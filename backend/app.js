@@ -1,41 +1,35 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const graphQL = require("express-graphql");
-const { buildSchema } = require("graphql");
+const mongoose = require("mongoose");
+
+const graphqlHTTP = require("express-graphql").graphqlHTTP; // ES6
+
+const graphQlSchema = require("./graphql/schema/graphQLschema");
+const graphQlResolvers = require("./graphql/resolvers/index");
+const isAuth = require("./middleware/isAuthentication");
 
 const app = express();
 
 app.use(bodyParser.json());
 
+// app.use();
+
 app.use(
   "/graphql",
-  graphQL.graphqlHTTP({
-    schema: buildSchema(`
-      type RootQuery{
-        events: [String!]!
-      }
-      
-      type RootMutation{
-        createEvent(name:String) : String
-      }
-      
-      schema{
-        query:RootQuery
-        mutation:RootMutation
-      }  
-      
-    `),
-    rootValue: {
-      events: () => {
-        return ["some1", "some2"];
-      },
-      createEvent: (args) => {
-        const eventName = args.name;
-        return eventName;
-      },
-    },
+  graphqlHTTP({
+    schema: graphQlSchema,
+    rootValue: graphQlResolvers,
     graphiql: true,
   })
 );
-
 app.listen(3000);
+// mongoose
+//   .connect(
+//     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-ntrwp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true`
+//   )
+//   .then(() => {
+//     app.listen(3000);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
