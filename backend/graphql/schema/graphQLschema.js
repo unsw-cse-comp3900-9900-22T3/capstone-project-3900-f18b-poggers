@@ -9,10 +9,13 @@ type User {
 }
 type AuthData {
   userId: ID!
+  username: String!
+  email: String!
   token: String!
   tokenExpiration: Int!
 }
 input UserInput {
+  email: String!
   username: String!
   password: String!
 }
