@@ -21,4 +21,4 @@ const recipeSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("Recipe", eventSchema);
+module.exports = mongoose.model("Recipe", recipeSchema);

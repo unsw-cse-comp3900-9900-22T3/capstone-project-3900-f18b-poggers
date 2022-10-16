@@ -6,6 +6,7 @@ type User {
   email: String!
   username: String!
   password: String
+  listRecipe: [Recipe!]
 }
 
 type Recipe{
@@ -13,7 +14,7 @@ type Recipe{
   title: String!
   dateCreated: String!
   content: String!
-  contributor: User!
+  contributor: User! 
 }
 
 input RecipeInput{

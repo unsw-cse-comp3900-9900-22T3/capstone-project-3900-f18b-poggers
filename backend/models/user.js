@@ -15,12 +15,12 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  listRecipes:[
+  listRecipes: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Recipe'
-    }
-  ]
+      ref: "Recipe",
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);
