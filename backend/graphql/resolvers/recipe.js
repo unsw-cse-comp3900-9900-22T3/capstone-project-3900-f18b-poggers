@@ -4,7 +4,7 @@ const User = require("../../models/user");
 module.exports = {
   createRecipe: async (args, req) => {
     
-    // TODO check token before continue
+    // TODO check token to continue (Ignore this for now)
 
     
     const recipe = new Recipe({
@@ -43,11 +43,18 @@ module.exports = {
       throw err;
     }
   },
+
+  
   getRecipeById: async (args,req) =>{
+    
+    // TODO check token to continue (Ignore this for now)
+    
     const recipe = await Recipe.findOne({
      _id: args.id,
     });
-      
+    
+
+    // TODO return proper data
     return {
       content: "someContent",
       title: "someTitle",
@@ -59,7 +66,7 @@ module.exports = {
 
   getListRecipeByContributor: async (args, req) => {
     
-    // TODO check token to continue 
+    // TODO check token to continue (Ignore this for now)
     
     const user = await User.findOne({
       username: args.username,
@@ -71,9 +78,9 @@ module.exports = {
 
     const recipes = user.listRecipes; 
     // this return list of recipe ID
-    // TODO write a function to get recipe info from Id by Recipe.findOne()
     console.log(recipes);
-    // Return a list of recipes
+    
+    //TODO  Return a list of recipes
     return [{
       content: "someContent",
       title: "someTitle",
