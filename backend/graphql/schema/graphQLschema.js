@@ -23,6 +23,13 @@ input RecipeInput{
   content: String!
 }
 
+type RecipeOutput{
+  title: String!
+  dateCreated : String!
+  content: String!
+  contributor: String!
+}
+
 type AuthData {
   userId: ID!
   username: String!
@@ -37,6 +44,8 @@ input UserInput {
 }
 type RootQuery {
     login(username: String!, password: String!): AuthData!
+    getListRecipeByContributor(username: String!): [RecipeOutput!]!
+    getRecipeById(id: String!): RecipeOutput!
 }
 type RootMutation {
     createUser(userInput: UserInput): User
