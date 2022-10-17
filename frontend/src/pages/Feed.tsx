@@ -1,16 +1,75 @@
-import React from 'react'
-import { Auth } from 'aws-amplify';
+import React, { useState, useEffect } from 'react';
+import { API, Auth } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
+import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { Recipe } from '../types/instacook-types';
+import { Button, Typography, Container, Grid, Box, Avatar } from '@mui/material';
+import ProfileRecipe from '../components/profile/ProfileRecipe';
 
 type Props = {}
+
+const listRecipes = /* GraphQL */ `
+query ListRecipes(
+  $filter: ModelRecipeFilterInput
+  $limit: Int
+  $nextToken: String
+  ) {
+  listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      content
+      contributor
+      fileImage
+      createdAt
+      updatedAt
+      owner
+    }
+    nextToken
+  }
+}
+`;
 
 const Feed = (props: Props) => {
   const [userEmail, setUserEmail] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [id, setId] = React.useState("");
+  const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
   const navigate = useNavigate();
 
   React.useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        // const filter = { 'contributor': { eq: profileUsername === undefined ? username : profileUsername } };
+        const apiData: GraphQLResult<any> = await API.graphql({
+          query: listRecipes,
+          // variables: { filter: filter },
+        });
+        const recipes: Recipe[] = apiData.data.listRecipes.items;
+        const newList: Recipe[] = recipes.map((item) => ({
+          id: item.id,
+          name: item.name,
+          content: item.content,
+          fileImage: item.fileImage.slice(5).slice(0, -1),
+          contributor: item.contributor,
+          owner: item.owner,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt
+          // tag: ['kfc', 'is', 'better'],
+          // like: 21,
+        }))
+
+        newList.sort((a, b) => {
+          return Date.parse(b.updatedAt) - Date.parse(a.updatedAt);
+        })
+
+        console.log(newList);
+        setRecipeList([...newList]);
+      } catch (error) {
+        console.log("Error on fetching recipe", error);
+      }
+    };
+
     const setUserData = async () => {
       console.log("setUserData in Feed.tsx called");
       try {
@@ -35,17 +94,42 @@ const Feed = (props: Props) => {
         navigate('/login');
       }
     }
-    setUserData()
+    setUserData();
+    fetchRecipes();
   }, [navigate])
 
   return (
-    <div style={{ backgroundColor: 'white' }}>
-      <div>This should be the feed (/feed)</div>
-      <div>You are logged in as: </div>
-      <div>Email: {userEmail}</div>
-      <div>Username: {username}</div>
-      <div>Id: {id}</div>
-    </div>
+
+
+
+    <Container
+      maxWidth="md"
+      sx={{ backgroundColor: 'white', paddingBottom: 2, minHeight: 'calc(100vh - 64px)' }}
+    >
+      <div style={{ backgroundColor: 'white' }}>
+        <div>This should be the feed (/feed)</div>
+        <div>You are logged in as: </div>
+        <div>Email: {userEmail}</div>
+        <div>Username: {username}</div>
+        <div>Id: {id}</div>
+      </div>
+
+      {/* Recipe Posts */}
+      <Grid
+        container
+        item
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+        md={9}
+        ml={{ md: 15 }}
+        mr={{ md: 15 }}
+      >
+        {recipeList.map((item, index) => (
+          <ProfileRecipe key={index} post={item} />
+        ))}
+      </Grid>
+    </Container>
   )
 }
 
