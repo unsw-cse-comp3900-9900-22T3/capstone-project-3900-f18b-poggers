@@ -27,7 +27,7 @@ type RecipeOutput{
   title: String!
   dateCreated : String!
   content: String!
-  contributor: String!
+  contributorUsername: String!
 }
 
 type AuthData {

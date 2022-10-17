@@ -1,12 +1,11 @@
+const recipe = require("../../models/recipe");
 const Recipe = require("../../models/recipe");
 const User = require("../../models/user");
 
 module.exports = {
   createRecipe: async (args, req) => {
-    
     // TODO check token to continue (Ignore this for now)
 
-    
     const recipe = new Recipe({
       title: args.recipeInput.title,
       content: args.recipeInput.content,
@@ -30,13 +29,12 @@ module.exports = {
       await contributor.save();
 
       // TODO return proper data
-
       return {
-        content: "someContent",
-        title: "someTitle",
-        _id: null,
-        dateCreated: "somedate",
-        contributor: null,
+        content: recipe.content,
+        title: recipe.title,
+        _id: recipe.id,
+        dateCreated: recipe.dateCreated,
+        contributor: contributor,
       };
     } catch (err) {
       console.log(err);
@@ -44,50 +42,57 @@ module.exports = {
     }
   },
 
-  
-  getRecipeById: async (args,req) =>{
-    
+  getRecipeById: async (args, req) => {
     // TODO check token to continue (Ignore this for now)
-    
-    const recipe = await Recipe.findOne({
-     _id: args.id,
-    });
-    
 
-    // TODO return proper data
+    const recipe = await Recipe.findOne({
+      _id: args.id,
+    });
+
+
+    const contributor = await User.findById(recipe.contributor._id);
+
+    
     return {
-      content: "someContent",
-      title: "someTitle",
-      _id: null,
-      dateCreated: "somedate",
-      contributor: null,
+      content: recipe.content, 
+      title: recipe.title,
+      dateCreated: recipe.dateCreated,
+      contributorUsername: contributor.username,
     };
   },
 
   getListRecipeByContributor: async (args, req) => {
-    
     // TODO check token to continue (Ignore this for now)
-    
+
     const user = await User.findOne({
       username: args.username,
     });
 
-    if(!user){
+    if (!user) {
       throw new Error("User not found");
     }
 
-    const recipes = user.listRecipes; 
-    // this return list of recipe ID
+    let recipes = [];
+
+    user.listRecipes.forEach(async(n,i)=> {
+      
+      const recipe = await Recipe.findOne({
+        _id: n._id,
+      });
+      console.log(recipe);
+    });
+
     console.log(recipes);
-    
+
     //TODO  Return a list of recipes
-    return [{
-      content: "someContent",
-      title: "someTitle",
-      _id: null,
-      dateCreated: "somedate",
-      contributor: null,
-    }]; 
-    
+    return [
+      {
+        content: "someContent",
+        title: "someTitle",
+        _id: null,
+        dateCreated: "somedate",
+        contributor: null,
+      },
+    ];
   },
 };
