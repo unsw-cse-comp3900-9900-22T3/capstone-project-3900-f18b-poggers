@@ -31,13 +31,13 @@ query ListRecipes(
 `;
 
 const Feed = (props: Props) => {
-  const [userEmail, setUserEmail] = React.useState("");
-  const [username, setUsername] = React.useState("");
-  const [id, setId] = React.useState("");
-  const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
+  const [userEmail, setUserEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [id, setId] = useState("");
+  const [recipeList, setRecipeList] = useState<Recipe[]>([]);
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchRecipes = async () => {
       try {
         // const filter = { 'contributor': { eq: profileUsername === undefined ? username : profileUsername } };

@@ -13,6 +13,7 @@ const ProfileRecipe = (props: Props) => {
 
   const [imageURL, setImageURL] = useState("");
   const [description, setDescription] = useState("");
+  const [isUpdated, setIsUpdated] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +28,12 @@ const ProfileRecipe = (props: Props) => {
       }
     }
 
+    const checkPostUpdate = async () => {
+      // check if the post was modified
+      Date.parse(props.post.updatedAt) - Date.parse(props.post.createdAt) 
+       ? setIsUpdated(true) : setIsUpdated(false);
+    };
+
     const getImageUrl = async () => {
       const fileAccessURL = await Storage.get(props.post.fileImage, { expires: 30, level: "public" });
       setImageURL(fileAccessURL);
@@ -34,8 +41,9 @@ const ProfileRecipe = (props: Props) => {
 
     getImageUrl();
     getDescription();
+    checkPostUpdate();
 
-  }, [props.post.fileImage, props.post.content])
+  }, [props.post.fileImage, props.post.content, props.post.updatedAt, props.post.createdAt])
 
   // const tagStyles = {
   //   backgroundColor: '#28343c',
@@ -82,6 +90,15 @@ const ProfileRecipe = (props: Props) => {
           <Typography noWrap variant="h4" mb={1} ml={0.25}>
             {props.post.name}
           </Typography>
+
+          <Typography pl={0.5}>
+            {isUpdated ? (
+              <b> Updated by {props.post.contributor} </b>
+            ) : (
+              <b> Uploaded by {props.post.contributor} </b>
+            )}
+          </Typography> 
+            
 
           <Typography sx={{
             overflow: 'hidden',
