@@ -1,7 +1,7 @@
 import { Typography, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Storage } from "aws-amplify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Recipe } from '../../types/instacook-types';
 import { Image } from 'mui-image'
 
@@ -15,6 +15,7 @@ const ProfileRecipe = (props: Props) => {
   const [description, setDescription] = useState("");
   const [isUpdated, setIsUpdated] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const getDescription = async () => {
@@ -98,7 +99,7 @@ const ProfileRecipe = (props: Props) => {
           <Typography 
             pl={0.5} 
             sx={{ cursor: "pointer" }}
-            onClick={() => navigate(`/profile/${props.post.contributor}`)}
+            onClick={() => location.pathname === '/feed' && navigate(`/profile/${props.post.contributor}`)}
           >
             {isUpdated ? (
               <b> Updated by {props.post.contributor} </b>
