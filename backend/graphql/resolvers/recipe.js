@@ -32,9 +32,8 @@ module.exports = {
       return {
         content: recipe.content,
         title: recipe.title,
-        _id: recipe.id,
         dateCreated: recipe.dateCreated,
-        contributor: contributor,
+        contributorUsername: contributor.username,
       };
     } catch (err) {
       console.log(err);
@@ -49,15 +48,14 @@ module.exports = {
       _id: args.id,
     });
 
-
     const contributor = await User.findById(recipe.contributor._id);
 
-    
     return {
-      content: recipe.content, 
+      content: recipe.content,
       title: recipe.title,
       dateCreated: recipe.dateCreated,
       contributorUsername: contributor.username,
+      numberLike: recipe.like.length,
     };
   },
 
@@ -74,8 +72,7 @@ module.exports = {
 
     let recipes = [];
 
-    user.listRecipes.forEach(async(n,i)=> {
-      
+    user.listRecipes.forEach(async (n, i) => {
       const recipe = await Recipe.findOne({
         _id: n._id,
       });
@@ -89,10 +86,30 @@ module.exports = {
       {
         content: "someContent",
         title: "someTitle",
-        _id: null,
         dateCreated: "somedate",
-        contributor: null,
+        contributorUsername: user.username,
+        numberLike: 10,
       },
     ];
+  },
+
+  likeRecipe: async (args, req) => {
+    // TODO check token to continue (Ignore this for now)
+
+    const user = await User.findOne({
+      username: args.username,
+    });
+
+    const recipe = await Recipe.findById(args.recipeID);
+
+    if (recipe.like.includes(user.username)) {
+      recipe.like.pop(user.username);
+    } else {
+      recipe.like.push(user.username);
+    }
+
+    await recipe.save();
+
+    return true;
   },
 };

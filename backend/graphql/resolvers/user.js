@@ -58,4 +58,55 @@ module.exports = {
       email: user.email,
     };
   },
+  follow: async (args, req) => {
+    // TODO check token to continue (Ignore this for now)
+
+    const user = await User.findOne({
+      username: args.username,
+    });
+
+    if (!user) {
+      throw new Error("User does not exist!");
+    }
+
+    const followUsername = await User.findOne({
+      username: args.followUsername,
+    });
+
+    if (!followUsername) {
+      throw new Error("Follow User does not exist!");
+    }
+    
+    if(user.listFollowing.includes(followUsername.username)){
+      user.listFollowing.pop(followUsername.username)
+      followUsername.listFollower.pop(user.username)
+    }else{
+      user.listFollowing.push(followUsername.username)
+      followUsername.listFollower.push(user.username)
+    }
+
+
+    await followUsername.save();
+    await user.save();
+
+    return true;
+  },
+
+  getUserInfo : async (args, req) => {
+    
+    // TODO check token to continue (Ignore this for now)
+    
+    const user = await User.findOne({
+      username: args.username,
+    });
+
+    if (!user) {
+      throw new Error("User does not exist!");
+    }
+    return {
+      username: user.username,
+      numberFollowing: user.listFollowing.length,
+      numberFollower: user.listFollower.length,
+    };
+  }
 };

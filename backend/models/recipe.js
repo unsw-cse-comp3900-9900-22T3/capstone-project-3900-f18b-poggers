@@ -19,6 +19,12 @@ const recipeSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  like: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
 });
 
 module.exports = mongoose.model("Recipe", recipeSchema);

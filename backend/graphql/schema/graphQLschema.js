@@ -15,6 +15,7 @@ type Recipe{
   dateCreated: String!
   content: String!
   contributor: User! 
+  like: [String!]!
 }
 
 input RecipeInput{
@@ -28,6 +29,7 @@ type RecipeOutput{
   dateCreated : String!
   content: String!
   contributorUsername: String!
+  numberLike :Int!
 }
 
 type AuthData {
@@ -42,14 +44,24 @@ input UserInput {
   username: String!
   password: String!
 }
+
+type UserInfo{
+  username: String!
+  numberFollower: Int!
+  numberFollowing: Int!
+}
+
 type RootQuery {
     login(username: String!, password: String!): AuthData!
     getListRecipeByContributor(username: String!): [RecipeOutput!]!
     getRecipeById(id: String!): RecipeOutput!
+    likeRecipe(username: String!, recipeID: String!): Boolean!
+    follow(username:String!,followUsername: String!): Boolean!
+    getUserInfo(username:String!):UserInfo!
 }
 type RootMutation {
     createUser(userInput: UserInput): User
-    createRecipe(recipeInput: RecipeInput): Recipe
+    createRecipe(recipeInput: RecipeInput): RecipeOutput
 }
 schema {
     query: RootQuery
