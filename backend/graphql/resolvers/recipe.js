@@ -1,39 +1,37 @@
-const recipe = require("../../models/recipe");
 const Recipe = require("../../models/recipe");
 const User = require("../../models/user");
 
 module.exports = {
   createRecipe: async (args, req) => {
-    // TODO check token to continue (Ignore this for now)
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+    const authUser = await User.findById(req.userId);
 
     const recipe = new Recipe({
       title: args.recipeInput.title,
       content: args.recipeInput.content,
       dateCreated: new Date(args.recipeInput.dateCreated),
-      contributor: "634b99b78d5b79ca9856f95c",
+      like: [],
+      contributor: req.userId,
     });
 
-    let createdRecipe;
     try {
-      const contributor = await User.findById("634b99b78d5b79ca9856f95c");
-
-      if (!contributor) {
+      if (!authUser) {
         throw new Error("User not found.");
       }
 
-      const result = await recipe.save();
-      console.log(result);
-      // createdRecipe = transformEvent(result);
+      await recipe.save();
 
-      contributor.listRecipes.push(recipe);
-      await contributor.save();
+      authUser.listRecipes.push(recipe);
+      await authUser.save();
 
-      // TODO return proper data
       return {
         content: recipe.content,
         title: recipe.title,
         dateCreated: recipe.dateCreated,
-        contributorUsername: contributor.username,
+        contributorUsername: authUser.username,
+        numberLike: 0,
       };
     } catch (err) {
       console.log(err);
@@ -41,12 +39,8 @@ module.exports = {
     }
   },
 
-  getRecipeById: async (args, req) => {
-    // TODO check token to continue (Ignore this for now)
-
-    const recipe = await Recipe.findOne({
-      _id: args.id,
-    });
+  getRecipeById: async (args) => {
+    const recipe = await Recipe.findById(args.recipeID);
 
     const contributor = await User.findById(recipe.contributor._id);
 
@@ -59,9 +53,7 @@ module.exports = {
     };
   },
 
-  getListRecipeByContributor: async (args, req) => {
-    // TODO check token to continue (Ignore this for now)
-
+  getListRecipeByContributor: async (args) => {
     const user = await User.findOne({
       username: args.username,
     });
@@ -76,12 +68,10 @@ module.exports = {
       const recipe = await Recipe.findOne({
         _id: n._id,
       });
-      console.log(recipe);
     });
 
-    console.log(recipes);
-
     //TODO  Return a list of recipes
+
     return [
       {
         content: "someContent",
@@ -94,18 +84,17 @@ module.exports = {
   },
 
   likeRecipe: async (args, req) => {
-    // TODO check token to continue (Ignore this for now)
-
-    const user = await User.findOne({
-      username: args.username,
-    });
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+    const authUser = await User.findById(req.userId);
 
     const recipe = await Recipe.findById(args.recipeID);
 
-    if (recipe.like.includes(user.username)) {
-      recipe.like.pop(user.username);
+    if (recipe.like.includes(authUser.username)) {
+      recipe.like.pop(authUser.username);
     } else {
-      recipe.like.push(user.username);
+      recipe.like.push(authUser.username);
     }
 
     await recipe.save();

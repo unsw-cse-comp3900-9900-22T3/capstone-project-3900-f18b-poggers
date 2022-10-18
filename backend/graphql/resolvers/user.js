@@ -33,6 +33,7 @@ module.exports = {
       throw err;
     }
   },
+  
   login: async ({ username, password }) => {
     // Look at the database to find existing user
     const user = await User.findOne({ username: username });
@@ -58,16 +59,13 @@ module.exports = {
       email: user.email,
     };
   },
+
   follow: async (args, req) => {
-    // TODO check token to continue (Ignore this for now)
 
-    const user = await User.findOne({
-      username: args.username,
-    });
-
-    if (!user) {
-      throw new Error("User does not exist!");
+    if(!req.isAuth){
+      throw new Error('Unauthenticated!');
     }
+    const authUser = await User.findById(req.userId);
 
     const followUsername = await User.findOne({
       username: args.followUsername,
@@ -76,26 +74,35 @@ module.exports = {
     if (!followUsername) {
       throw new Error("Follow User does not exist!");
     }
-    
-    if(user.listFollowing.includes(followUsername.username)){
-      user.listFollowing.pop(followUsername.username)
-      followUsername.listFollower.pop(user.username)
-    }else{
-      user.listFollowing.push(followUsername.username)
-      followUsername.listFollower.push(user.username)
+
+    if (authUser.listFollowing.includes(followUsername.username)) {
+      authUser.listFollowing.pop(followUsername.username);
+      followUsername.listFollower.pop(authUser.username);
+    } else {
+      authUser.listFollowing.push(followUsername.username);
+      followUsername.listFollower.push(authUser.username);
     }
 
-
     await followUsername.save();
-    await user.save();
+    await authUser.save();
 
     return true;
   },
 
-  getUserInfo : async (args, req) => {
+  isFollowing: async (args,req)=> {
+    if(!req.isAuth){
+      throw new Error('Unauthenticated!');
+    }
+    const authUser = await User.findById(req.userId);
     
-    // TODO check token to continue (Ignore this for now)
-    
+    if (authUser.listFollowing.includes(args.followUser)){
+      return true;  
+    }
+    return false;  
+  },
+
+  // No need Auth for this function
+  getUserInfo: async (args, req) => {
     const user = await User.findOne({
       username: args.username,
     });
@@ -108,5 +115,5 @@ module.exports = {
       numberFollowing: user.listFollowing.length,
       numberFollower: user.listFollower.length,
     };
-  }
+  },
 };

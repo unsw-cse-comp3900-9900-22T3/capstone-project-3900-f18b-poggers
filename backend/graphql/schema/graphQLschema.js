@@ -54,10 +54,12 @@ type UserInfo{
 type RootQuery {
     login(username: String!, password: String!): AuthData!
     getListRecipeByContributor(username: String!): [RecipeOutput!]!
-    getRecipeById(id: String!): RecipeOutput!
-    likeRecipe(username: String!, recipeID: String!): Boolean!
-    follow(username:String!,followUsername: String!): Boolean!
+    getRecipeById(recipeID: String!): RecipeOutput!
+    likeRecipe( recipeID: String!): Boolean!
+    follow(followUsername: String!): Boolean!
     getUserInfo(username:String!):UserInfo!
+    isFollowing(followUser:String!): Boolean!
+  
 }
 type RootMutation {
     createUser(userInput: UserInput): User
