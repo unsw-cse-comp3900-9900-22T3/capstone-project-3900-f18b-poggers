@@ -61,6 +61,7 @@ const MobileMenu = (props: Props) => {
       <MenuItem onClick={() => closeMenuNavigate('/profile/' + props.username)}>
         Your Profile
       </MenuItem>
+      <MenuItem onClick={() => { closeMenuNavigate('/feed') }}>Your Feed</MenuItem>
       <MenuItem onClick={() => closeMenuNavigate('/profile/' + props.username)}>Your Liked Recipes</MenuItem>
       <Divider />
       <MenuItem onClick={() => closeMenuNavigate('/profile/' + props.username)}>Account Settings</MenuItem>

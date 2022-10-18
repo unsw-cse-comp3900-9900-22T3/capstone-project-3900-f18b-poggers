@@ -15,6 +15,7 @@ import Sidebar from './Sidebar';
 import MobileMenu from './MobileMenu';
 import ProfileMenu from './ProfileMenu';
 import { Auth } from 'aws-amplify';
+import TextLink from '../TextLink';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -165,6 +166,9 @@ export default function Nav() {
             <Box sx={{ flexGrow: 1 }} />
             {loggedIn ?
               <>
+                <Box sx={{ display: { xs: 'none', md: 'flex' }, marginRight: 2 }}>
+                  <TextLink text='Discover' route="/" />
+                </Box>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                   <Tooltip title="Account">
                     <IconButton
