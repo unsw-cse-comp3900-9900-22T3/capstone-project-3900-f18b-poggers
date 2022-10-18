@@ -87,11 +87,19 @@ const ProfileRecipe = (props: Props) => {
       {/* Recipe title and description */}
       <Grid item md={7} xs={12}>
         <Grid item>
-          <Typography noWrap variant="h4" mb={1} ml={0.25}>
+          <Typography 
+            noWrap variant="h4" 
+            mb={1} 
+            ml={0.25}
+          >
             {props.post.name}
           </Typography>
 
-          <Typography pl={0.5}>
+          <Typography 
+            pl={0.5} 
+            sx={{ cursor: "pointer" }}
+            onClick={() => navigate(`/profile/${props.post.contributor}`)}
+          >
             {isUpdated ? (
               <b> Updated by {props.post.contributor} </b>
             ) : (
