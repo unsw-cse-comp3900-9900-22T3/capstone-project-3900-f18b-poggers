@@ -90,21 +90,21 @@ const ProfileRecipe = (props: Props) => {
         <Grid item>
           <Typography 
             noWrap variant="h4" 
-            mb={1} 
             ml={0.25}
           >
             {props.post.name}
           </Typography>
 
           <Typography 
-            pl={0.5} 
+            pl={0.5}
+            variant="caption" 
             sx={{ cursor: "pointer" }}
             onClick={() => location.pathname === '/feed' && navigate(`/profile/${props.post.contributor}`)}
           >
             {isUpdated ? (
-              <b> Updated by {props.post.contributor} </b>
+              <> Updated by <b>{props.post.contributor} </b> </> 
             ) : (
-              <b> Uploaded by {props.post.contributor} </b>
+              <> Uploaded by <b>{props.post.contributor} </b> </>
             )}
           </Typography> 
             
@@ -116,7 +116,8 @@ const ProfileRecipe = (props: Props) => {
             WebkitLineClamp: '3',
             WebkitBoxOrient: 'vertical',
           }}
-            variant="body2"
+            // variant="body2"
+            mt={1}
             pl={0.5}
             mb={1}>
             {description}
