@@ -42,7 +42,7 @@ type RecipeOutput{
 }
 
 type Comment{
-  userID: String!
+  userName: String!
   recipeID: String!
   content: String!
   dateCreated: String!
@@ -74,7 +74,7 @@ type RootQuery {
 type RootMutation {
     createUser(userInput: UserInput): User
     createRecipe(recipeInput: RecipeInput): RecipeOutput
-    createComment(recipeID:String!,content:String!): Boolean!
+    createComment(recipeID:String!,content:String!,dateCreated:String!): Boolean!
 }
 schema {
     query: RootQuery
