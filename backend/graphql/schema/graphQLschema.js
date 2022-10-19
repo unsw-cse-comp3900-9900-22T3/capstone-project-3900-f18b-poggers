@@ -9,6 +9,20 @@ type User {
   listRecipe: [Recipe!]
 }
 
+type UserInfo{
+  username: String!
+  numberFollower: Int!
+  numberFollowing: Int!
+}
+
+type AuthData {
+  userId: ID!
+  username: String!
+  email: String!
+  token: String!
+  tokenExpiration: Int!
+}
+
 type Recipe{
   _id: ID!
   title: String!
@@ -16,12 +30,7 @@ type Recipe{
   content: String!
   contributor: User! 
   like: [String!]!
-}
-
-input RecipeInput{
-  title: String!
-  dateCreated : String!
-  content: String!
+  listComments: [Comment!]!
 }
 
 type RecipeOutput{
@@ -32,24 +41,25 @@ type RecipeOutput{
   numberLike :Int!
 }
 
-type AuthData {
-  userId: ID!
-  username: String!
-  email: String!
-  token: String!
-  tokenExpiration: Int!
+type Comment{
+  userID: String!
+  recipeID: String!
+  content: String!
+  dateCreated: String!
 }
+
+input RecipeInput{
+  title: String!
+  dateCreated : String!
+  content: String!
+}
+
 input UserInput {
   email: String!
   username: String!
   password: String!
 }
 
-type UserInfo{
-  username: String!
-  numberFollower: Int!
-  numberFollowing: Int!
-}
 
 type RootQuery {
     login(username: String!, password: String!): AuthData!
@@ -64,6 +74,7 @@ type RootQuery {
 type RootMutation {
     createUser(userInput: UserInput): User
     createRecipe(recipeInput: RecipeInput): RecipeOutput
+    createComment(recipeID:String!,content:String!): Boolean!
 }
 schema {
     query: RootQuery
