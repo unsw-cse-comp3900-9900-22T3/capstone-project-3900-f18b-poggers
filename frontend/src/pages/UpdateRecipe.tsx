@@ -5,6 +5,7 @@ import { Box, Button, Container, CssBaseline, Grid, IconButton, List, ListItem, 
 import { API, graphqlOperation, Storage } from "aws-amplify";
 import Image from 'mui-image';
 import React from 'react';
+import RecipeContents from '../components/recipe/RecipeContents';
 import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -286,83 +287,14 @@ const UpdateRecipe = (props: Props) => {
               />}
               {preview}
             </Box>
-
-            <Grid container spacing={5} sx={{ padding: 3 }}>
-              <Grid item sm={3}>
-                <Typography variant="h5">
-                  Ingredients
-                </Typography>
-                <ul>
-                  {listIngredient}
-                </ul>
-                <Box
-                  component="form"
-                  onSubmit={handleIngredient}
-                >
-                  <TextField
-                    value={ingredientText}
-                    fullWidth
-                    variant='standard'
-                    onChange={(e) => { setIngredientText(e.target.value) }}
-                    InputProps={{
-                      endAdornment:
-                        <>
-                          <IconButton
-                            color='secondary'
-                            onClick={(e) => { handleRemoveIngredient() }}>
-                            <RemoveIcon />
-                          </IconButton>
-                          <IconButton
-                            color='secondary'
-                            type="submit">
-                            <AddIcon />
-                          </IconButton>
-                        </>
-
-                    }}
-                    name="ingredient"
-                    id="ingredient"
-                    placeholder="Add another ingredient"
-                  />
-                </Box>
-              </Grid>
-              <Grid item sm={9}>
-                <Typography variant="h5">
-                  Cooking Instructions
-                </Typography>
-                <List>
-                  {listInstructions}</List>
-                <Box
-                  component="form"
-                  onSubmit={handleInstruction}
-                >
-                  <TextField
-                    value={instructionText}
-                    fullWidth
-                    variant='standard'
-                    onChange={(e) => { setInstructionText(e.target.value) }}
-                    InputProps={{
-                      endAdornment:
-                        <>
-                          <IconButton
-                            color='secondary'
-                            onClick={(e) => { handleRemoveInstruction() }}>
-                            <RemoveIcon />
-                          </IconButton>
-                          <IconButton
-                            color='secondary'
-                            type="submit">
-                            <AddIcon />
-                          </IconButton>
-                        </>
-                    }}
-                    name="instruction"
-                    id="instruction"
-                    placeholder="Add another cooking instruction"
-                  />
-                </Box>
-              </Grid>
-            </Grid>
+            <RecipeContents
+              ingredients={ingredients}
+              instructions={instructions}
+              handleInstruction={handleInstruction}
+              handleIngredient={handleIngredient}
+              handleRemoveIngredient={handleRemoveIngredient}
+              handleRemoveInstruction={handleRemoveInstruction}
+            />
             <Box
               paddingTop={0}
               sx={{
