@@ -1,12 +1,16 @@
 import React from 'react'
 import RecipeCard from '../components/discovery/RecipeCard'
-import testimg from '../static/images/authbackground.jpeg'
+import RecipeCarousel from '../components/discovery/RecipeCarousel'
 
 type Props = {}
 
 const Discovery = (props: Props) => {
   return (
-    <RecipeCard title="Beef Wellington" author='gordonramsay' img={testimg} />
+    <>
+      <RecipeCarousel heading={"Beef Recipes"} />
+      <RecipeCarousel heading={"Beef Recipes"} />
+      <RecipeCarousel heading={"Beef Recipes"} />
+    </>
   )
 }
 
