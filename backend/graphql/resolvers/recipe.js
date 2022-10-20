@@ -62,25 +62,17 @@ module.exports = {
       throw new Error("User not found");
     }
 
-    let recipes = [];
-
-    user.listRecipes.forEach(async (n, i) => {
-      const recipe = await Recipe.findOne({
-        _id: n._id,
-      });
-    });
-
-    //TODO  Return a list of recipes
-
-    return [
-      {
-        content: "someContent",
-        title: "someTitle",
-        dateCreated: "somedate",
+    const sortedListRecipe = Recipe.find({_id: {$in: user.listRecipes}}).sort({dateCreated: 1});
+    
+    return (await sortedListRecipe).map((recipe) => {
+      return {
+        content: recipe.content,
+        title: recipe.title,
+        dateCreated: recipe.dateCreated,
         contributorUsername: user.username,
-        numberLike: 10,
-      },
-    ];
+        numberLike: recipe.like.length,
+      } 
+    });
   },
 
   likeRecipe: async (args, req) => {
@@ -100,5 +92,5 @@ module.exports = {
     await recipe.save();
 
     return true;
-  },
+  }
 };
