@@ -3,7 +3,7 @@ import { API, Auth } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
 import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Recipe } from '../types/instacook-types';
-import { Button, Typography, Container, Grid, Box, Avatar } from '@mui/material';
+import { Button, Typography, Container, Grid, Box, Avatar, Link } from '@mui/material';
 import ProfileRecipe from '../components/profile/ProfileRecipe';
 
 type Props = {}
@@ -64,9 +64,11 @@ const Feed = (props: Props) => {
         })
 
         console.log(newList);
+        // setRecipeList([]);
         setRecipeList([...newList]);
       } catch (error) {
         console.log("Error on fetching recipe", error);
+        setRecipeList([]);
       }
     };
 
@@ -113,6 +115,19 @@ const Feed = (props: Props) => {
         <div>Username: {username}</div>
         <div>Id: {id}</div>
       </div>
+
+      {/* A message if there are no recipes displayed */}
+      {recipeList.length === 0 && (
+        <Grid item pt={10}>
+          <Typography variant="h2" align='center' mb={5}>
+            No posts yet.
+          </Typography>
+
+          <Typography variant="h4" align='center'>
+            Head to the <Link href='/#'>discovery page</Link> to get started.
+          </Typography>
+        </Grid>
+      )}
 
       {/* Recipe Posts */}
       <Grid
