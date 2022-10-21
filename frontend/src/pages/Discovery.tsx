@@ -1,5 +1,4 @@
 import React from 'react'
-import RecipeCard from '../components/discovery/RecipeCard'
 import RecipeCarousel from '../components/discovery/RecipeCarousel'
 
 type Props = {}

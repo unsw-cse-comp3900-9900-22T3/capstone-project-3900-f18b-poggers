@@ -21,27 +21,24 @@ type Props = {
   author: string,
   authorImg?: string,
   img: string,
+  recipeId?: string // temporarily optional
 }
 
 const RecipeCard = (props: Props) => {
+
   const navigate = useNavigate();
   return (
-    <Card sx={{ maxWidth: 300 }}>
+    <Card sx={{ maxWidth: 290, backgroundColor: '#eeeeee', marginLeft: 0.5, marginRight: 0.5 }}>
       <CardHeader
         avatar={
           <Avatar
             onClick={() => { navigate('/profile/' + props.author) }}
             src={props.authorImg && testavatar}
-            sx={{ bgcolor: red[500] }}
+            sx={{ bgcolor: red[500], cursor: 'pointer' }}
             aria-label="recipe">
 
           </Avatar>
         }
-        // action={
-        //   <IconButton aria-label="settings">
-        //     <MoreVertIcon />
-        //   </IconButton>
-        // }
         title={props.title}
         subheader={"by " + props.author}
       />
@@ -50,29 +47,15 @@ const RecipeCard = (props: Props) => {
         height="194"
         image={testimg && props.img}
         alt="Recipe Image"
+        sx={{ cursor: 'pointer' }}
+        // onClick={() => { navigate('/recipe/' + props.recipeId) }}
+        onClick={() => { navigate('/recipe/98ce17ef-7047-422b-981b-c25d93046510') }}
       />
-      {/* <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
-        </Typography>
-      </CardContent> */}
       <CardActions disableSpacing>
-        <IconButton aria-label="like">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-        {/* <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore> */}
+        <FavoriteIcon aria-label="likes" style={{ color: '#ed415b', marginRight: 2 }} />
+        <Typography>
+          6000
+        </Typography>
       </CardActions>
     </Card>
   );
