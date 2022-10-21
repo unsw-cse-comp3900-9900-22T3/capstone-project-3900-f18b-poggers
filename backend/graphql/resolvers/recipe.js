@@ -29,7 +29,7 @@ module.exports = {
       return {
         content: recipe.content,
         title: recipe.title,
-        dateCreated: recipe.dateCreated,
+        dateCreated: recipe.dateCreated.toISOString(),
         contributorUsername: authUser.username,
         numberLike: 0,
       };
@@ -62,19 +62,50 @@ module.exports = {
       throw new Error("User not found");
     }
 
-    const sortedListRecipe = Recipe.find({_id: {$in: user.listRecipes}}).sort({dateCreated: 1});
+    const sortedListRecipe = Recipe.find({_id: {$in: user.listRecipes}}).sort({dateCreated: -1});
     
     return (await sortedListRecipe).map((recipe) => {
       return {
         content: recipe.content,
         title: recipe.title,
-        dateCreated: recipe.dateCreated,
+        dateCreated: recipe.dateCreated.toISOString(),
         contributorUsername: user.username,
         numberLike: recipe.like.length,
       } 
     });
   },
 
+  getNewsFeed: async (req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+
+    let newsFeed = [];
+    const authUser = await User.findById(req.userId);
+
+    for(const followUser of authUser.following) {
+      const user = await User.findOne({
+        username: followUser.username,
+      })
+      for (const recipeID of user.listRecipes) {
+        const recipe = await Recipe.findById(recipeID);
+        newsFeed.push(recipe);
+      }
+    }
+
+    const sortedNewsFeed = newsFeed.sort({dateCreated: -1});
+    return (await sortedNewsFeed).map((recipe) => {
+      return {
+        content: recipe.content,
+        title: recipe.title,
+        dateCreated: recipe.dateCreated.toISOString(),
+        contributorUsername: recipe.contributor.username,
+        numberLike: recipe.like.length,
+      }
+    });
+  },
+
+  
   likeRecipe: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");
