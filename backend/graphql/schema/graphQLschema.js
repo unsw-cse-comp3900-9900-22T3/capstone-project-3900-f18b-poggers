@@ -64,7 +64,7 @@ input UserInput {
 type RootQuery {
     login(username: String!, password: String!): AuthData!
     getListRecipeByContributor(username: String!): [RecipeOutput!]!
-    getNewsFeed(): [RecipeOutput!]!
+    getNewsFeed: [RecipeOutput!]!
     getRecipeById(recipeID: String!): RecipeOutput!
     likeRecipe( recipeID: String!): Boolean!
     follow(followUsername: String!): Boolean!

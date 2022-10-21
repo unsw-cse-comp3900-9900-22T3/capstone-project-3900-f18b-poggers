@@ -104,7 +104,6 @@ module.exports = {
       }
     });
   },
-
   
   likeRecipe: async (args, req) => {
     if (!req.isAuth) {
