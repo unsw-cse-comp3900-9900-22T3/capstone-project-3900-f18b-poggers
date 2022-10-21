@@ -1,11 +1,10 @@
 import React from 'react'
 import { IconButton, ListItemText, List, ListItem, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { API, Auth, Storage } from "aws-amplify";
 import { graphqlOperation } from "aws-amplify";
+import RecipeContents from '../components/recipe/RecipeContents';
 import { useNavigate } from 'react-router-dom';
-import RemoveIcon from '@mui/icons-material/Remove';
 import Image from 'mui-image';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
@@ -39,8 +38,6 @@ const CreateRecipe = (props: Props) => {
   const [instructions, setInstructions] = React.useState<string[]>([]);
   const [selectedImage, setSelectedImage] = React.useState<File>();
   const [preview, setPreview] = React.useState<string>("");
-  const [ingredientText, setIngredientText] = React.useState<string>("");
-  const [instructionText, setInstructionText] = React.useState<string>("");
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
   const [imgData, setImgData] = React.useState('');
@@ -70,31 +67,6 @@ const CreateRecipe = (props: Props) => {
     setUserData()
   }, [navigate])
 
-  const listIngredient = ingredients.map((ingredient, key) =>
-    <li key={key}>
-      <ListItemText primary={ingredient} />
-    </li>
-  );
-
-  const listInstructions = instructions.map((instruction, key) =>
-    <ListItem key={key}>
-      <Grid
-        container
-        spacing={0}
-        direction="row"
-      >
-        <Grid item sm={0} sx={{ paddingTop: 0.75 }}>
-          <Typography variant="h5">
-            {key + 1}
-          </Typography>
-        </Grid>
-        <Grid item sm={10} sx={{ borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1 }}>
-          {instruction}
-        </Grid>
-      </Grid>
-    </ListItem>
-  );
-
   const bgStyles = {
     minHeight: `calc(100vh - 64px)`,
     backgroundColor: "#d3d3d3",
@@ -104,10 +76,8 @@ const CreateRecipe = (props: Props) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     console.log(formData.get("instruction"))
-    // formData.set("")
     setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
-    setInstructionText("");
   };
 
   const handleIngredient = (event: React.FormEvent<HTMLFormElement>) => {
@@ -116,7 +86,6 @@ const CreateRecipe = (props: Props) => {
     console.log(formData.get("ingredient"))
     setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
-    setIngredientText("");
   };
 
   const handleRemoveIngredient = () => {
@@ -188,9 +157,6 @@ const CreateRecipe = (props: Props) => {
               alignItems: "flex-start"
             }}
           >
-            {/* <Typography variant="h5">
-                  Description
-                </Typography> */}
             <TextField
               fullWidth
               id="description"
@@ -235,81 +201,16 @@ const CreateRecipe = (props: Props) => {
               {preview}
             </Box>
 
-            <Grid container spacing={5} sx={{ padding: 3 }}>
-              <Grid item sm={3}>
-                <Typography variant="h5">
-                  Ingredients
-                </Typography>
-                <ul>
-                  {listIngredient}
-                </ul>
-                <Box
-                  component="form"
-                  onSubmit={handleIngredient}
-                >
-                  <TextField
-                    value={ingredientText}
-                    fullWidth
-                    variant='standard'
-                    onChange={(e) => { setIngredientText(e.target.value) }}
-                    InputProps={{
-                      endAdornment:
-                        <>
-                          <IconButton
-                            color='secondary'
-                            onClick={(e) => { handleRemoveIngredient() }}>
-                            <RemoveIcon />
-                          </IconButton>
-                          <IconButton
-                            color='secondary'
-                            type="submit">
-                            <AddIcon />
-                          </IconButton>
-                        </>
-                    }}
-                    name="ingredient"
-                    id="ingredient"
-                    placeholder="Add another ingredient"
-                  />
-                </Box>
-              </Grid>
-              <Grid item sm={9}>
-                <Typography variant="h5">
-                  Cooking Instructions
-                </Typography>
-                <List>
-                  {listInstructions}</List>
-                <Box
-                  component="form"
-                  onSubmit={handleInstruction}
-                >
-                  <TextField
-                    value={instructionText}
-                    fullWidth
-                    variant='standard'
-                    onChange={(e) => { setInstructionText(e.target.value) }}
-                    InputProps={{
-                      endAdornment:
-                        <>
-                          <IconButton
-                            color='secondary'
-                            onClick={(e) => { handleRemoveInstruction() }}>
-                            <RemoveIcon />
-                          </IconButton>
-                          <IconButton
-                            color='secondary'
-                            type="submit">
-                            <AddIcon />
-                          </IconButton>
-                        </>
-                    }}
-                    name="instruction"
-                    id="instruction"
-                    placeholder="Add another cooking instruction"
-                  />
-                </Box>
-              </Grid>
-            </Grid>
+            {/* Ingredients and Instructions */}
+            <RecipeContents
+              ingredients={ingredients}
+              instructions={instructions}
+              handleInstruction={handleInstruction}
+              handleIngredient={handleIngredient}
+              handleRemoveIngredient={handleRemoveIngredient}
+              handleRemoveInstruction={handleRemoveInstruction}
+            />
+
             <Box
               paddingTop={0}
               sx={{

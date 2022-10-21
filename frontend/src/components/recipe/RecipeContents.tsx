@@ -11,6 +11,8 @@ import AddIcon from '@mui/icons-material/Add';
 type Props = {
   ingredients : string[],
   instructions : string[],
+  // instructionText : string,
+  // ingredientText: string,
   handleInstruction: (event: React.FormEvent<HTMLFormElement>) => void,
   handleIngredient: (event: React.FormEvent<HTMLFormElement>) => void,
   handleRemoveIngredient: () => void,
@@ -21,6 +23,16 @@ const RecipeContents = (props: Props) => {
 
   const [ingredientText, setIngredientText] = React.useState<string>("");
   const [instructionText, setInstructionText] = React.useState<string>("");
+
+  const submitIngredient = (e: React.FormEvent<HTMLFormElement>) => {
+    props.handleIngredient(e)
+    setIngredientText('');
+  }
+
+  const submitInstruction= (e: React.FormEvent<HTMLFormElement>) => {
+    props.handleInstruction(e)
+    setInstructionText('');
+  }
 
   return (
       <Grid container spacing={5} sx={{ padding: 3 }}>
@@ -37,7 +49,7 @@ const RecipeContents = (props: Props) => {
         </ul>
         <Box
           component="form"
-          onSubmit={props.handleIngredient}
+          onSubmit={submitIngredient}
         >
           <TextField
             value={ingredientText}
@@ -49,7 +61,7 @@ const RecipeContents = (props: Props) => {
                 <>
                   <IconButton
                     color='secondary'
-                    onClick={(e) => { props.handleRemoveIngredient() }}>
+                    onClick={() => { props.handleRemoveIngredient() }}>
                     <RemoveIcon />
                   </IconButton>
                   <IconButton
@@ -91,7 +103,7 @@ const RecipeContents = (props: Props) => {
         </List>
         <Box
           component="form"
-          onSubmit={props.handleInstruction}
+          onSubmit={submitInstruction}
         >
           <TextField
             value={instructionText}
@@ -104,7 +116,7 @@ const RecipeContents = (props: Props) => {
                 <>
                   <IconButton
                     color='secondary'
-                    onClick={(e) => { props.handleRemoveInstruction() }}>
+                    onClick={() => { props.handleRemoveInstruction() }}>
                     <RemoveIcon />
                   </IconButton>
                   <IconButton

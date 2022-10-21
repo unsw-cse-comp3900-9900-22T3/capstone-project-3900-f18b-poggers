@@ -1,6 +1,4 @@
-import AddIcon from '@mui/icons-material/Add';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, Button, Container, CssBaseline, Grid, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
 import { API, graphqlOperation, Storage } from "aws-amplify";
 import Image from 'mui-image';
@@ -67,8 +65,6 @@ const UpdateRecipe = (props: Props) => {
   const [selectedImage, setSelectedImage] = React.useState<File>();
   const [preview, setPreview] = React.useState<string>("");
   const [imgKey, setImgKey] = React.useState<boolean>(false);
-  const [ingredientText, setIngredientText] = React.useState<string>("");
-  const [instructionText, setInstructionText] = React.useState<string>("");
   const [imgData, setImgData] = React.useState('');
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
@@ -120,31 +116,6 @@ const UpdateRecipe = (props: Props) => {
     fetchRecipes();
   }, [recipeId]);
 
-  const listIngredient = ingredients.map((ingredient, key) =>
-    <li key={key}>
-      <ListItemText primary={ingredient} />
-    </li>
-  );
-
-  const listInstructions = instructions.map((instruction, key) =>
-    <ListItem key={key}>
-      <Grid
-        container
-        spacing={0}
-        direction="row"
-      >
-        <Grid item sm={0} sx={{ paddingTop: 0.75 }}>
-          <Typography variant="h5">
-            {key + 1}
-          </Typography>
-        </Grid>
-        <Grid item sm={10} sx={{ borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1 }}>
-          {instruction}
-        </Grid>
-      </Grid>
-    </ListItem>
-  );
-
   const bgStyles = {
     minHeight: `calc(100vh - 64px)`,
     backgroundColor: "#d3d3d3",
@@ -156,7 +127,6 @@ const UpdateRecipe = (props: Props) => {
     console.log(formData.get("instruction"))
     setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
-    setInstructionText("");
   };
 
   const handleIngredient = (event: React.FormEvent<HTMLFormElement>) => {
@@ -165,7 +135,6 @@ const UpdateRecipe = (props: Props) => {
     console.log(formData.get("ingredient"))
     setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
-    setIngredientText("");
   };
 
   const handleRemoveIngredient = () => {
@@ -200,6 +169,8 @@ const UpdateRecipe = (props: Props) => {
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
         <Box>
+
+        {/* Recipe Title */}
           <Box
             sx={{
               display: 'flex',
@@ -207,9 +178,6 @@ const UpdateRecipe = (props: Props) => {
               alignItems: 'flex-start',
             }}
           >
-            <Typography variant="h5">
-              Recipe Name
-            </Typography>
             <TextField
               value={recipeName}
               fullWidth
@@ -221,6 +189,8 @@ const UpdateRecipe = (props: Props) => {
               }}
             />
           </Box>
+
+          {/* Contributor Name */}
           <Box
             sx={{
               display: 'flex',
@@ -233,6 +203,8 @@ const UpdateRecipe = (props: Props) => {
             </Typography>
 
           </Box>
+
+          {/* Recipe Description */}
           <Box
             sx={{
               display: 'flex',
@@ -240,9 +212,6 @@ const UpdateRecipe = (props: Props) => {
               alignItems: "flex-start"
             }}
           >
-            <Typography variant="h5">
-              Description
-            </Typography>
             <TextField
               fullWidth
               value={description}
@@ -262,6 +231,7 @@ const UpdateRecipe = (props: Props) => {
             }}
           >
 
+          {/* Upload an Image */}
             <Box>
               <IconButton color="primary" aria-label="upload picture" component="label">
                 <input hidden accept="image/*" type="file" onChange={(e) => {
@@ -287,6 +257,8 @@ const UpdateRecipe = (props: Props) => {
               />}
               {preview}
             </Box>
+
+            {/* Ingredients and Instructions */}
             <RecipeContents
               ingredients={ingredients}
               instructions={instructions}
@@ -295,6 +267,8 @@ const UpdateRecipe = (props: Props) => {
               handleRemoveIngredient={handleRemoveIngredient}
               handleRemoveInstruction={handleRemoveInstruction}
             />
+
+            {/* Update Button */}
             <Box
               paddingTop={0}
               sx={{
