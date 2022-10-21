@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { API, Auth } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
 import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Recipe } from '../types/instacook-types';
-import { Button, Typography, Container, Grid, Box, Avatar, Link } from '@mui/material';
+import { Typography, Container, Grid, Link } from '@mui/material';
 import ProfileRecipe from '../components/profile/ProfileRecipe';
 
 type Props = {}
