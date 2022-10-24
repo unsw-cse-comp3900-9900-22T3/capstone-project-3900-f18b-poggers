@@ -66,6 +66,7 @@ module.exports = {
     
     return (await sortedListRecipe).map((recipe) => {
       return {
+        _id: recipe._id,
         content: recipe.content,
         title: recipe.title,
         dateCreated: recipe.dateCreated.toISOString(),
@@ -121,6 +122,33 @@ module.exports = {
 
     await recipe.save();
 
+    return true;
+  },
+
+  updateRecipe: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+
+    const recipe = await Recipe.findById(args.recipeID);
+    recipe.content = args.recipeInput.content;
+    recipe.title = args.recipeInput.title;
+    recipe.dateCreated = new Date(args.recipeInput.dateCreated);
+
+    await recipe.save();
+    return true;
+  },
+
+  deleteRecipe: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+
+    const recipe = await Recipe.findById(args.recipeID);
+    const user = await User.findById(recipe.contributor);
+    user.listRecipes.pop(args.recipeID);
+    await user.save();
+    await recipe.remove();
     return true;
   }
 };

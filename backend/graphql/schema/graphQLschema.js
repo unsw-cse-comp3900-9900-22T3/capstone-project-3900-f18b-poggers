@@ -34,6 +34,7 @@ type Recipe{
 }
 
 type RecipeOutput{
+  _id: ID!
   title: String!
   dateCreated : String!
   content: String!
@@ -66,8 +67,6 @@ type RootQuery {
     getListRecipeByContributor(username: String!): [RecipeOutput!]!
     getNewsFeed: [RecipeOutput!]!
     getRecipeById(recipeID: String!): RecipeOutput!
-    likeRecipe( recipeID: String!): Boolean!
-    follow(followUsername: String!): Boolean!
     getUserInfo(username:String!):UserInfo!
     isFollowing(followUser:String!): Boolean!
   
@@ -76,6 +75,12 @@ type RootMutation {
     createUser(userInput: UserInput): User
     createRecipe(recipeInput: RecipeInput): RecipeOutput
     createComment(recipeID:String!,content:String!,dateCreated:String!): Boolean!
+    likeRecipe(recipeID: String!): Boolean!
+    follow(followUsername: String!): Boolean!
+    updateRecipe(recipeID: String!,RecipeInput: RecipeInput): Boolean!
+    deleteRecipe(recipeID: String!): Boolean!
+    updateComment(commentID: String!,content:String!,dateCreated:String!): Boolean!
+    deleteComment(commentID: String!,recipeID: String!): Boolean!
 }
 schema {
     query: RootQuery
