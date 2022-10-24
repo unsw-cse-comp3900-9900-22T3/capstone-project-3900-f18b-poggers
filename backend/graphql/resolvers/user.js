@@ -33,6 +33,7 @@ module.exports = {
       throw err;
     }
   },
+  
   login: async ({ username, password }) => {
     // Look at the database to find existing user
     const user = await User.findOne({ username: username });
@@ -56,6 +57,63 @@ module.exports = {
       tokenExpiration: 1,
       username: user.username,
       email: user.email,
+    };
+  },
+
+  follow: async (args, req) => {
+
+    if(!req.isAuth){
+      throw new Error('Unauthenticated!');
+    }
+    const authUser = await User.findById(req.userId);
+
+    const followUsername = await User.findOne({
+      username: args.followUsername,
+    });
+
+    if (!followUsername) {
+      throw new Error("Follow User does not exist!");
+    }
+
+    if (authUser.listFollowing.includes(followUsername.username)) {
+      authUser.listFollowing.pop(followUsername.username);
+      followUsername.listFollower.pop(authUser.username);
+    } else {
+      authUser.listFollowing.push(followUsername.username);
+      followUsername.listFollower.push(authUser.username);
+    }
+
+    await followUsername.save();
+    await authUser.save();
+
+    return true;
+  },
+
+  isFollowing: async (args,req)=> {
+    if(!req.isAuth){
+      throw new Error('Unauthenticated!');
+    }
+    const authUser = await User.findById(req.userId);
+    
+    if (authUser.listFollowing.includes(args.followUser)){
+      return true;  
+    }
+    return false;  
+  },
+
+  // No need Auth for this function
+  getUserInfo: async (args, req) => {
+    const user = await User.findOne({
+      username: args.username,
+    });
+
+    if (!user) {
+      throw new Error("User does not exist!");
+    }
+    return {
+      username: user.username,
+      numberFollowing: user.listFollowing.length,
+      numberFollower: user.listFollower.length,
     };
   },
 };

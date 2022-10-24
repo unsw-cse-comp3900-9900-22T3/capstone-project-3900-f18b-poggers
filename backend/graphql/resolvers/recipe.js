@@ -3,40 +3,35 @@ const User = require("../../models/user");
 
 module.exports = {
   createRecipe: async (args, req) => {
-    
-    // TODO check token to continue (Ignore this for now)
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+    const authUser = await User.findById(req.userId);
 
-    
     const recipe = new Recipe({
       title: args.recipeInput.title,
       content: args.recipeInput.content,
       dateCreated: new Date(args.recipeInput.dateCreated),
-      contributor: "634b99b78d5b79ca9856f95c",
+      like: [],
+      contributor: req.userId,
     });
 
-    let createdRecipe;
     try {
-      const contributor = await User.findById("634b99b78d5b79ca9856f95c");
-
-      if (!contributor) {
+      if (!authUser) {
         throw new Error("User not found.");
       }
 
-      const result = await recipe.save();
-      console.log(result);
-      // createdRecipe = transformEvent(result);
+      await recipe.save();
 
-      contributor.listRecipes.push(recipe);
-      await contributor.save();
-
-      // TODO return proper data
+      authUser.listRecipes.push(recipe);
+      await authUser.save();
 
       return {
-        content: "someContent",
-        title: "someTitle",
-        _id: null,
-        dateCreated: "somedate",
-        contributor: null,
+        content: recipe.content,
+        title: recipe.title,
+        dateCreated: recipe.dateCreated.toISOString(),
+        contributorUsername: authUser.username,
+        numberLike: 0,
       };
     } catch (err) {
       console.log(err);
@@ -44,50 +39,116 @@ module.exports = {
     }
   },
 
-  
-  getRecipeById: async (args,req) =>{
-    
-    // TODO check token to continue (Ignore this for now)
-    
-    const recipe = await Recipe.findOne({
-     _id: args.id,
-    });
-    
+  getRecipeById: async (args) => {
+    const recipe = await Recipe.findById(args.recipeID);
 
-    // TODO return proper data
+    const contributor = await User.findById(recipe.contributor._id);
+
     return {
-      content: "someContent",
-      title: "someTitle",
-      _id: null,
-      dateCreated: "somedate",
-      contributor: null,
+      content: recipe.content,
+      title: recipe.title,
+      dateCreated: recipe.dateCreated,
+      contributorUsername: contributor.username,
+      numberLike: recipe.like.length,
     };
   },
 
-  getListRecipeByContributor: async (args, req) => {
-    
-    // TODO check token to continue (Ignore this for now)
-    
+  getListRecipeByContributor: async (args) => {
     const user = await User.findOne({
       username: args.username,
     });
 
-    if(!user){
+    if (!user) {
       throw new Error("User not found");
     }
 
-    const recipes = user.listRecipes; 
-    // this return list of recipe ID
-    console.log(recipes);
+    const sortedListRecipe = Recipe.find({_id: {$in: user.listRecipes}}).sort({dateCreated: -1});
     
-    //TODO  Return a list of recipes
-    return [{
-      content: "someContent",
-      title: "someTitle",
-      _id: null,
-      dateCreated: "somedate",
-      contributor: null,
-    }]; 
-    
+    return (await sortedListRecipe).map((recipe) => {
+      return {
+        _id: recipe._id,
+        content: recipe.content,
+        title: recipe.title,
+        dateCreated: recipe.dateCreated.toISOString(),
+        contributorUsername: user.username,
+        numberLike: recipe.like.length,
+      } 
+    });
   },
+
+  getNewsFeed: async (req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+
+    let newsFeed = [];
+    const authUser = await User.findById(req.userId);
+
+    for(const followUser of authUser.following) {
+      const user = await User.findOne({
+        username: followUser.username,
+      })
+      for (const recipeID of user.listRecipes) {
+        const recipe = await Recipe.findById(recipeID);
+        newsFeed.push(recipe);
+      }
+    }
+
+    const sortedNewsFeed = newsFeed.sort({dateCreated: -1});
+    return (await sortedNewsFeed).map((recipe) => {
+      return {
+        content: recipe.content,
+        title: recipe.title,
+        dateCreated: recipe.dateCreated.toISOString(),
+        contributorUsername: recipe.contributor.username,
+        numberLike: recipe.like.length,
+      }
+    });
+  },
+  
+  likeRecipe: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+    const authUser = await User.findById(req.userId);
+
+    const recipe = await Recipe.findById(args.recipeID);
+
+    if (recipe.like.includes(authUser.username)) {
+      recipe.like.pop(authUser.username);
+    } else {
+      recipe.like.push(authUser.username);
+    }
+
+    await recipe.save();
+
+    return true;
+  },
+
+  updateRecipe: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+
+    const recipe = await Recipe.findById(args.recipeID);
+    recipe.content = args.recipeInput.content;
+    recipe.title = args.recipeInput.title;
+    recipe.dateCreated = new Date(args.recipeInput.dateCreated);
+
+    await recipe.save();
+    return true;
+  },
+
+  deleteRecipe: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+
+    const recipe = await Recipe.findById(args.recipeID);
+    const user = await User.findById(recipe.contributor);
+    user.listRecipes.pop(args.recipeID);
+    await user.save();
+    await recipe.remove();
+    return true;
+  }
 };

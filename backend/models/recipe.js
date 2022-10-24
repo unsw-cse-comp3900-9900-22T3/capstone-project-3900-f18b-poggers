@@ -19,6 +19,18 @@ const recipeSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  like: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+  listComments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Recipe", recipeSchema);

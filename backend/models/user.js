@@ -21,6 +21,18 @@ const userSchema = new Schema({
       ref: "Recipe",
     },
   ],
+  listFollower: [
+    {
+      type: String,
+      required: false,
+    },
+  ],
+  listFollowing: [
+    {
+      type: String,
+      required: false,
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

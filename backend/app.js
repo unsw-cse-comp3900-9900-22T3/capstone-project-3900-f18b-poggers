@@ -12,7 +12,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-// app.use(isAuth);
+app.use(isAuth);
 
 app.use(
   "/graphql",
@@ -24,7 +24,7 @@ app.use(
 );
 mongoose
   .connect(
-    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.sui9cb8.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.hmp3jml.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
   )
   .then(() => {
     app.listen(3000);
