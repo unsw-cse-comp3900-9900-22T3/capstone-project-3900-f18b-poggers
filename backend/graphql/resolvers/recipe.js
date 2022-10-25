@@ -29,6 +29,7 @@ module.exports = {
       await authUser.save();
 
       return {
+        _id: recipe._id,
         content: recipe.content,
         title: recipe.title,
         dateCreated: recipe.dateCreated.toISOString(),

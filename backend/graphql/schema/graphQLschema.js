@@ -24,7 +24,6 @@ type AuthData {
 }
 
 type Recipe{
-  _id: ID!
   title: String!
   dateCreated: String!
   content: String!
@@ -83,7 +82,7 @@ type RootQuery {
 }
 type RootMutation {
     createUser(userInput: UserInput): User
-    createRecipe(recipeInput: RecipeInput): RecipeOutput
+    createRecipe(recipeInput: RecipeInput): RecipeOutput!
     createComment(recipeID:String!,content:String!,dateCreated:String!): Boolean!
     likeRecipe(recipeID: String!): Boolean!
     follow(followUsername: String!): Boolean!
