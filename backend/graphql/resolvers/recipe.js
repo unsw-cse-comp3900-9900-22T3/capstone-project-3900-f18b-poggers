@@ -1,6 +1,7 @@
 const Recipe = require("../../models/recipe");
 const User = require("../../models/user");
 const Tag = require("../../models/tag.js");
+const Comment = require("../../models/comment.js");
 
 module.exports = {
   createRecipe: async (args, req) => {
@@ -58,13 +59,24 @@ module.exports = {
       return tags.content;
     });
 
+    const listComments = await Comment.find({
+      _id: { $in: recipe.listComments },
+    }).map((comment) => {
+      return {
+        userName: comment.userName,
+        recipeID: comment.recipeID,
+        content: comment.content,
+        dateCreated: comment.dateCreated.toISOString(),
+      }
+    });
+
     return {
       title: recipe.title,
       content: recipe.content,
       dateCreated: recipe.dateCreated.toISOString(),
       contributorUsername: contributor.username,
       numberLike: recipe.like.length,
-      listComments: [],
+      listComments: listComments,
       tags: listTagNames,
     };
   },
