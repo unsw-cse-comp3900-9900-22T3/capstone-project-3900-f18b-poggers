@@ -29,12 +29,13 @@ module.exports = {
       await authUser.save();
 
       return {
-        _id: recipe._id,
-        content: recipe.content,
         title: recipe.title,
+        content: recipe.content,
         dateCreated: recipe.dateCreated.toISOString(),
         contributorUsername: authUser.username,
         numberLike: 0,
+        listComments: [],
+        tags: recipe.tags,
       };
     } catch (err) {
       console.log(err);
@@ -57,13 +58,13 @@ module.exports = {
       return tags.content;
     });
 
-    console.log(listTagNames);
     return {
-      content: recipe.content,
       title: recipe.title,
-      dateCreated: recipe.dateCreated,
+      content: recipe.content,
+      dateCreated: recipe.dateCreated.toISOString(),
       contributorUsername: contributor.username,
       numberLike: recipe.like.length,
+      listComments: [],
       tags: listTagNames,
     };
   },
@@ -83,12 +84,10 @@ module.exports = {
 
     return (await sortedListRecipe).map((recipe) => {
       return {
-        _id: recipe._id,
-        content: recipe.content,
         title: recipe.title,
-        dateCreated: recipe.dateCreated.toISOString(),
-        contributorUsername: user.username,
+        content: recipe.content,
         numberLike: recipe.like.length,
+        tags: [],
       };
     });
   },
@@ -114,12 +113,10 @@ module.exports = {
     const sortedNewsFeed = newsFeed.sort({ dateCreated: -1 });
     return (await sortedNewsFeed).map((recipe) => {
       return {
-        _id: recipe._id,
-        content: recipe.content,
         title: recipe.title,
-        dateCreated: recipe.dateCreated.toISOString(),
-        contributorUsername: recipe.contributor.username,
+        content: recipe.content,
         numberLike: recipe.like.length,
+        tags: [],
       };
     });
   },
@@ -154,7 +151,15 @@ module.exports = {
     recipe.dateCreated = new Date(args.recipeInput.dateCreated);
 
     await recipe.save();
-    return true;
+    return {
+      title: recipe.title,
+      content: recipe.content,
+      dateCreated: recipe.dateCreated.toISOString(),
+      contributorUsername: recipe.contributor.username,
+      numberLike: recipe.like.length,
+      listComments: [],
+      tags: recipe.tags,
+    }
   },
 
   deleteRecipe: async (args, req) => {

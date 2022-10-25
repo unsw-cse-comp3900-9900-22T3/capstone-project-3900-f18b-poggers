@@ -38,13 +38,20 @@ type Tag{
   content : String!
 }
 
-type RecipeOutput{
-  _id: ID!
+type RecipeThumbnail{
   title: String!
-  dateCreated : String!
   content: String!
+  numberLike :Int!
+  tags: [String!]!
+}
+
+type RecipeDetail{
+  title: String!
+  content: String!
+  dateCreated: String!
   contributorUsername: String!
   numberLike :Int!
+  listComments: [Comment!]!
   tags: [String!]!
 }
 
@@ -71,22 +78,22 @@ input UserInput {
 
 type RootQuery {
     login(username: String!, password: String!): AuthData!
-    getListRecipeByContributor(username: String!): [RecipeOutput!]!
-    getNewsFeed: [RecipeOutput!]!
-    getRecipeById(recipeID: String!): RecipeOutput!
+    getListRecipeByContributor(username: String!): [RecipeThumbnail!]!
+    getNewsFeed: [RecipeThumbnail!]!
+    getRecipeById(recipeID: String!): RecipeDetail!
     getUserInfo(username:String!):UserInfo!
     isFollowing(followUser:String!): Boolean!
     getTags: [Tag!]!
     isUserAuth: Boolean!
-  
 }
+
 type RootMutation {
     createUser(userInput: UserInput): User
-    createRecipe(recipeInput: RecipeInput): RecipeOutput!
+    createRecipe(recipeInput: RecipeInput): RecipeDetail!
     createComment(recipeID:String!,content:String!,dateCreated:String!): Boolean!
     likeRecipe(recipeID: String!): Boolean!
     follow(followUsername: String!): Boolean!
-    updateRecipe(recipeID: String!,RecipeInput: RecipeInput): Boolean!
+    updateRecipe(recipeID: String!,RecipeInput: RecipeInput): RecipeDetail!
     deleteRecipe(recipeID: String!): Boolean!
     updateComment(commentID: String!,content:String!,dateCreated:String!): Boolean!
     deleteComment(commentID: String!,recipeID: String!): Boolean!
