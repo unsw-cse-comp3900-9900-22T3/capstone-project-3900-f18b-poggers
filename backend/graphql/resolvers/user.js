@@ -33,7 +33,7 @@ module.exports = {
       throw err;
     }
   },
-  
+
   login: async ({ username, password }) => {
     // Look at the database to find existing user
     const user = await User.findOne({ username: username });
@@ -61,9 +61,8 @@ module.exports = {
   },
 
   follow: async (args, req) => {
-
-    if(!req.isAuth){
-      throw new Error('Unauthenticated!');
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
     }
     const authUser = await User.findById(req.userId);
 
@@ -89,16 +88,16 @@ module.exports = {
     return true;
   },
 
-  isFollowing: async (args,req)=> {
-    if(!req.isAuth){
-      throw new Error('Unauthenticated!');
+  isFollowing: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
     }
     const authUser = await User.findById(req.userId);
-    
-    if (authUser.listFollowing.includes(args.followUser)){
-      return true;  
+
+    if (authUser.listFollowing.includes(args.followUser)) {
+      return true;
     }
-    return false;  
+    return false;
   },
 
   // No need Auth for this function
@@ -115,5 +114,12 @@ module.exports = {
       numberFollowing: user.listFollowing.length,
       numberFollower: user.listFollower.length,
     };
+  },
+
+  isUserAuth: async (args, req) => {
+    if (!req.isAuth) {
+      return false;
+    }
+    return true;
   },
 };

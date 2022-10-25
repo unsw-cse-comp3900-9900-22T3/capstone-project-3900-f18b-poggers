@@ -31,6 +31,12 @@ const recipeSchema = new Schema({
       ref: "Comment",
     },
   ],
+  tags: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Tag",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Recipe", recipeSchema);

@@ -31,6 +31,12 @@ type Recipe{
   contributor: User! 
   like: [String!]!
   listComments: [Comment!]!
+  listTags: [Tag!]!
+}
+
+type Tag{
+  _id: ID!
+  content : String!
 }
 
 type RecipeOutput{
@@ -40,6 +46,7 @@ type RecipeOutput{
   content: String!
   contributorUsername: String!
   numberLike :Int!
+  tags: [String!]!
 }
 
 type Comment{
@@ -53,6 +60,7 @@ input RecipeInput{
   title: String!
   dateCreated : String!
   content: String!
+  tags: [ID!]!
 }
 
 input UserInput {
@@ -69,6 +77,8 @@ type RootQuery {
     getRecipeById(recipeID: String!): RecipeOutput!
     getUserInfo(username:String!):UserInfo!
     isFollowing(followUser:String!): Boolean!
+    getTags: [Tag!]!
+    isUserAuth: Boolean!
   
 }
 type RootMutation {
