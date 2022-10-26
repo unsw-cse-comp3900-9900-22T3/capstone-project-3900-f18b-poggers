@@ -93,7 +93,7 @@ type RootMutation {
     createComment(recipeID:String!,content:String!,dateCreated:String!): Boolean!
     likeRecipe(recipeID: String!): Boolean!
     follow(followUsername: String!): Boolean!
-    updateRecipe(recipeID: String!,RecipeInput: RecipeInput): RecipeDetail!
+    updateRecipe(recipeID: String!,recipeInput: RecipeInput): Boolean!
     deleteRecipe(recipeID: String!): Boolean!
     updateComment(commentID: String!,content:String!,dateCreated:String!): Boolean!
     deleteComment(commentID: String!,recipeID: String!): Boolean!

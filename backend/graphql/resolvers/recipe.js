@@ -95,11 +95,14 @@ module.exports = {
     }).sort({ dateCreated: -1 });
 
     return (await sortedListRecipe).map((recipe) => {
+      const listTags = recipe.tags.map(async (tagId) => {
+        return await Tag.findById(tagId);
+      });
       return {
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.like.length,
-        tags: [],
+        tags: listTags,
       };
     });
   },
@@ -123,12 +126,15 @@ module.exports = {
     }
 
     const sortedNewsFeed = newsFeed.sort({ dateCreated: -1 });
-    return (await sortedNewsFeed).map((recipe) => {
+    return sortedNewsFeed.map((recipe) => {
+      const listTags = recipe.tags.map(async (tagId) => {
+        return await Tag.findById(tagId);
+      });
       return {
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.like.length,
-        tags: [],
+        tags: listTags,
       };
     });
   },
@@ -158,20 +164,13 @@ module.exports = {
     }
 
     const recipe = await Recipe.findById(args.recipeID);
-    recipe.content = args.recipeInput.content;
-    recipe.title = args.recipeInput.title;
     recipe.dateCreated = new Date(args.recipeInput.dateCreated);
+    recipe.title = args.recipeInput.title;
+    recipe.content = args.recipeInput.content;
+    recipe.tags = args.recipeInput.tags;
 
     await recipe.save();
-    return {
-      title: recipe.title,
-      content: recipe.content,
-      dateCreated: recipe.dateCreated.toISOString(),
-      contributorUsername: recipe.contributor.username,
-      numberLike: recipe.like.length,
-      listComments: [],
-      tags: recipe.tags,
-    }
+    return true;
   },
 
   deleteRecipe: async (args, req) => {
