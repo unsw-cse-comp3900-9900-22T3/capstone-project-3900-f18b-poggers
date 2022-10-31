@@ -8,11 +8,11 @@ import ConfirmEmailModal from '../components/auth/ConfirmEmailModal';
 type Props = {}
 
 const Register = (props: Props) => {
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [username, setUsername] = React.useState("");
+  // const [username, setUsername] = React.useState("");
   const navigate = useNavigate();
 
   const displayError = (message: string) => {
@@ -22,18 +22,50 @@ const Register = (props: Props) => {
 
   const signUp = async (username: string, password: string, email: string) => {
     try {
-      const { user } = await Auth.signUp({
-        'username': username,
-        'password': password,
-        attributes: {
-          'email': email,
-        },
-        autoSignIn: { // optional - enables auto sign in after user is confirmed
-          enabled: false,
+      // const { user } = await Auth.signUp({
+      //   'username': username,
+      //   'password': password,
+      //   attributes: {
+      //     'email': email,
+      //   },
+      //   autoSignIn: { // optional - enables auto sign in after user is confirmed
+      //     enabled: false,
+      //   }
+      // });
+      // console.log("successful signup");
+      // console.log(user);
+
+      const body = {
+        query: `
+          mutation {
+            createUser(userInput: {
+              email: "${email}",
+              username: "${username}",
+              password: "${password}"
+            }) {
+              _id
+            }
+          }
+        `
+      }
+
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(body),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
         }
       });
+
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+
       console.log("successful signup");
-      console.log(user);
+      console.log(apiData);
+
+
     } catch (e) {
       console.log('error signing up:', e);
       if (typeof e === "string") {
@@ -102,7 +134,10 @@ const Register = (props: Props) => {
     setShowErrorMessage(false);
 
     // open confirmation modal
-    setOpen(true);
+    // setOpen(true);
+
+    // navigate to login page
+    navigate('/login');
   };
 
   const bgStyles = {
@@ -176,7 +211,7 @@ const Register = (props: Props) => {
                 label="Username"
                 name="username"
                 autoComplete="username"
-                onChange={(e) => setUsername(e.target.value)}
+              // onChange={(e) => setUsername(e.target.value)}
               />
 
               <TextField
@@ -222,7 +257,7 @@ const Register = (props: Props) => {
           </Box>
         </Container>
       </Grid>
-      <ConfirmEmailModal username={username} open={open} setOpen={setOpen} redirectPage="/login" />
+      {/* <ConfirmEmailModal username={username} open={open} setOpen={setOpen} redirectPage="/login" /> */}
     </>
   )
 }
