@@ -1,12 +1,6 @@
+import { isUserAuthData } from "../types/instacook-types";
 
-type isUserAuthRes = {
-  data: {
-    isUserAuth: boolean
-  },
-  errors: [{ message: string }] | undefined | null;
-}
-
-export const isLoggedIn = async (): Promise<boolean> => {
+export const checkLoggedIn = async () => {
   const body = {
     query: `
       query {
@@ -16,6 +10,8 @@ export const isLoggedIn = async (): Promise<boolean> => {
   }
 
   const token = localStorage.getItem('token');
+
+
   const res = await fetch('http://localhost:3000/graphql', {
     body: JSON.stringify(body),
     method: "POST",
@@ -25,11 +21,13 @@ export const isLoggedIn = async (): Promise<boolean> => {
     }
   });
 
-  const apiData: isUserAuthRes = await res.json();
+  const apiData: isUserAuthData = await res.json();
 
   if (apiData.errors) {
     throw new Error(apiData.errors[0].message);
   }
 
-  return apiData.data.isUserAuth;
+  if (!apiData.data.isUserAuth) {
+    throw new Error('User not authenticated.');
+  }
 }

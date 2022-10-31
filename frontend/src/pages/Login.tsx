@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import authbackground from '../static/images/authbackground.jpeg'
 import { Auth } from 'aws-amplify';
 import ConfirmEmailModal from '../components/auth/ConfirmEmailModal';
+import { checkLoggedIn } from '../util/checkLoggedIn';
 type Props = {}
 
 const Login = (props: Props) => {
@@ -106,21 +107,23 @@ const Login = (props: Props) => {
   }
 
   React.useEffect(() => {
-    const checkLoggedIn = async () => {
+    const checkIfLoggedIn = async () => {
       console.log("checkIfLoggedIn in Login.tsx called");
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        await Auth.currentAuthenticatedUser({
-          // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-          bypassCache: false
-        })
+        // // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
+        // await Auth.currentAuthenticatedUser({
+        //   // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+        //   bypassCache: false
+        // })
+
+        await checkLoggedIn();
         // redirect if already logged in
         navigate('/feed');
       } catch (e) {
         // should do nothing if they aren't logged in
       }
     }
-    checkLoggedIn()
+    checkIfLoggedIn()
   }, [navigate])
 
   return (
