@@ -46,26 +46,23 @@ const Feed = (props: Props) => {
           // variables: { filter: filter },
         });
         const recipes: Recipe[] = apiData.data.listRecipes.items;
-        const newList: Recipe[] = recipes.map((item) => ({
-          id: item.id,
-          name: item.name,
-          content: item.content,
-          fileImage: item.fileImage.slice(5).slice(0, -1),
-          contributor: item.contributor,
-          owner: item.owner,
-          createdAt: item.createdAt,
-          updatedAt: item.updatedAt
-          // tag: ['kfc', 'is', 'better'],
-          // like: 21,
-        }))
+        // const newList: Recipe[] = recipes.map((item) => ({
+        //   id: item.id,
+        //   name: item.name,
+        //   content: item.content,
+        //   fileImage: item.fileImage.slice(5).slice(0, -1),
+        //   contributor: item.contributor,
+        //   owner: item.owner,
+        //   createdAt: item.createdAt,
+        //   updatedAt: item.updatedAt
+        //   // tag: ['kfc', 'is', 'better'],
+        //   // like: 21,
+        // }))
 
-        newList.sort((a, b) => {
-          return Date.parse(b.updatedAt) - Date.parse(a.updatedAt);
-        })
-
-        console.log(newList);
-        // setRecipeList([]);
-        setRecipeList([...newList]);
+        console.log("zap");
+        // console.log(newList);
+        // // setRecipeList([]);
+        // setRecipeList([...newList]);
       } catch (error) {
         console.log("Error on fetching recipe", error);
         setRecipeList([]);

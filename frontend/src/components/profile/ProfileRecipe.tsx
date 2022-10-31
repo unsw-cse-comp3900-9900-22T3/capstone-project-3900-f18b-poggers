@@ -13,7 +13,6 @@ const ProfileRecipe = (props: Props) => {
 
   const [imageURL, setImageURL] = useState("");
   const [description, setDescription] = useState("");
-  const [isUpdated, setIsUpdated] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,22 +28,15 @@ const ProfileRecipe = (props: Props) => {
       }
     }
 
-    const checkPostUpdate = async () => {
-      // check if the post was modified
-      Date.parse(props.post.updatedAt) - Date.parse(props.post.createdAt) 
-       ? setIsUpdated(true) : setIsUpdated(false);
-    };
-
     const getImageUrl = async () => {
-      const fileAccessURL = await Storage.get(props.post.fileImage, { expires: 30, level: "public" });
-      setImageURL(fileAccessURL);
+
+      setImageURL("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Ice_cream_with_whipped_cream%2C_chocolate_syrup%2C_and_a_wafer_%28cropped%29.jpg/1200px-Ice_cream_with_whipped_cream%2C_chocolate_syrup%2C_and_a_wafer_%28cropped%29.jpg");
     };
 
     getImageUrl();
     getDescription();
-    checkPostUpdate();
 
-  }, [props.post.fileImage, props.post.content, props.post.updatedAt, props.post.createdAt])
+  }, [props.post.content])
 
   // const tagStyles = {
   //   backgroundColor: '#28343c',
@@ -68,7 +60,7 @@ const ProfileRecipe = (props: Props) => {
     >
 
       {/* Recipe thumbnail */}
-      <Grid item md={4} mr={2} ml={{ md: 0, xs: 1.5 }} onClick={() => navigate(`/recipe/${props.post.id}`)}>
+      <Grid item md={4} mr={2} ml={{ md: 0, xs: 1.5 }} onClick={() => navigate(`/recipe/69`)}>
         <Image
           style={{
             minHeight: 200,
@@ -92,7 +84,7 @@ const ProfileRecipe = (props: Props) => {
             noWrap variant="h4" 
             ml={0.25}
           >
-            {props.post.name}
+            {props.post.title}
           </Typography>
 
           <Typography 
@@ -101,11 +93,12 @@ const ProfileRecipe = (props: Props) => {
             sx={{ cursor: "pointer" }}
             onClick={() => location.pathname === '/feed' && navigate(`/profile/${props.post.contributor}`)}
           >
-            {isUpdated ? (
+            {/* {isUpdated ? (
               <> Updated by <b>{props.post.contributor} </b> </> 
             ) : (
               <> Uploaded by <b>{props.post.contributor} </b> </>
-            )}
+            )} */}
+            uploaded by
           </Typography> 
             
 

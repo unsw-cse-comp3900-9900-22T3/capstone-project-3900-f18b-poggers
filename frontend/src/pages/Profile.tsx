@@ -39,37 +39,52 @@ const Profile = (props: Props) => {
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
+
+
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const filter = { 'contributor': { eq: profileUsername === undefined ? username : profileUsername } };
-        const apiData: GraphQLResult<any> = await API.graphql({
-          query: listRecipes,
-          variables: { filter: filter },
-        });
-        const recipes: Recipe[] = apiData.data.listRecipes.items;
-        const newList: Recipe[] = recipes.map((item) => ({
-          id: item.id,
-          name: item.name,
-          content: item.content,
-          fileImage: item.fileImage.slice(5).slice(0, -1),
-          contributor: item.contributor,
-          owner: item.owner,
-          createdAt: item.createdAt,
-          updatedAt: item.updatedAt
-          // tag: ['kfc', 'is', 'better'],
-          // like: 21,
-        }))
+        const requestBody = {
+          query: `
+            query {
+              getListRecipeByContributor(username: "${profileUsername === undefined ? username : profileUsername}") {
+                  title
+                  content
+                  numberLike
+                  tags
+              }
+            }
+          `
+        };
 
-        newList.sort((a, b) => {
-          return Date.parse(b.updatedAt) - Date.parse(a.updatedAt);
-        })
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        console.log("TRIGGERRREDD");
+        const apiData = await res.json();
+        const recipes = apiData.data.getListRecipeByContributor
+        // console.log(apiData);
+        // console.log(recipes);
+        // console.log(recipes[0].title);
+
+        const newList: Recipe[] = recipes.map((item: Recipe) => ({
+            title: item.title,
+            content: item.content,
+            contributor: profileUsername,
+            numberLike: item.numberLike,
+        }))
 
         console.log(newList);
         setRecipeList([...newList]);
       } catch (error) {
         console.log("Error on fetching recipe", error);
       }
+
     };
 
     const setUserData = async () => {
