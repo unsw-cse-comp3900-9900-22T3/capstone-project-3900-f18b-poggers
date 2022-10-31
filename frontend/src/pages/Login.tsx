@@ -9,7 +9,7 @@ type Props = {}
 const Login = (props: Props) => {
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const navigate = useNavigate();
 
@@ -21,7 +21,36 @@ const Login = (props: Props) => {
   const logIn = async (password: string) => {
     try {
       // successful login
-      await Auth.signIn(username, password);
+      // await Auth.signIn(username, password);
+
+      const body = {
+        query: `
+          query {
+            login(username: "${username}", password: "${password}") {
+              token
+            }
+          }
+        `
+      }
+
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(body),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+
+      // successful login
+      // store jwt in localStorage (NOT SECURE)
+      localStorage.setItem('token', apiData.data.login.token);
+      console.log(localStorage.getItem('token'));
+
       navigate('/feed')
     } catch (e) {
       console.log('error signing in:', e);
@@ -55,10 +84,10 @@ const Login = (props: Props) => {
     } catch (e) {
       console.log('error signing in:', e);
       if (e instanceof Error) {
-        if (e.name === 'UserNotConfirmedException') {
-          setOpen(true);
-          return;
-        }
+        // if (e.name === 'UserNotConfirmedException') {
+        //   setOpen(true);
+        //   return;
+        // }
         displayError(e.message)
       } else if (typeof e === "string") {
         displayError(e);
@@ -168,7 +197,7 @@ const Login = (props: Props) => {
           </Box>
         </Container>
       </Grid>
-      <ConfirmEmailModal username={username} open={open} setOpen={setOpen} redirectPage="/feed" />
+      {/* <ConfirmEmailModal username={username} open={open} setOpen={setOpen} redirectPage="/feed" /> */}
     </>
   )
 }
