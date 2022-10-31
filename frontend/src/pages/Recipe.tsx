@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { API, Auth, Storage } from "aws-amplify";
 import EditIcon from '@mui/icons-material/Edit';
 import Image from 'mui-image';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 type Props = {}
 
 type Comment = {
@@ -253,9 +254,23 @@ const Recipe = (props: Props) => {
               </ul>
             </Grid>
             <Grid item sm={9}>
+            <Box
+            sx={{
+            maxWidth: '100%',
+            display: 'flex',
+            alignItems: 'flex-end',
+            flexDirection: 'row',
+            }}>
               <Typography variant="h5">
                 Cooking Instructions
               </Typography>
+              <IconButton
+                // sx={{}}
+                color='secondary'
+                type="submit">
+                <FavoriteIcon />
+              </IconButton>
+            </Box>
               <List>
                 {instructions.map((instruction, key) =>
                   <ListItem key={key}>

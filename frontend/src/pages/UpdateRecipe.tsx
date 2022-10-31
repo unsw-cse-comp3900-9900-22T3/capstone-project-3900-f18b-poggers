@@ -1,5 +1,5 @@
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { Box, Button, Container, CssBaseline, Grid, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, CssBaseline, Grid, IconButton, TextField, Typography } from '@mui/material';
 import { API, graphqlOperation, Storage } from "aws-amplify";
 import Image from 'mui-image';
 import React from 'react';
