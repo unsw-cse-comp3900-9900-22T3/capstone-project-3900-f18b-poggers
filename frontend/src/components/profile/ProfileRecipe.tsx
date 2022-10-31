@@ -29,8 +29,14 @@ const ProfileRecipe = (props: Props) => {
     }
 
     const getImageUrl = async () => {
-
-      setImageURL("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Ice_cream_with_whipped_cream%2C_chocolate_syrup%2C_and_a_wafer_%28cropped%29.jpg/1200px-Ice_cream_with_whipped_cream%2C_chocolate_syrup%2C_and_a_wafer_%28cropped%29.jpg");
+      try {
+        const imageBase64 = JSON.parse(props.post.content);
+        if (imageBase64[3] !== undefined) {
+          setImageURL(imageBase64[3]);
+        }
+      } catch (e) {
+        setImageURL("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Ice_cream_with_whipped_cream%2C_chocolate_syrup%2C_and_a_wafer_%28cropped%29.jpg/1200px-Ice_cream_with_whipped_cream%2C_chocolate_syrup%2C_and_a_wafer_%28cropped%29.jpg");
+      }
     };
 
     getImageUrl();
@@ -107,7 +113,7 @@ const ProfileRecipe = (props: Props) => {
             // variant="body2"
             mt={1}
             pl={0.5}
-            mb={1}>
+            mb={0.5}>
             {description}
           </Typography>
         </Grid>

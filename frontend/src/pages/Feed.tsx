@@ -1,34 +1,14 @@
 import { useState, useEffect } from 'react';
-import { API, Auth } from "aws-amplify";
+import { Auth } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
-import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Recipe } from '../types/instacook-types';
 import { Typography, Container, Grid, Link } from '@mui/material';
 import ProfileRecipe from '../components/profile/ProfileRecipe';
 
 type Props = {}
 
-const listRecipes = /* GraphQL */ `
-query ListRecipes(
-  $filter: ModelRecipeFilterInput
-  $limit: Int
-  $nextToken: String
-  ) {
-  listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      name
-      content
-      contributor
-      fileImage
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-`;
+const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyMjc5MTgsImV4cCI6MTY2NzIzMTUxOH0.W6G48Hos5naG-2twVtM_nrWhnZ7Tchh9EI6zo-2yooc"
+
 
 const Feed = (props: Props) => {
   const [userEmail, setUserEmail] = useState("");
@@ -40,32 +20,44 @@ const Feed = (props: Props) => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        // const filter = { 'contributor': { eq: profileUsername === undefined ? username : profileUsername } };
-        const apiData: GraphQLResult<any> = await API.graphql({
-          query: listRecipes,
-          // variables: { filter: filter },
+        const requestBody = {
+          query: `
+            query {
+              getNewsFeed {
+                  title
+                  content
+                  numberLike
+                  tags
+              }
+            }
+          `
+        };
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+          }
         });
-        const recipes: Recipe[] = apiData.data.listRecipes.items;
-        // const newList: Recipe[] = recipes.map((item) => ({
-        //   id: item.id,
-        //   name: item.name,
-        //   content: item.content,
-        //   fileImage: item.fileImage.slice(5).slice(0, -1),
-        //   contributor: item.contributor,
-        //   owner: item.owner,
-        //   createdAt: item.createdAt,
-        //   updatedAt: item.updatedAt
-        //   // tag: ['kfc', 'is', 'better'],
-        //   // like: 21,
+
+        const apiData = await res.json();
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+        // const recipes = apiData.data.getListRecipeByContributor
+
+        // const newList: Recipe[] = recipes.map((item: Recipe) => ({
+        //     title: item.title,
+        //     content: item.content,
+        //     contributor: "chefZap",
+        //     numberLike: item.numberLike,
         // }))
 
-        console.log("zap");
         // console.log(newList);
-        // // setRecipeList([]);
         // setRecipeList([...newList]);
       } catch (error) {
         console.log("Error on fetching recipe", error);
-        setRecipeList([]);
       }
     };
 
@@ -105,13 +97,13 @@ const Feed = (props: Props) => {
       maxWidth="md"
       sx={{ backgroundColor: 'white', paddingBottom: 2, minHeight: 'calc(100vh - 64px)' }}
     >
-      <div style={{ backgroundColor: 'white' }}>
+      {/* <div style={{ backgroundColor: 'white' }}>
         <div>This should be the feed (/feed)</div>
         <div>You are logged in as: </div>
         <div>Email: {userEmail}</div>
         <div>Username: {username}</div>
         <div>Id: {id}</div>
-      </div>
+      </div> */}
 
       {/* A message if there are no recipes displayed */}
       {recipeList.length === 0 && (

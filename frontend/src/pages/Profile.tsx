@@ -15,7 +15,7 @@ const Profile = (props: Props) => {
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
-  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyMjM3NzIsImV4cCI6MTY2NzIyNzM3Mn0.xX2qtzfDFVjOzQoKDHwGaQQJmC4KtMDa0jUpQ2f2kIg"
+  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyMjc5MTgsImV4cCI6MTY2NzIzMTUxOH0.W6G48Hos5naG-2twVtM_nrWhnZ7Tchh9EI6zo-2yooc"
 
   
   useEffect(() => {
