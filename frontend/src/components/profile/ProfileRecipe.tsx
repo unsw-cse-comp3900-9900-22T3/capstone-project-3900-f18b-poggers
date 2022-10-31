@@ -1,9 +1,9 @@
-import { Typography, Grid } from '@mui/material';
+import { Typography, Grid, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Storage } from "aws-amplify";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Recipe } from '../../types/instacook-types';
 import { Image } from 'mui-image'
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 type Props = {
   post: Recipe,
@@ -38,13 +38,13 @@ const ProfileRecipe = (props: Props) => {
 
   }, [props.post.content])
 
-  // const tagStyles = {
-  //   backgroundColor: '#28343c',
-  //   padding: 1,
-  //   borderRadius: 2,
-  //   color: '#FFF',
-  //   margin: 0.5,
-  // }
+  const tagStyles = {
+    backgroundColor: '#28343c',
+    padding: 1,
+    borderRadius: 2,
+    color: '#FFF',
+    margin: 0.5,
+  }
 
   return (
     <Grid
@@ -93,12 +93,7 @@ const ProfileRecipe = (props: Props) => {
             sx={{ cursor: "pointer" }}
             onClick={() => location.pathname === '/feed' && navigate(`/profile/${props.post.contributor}`)}
           >
-            {/* {isUpdated ? (
-              <> Updated by <b>{props.post.contributor} </b> </> 
-            ) : (
-              <> Uploaded by <b>{props.post.contributor} </b> </>
-            )} */}
-            uploaded by
+            Uploaded by {props.post.contributor}
           </Typography> 
             
 
@@ -118,12 +113,12 @@ const ProfileRecipe = (props: Props) => {
         </Grid>
 
         {/* Tags and likes */}
-        {/* <Grid
+        <Grid
           container
           direction="row"
           alignItems="flex-end"
         >
-          {
+          {/* {
             props.post.tag.map((item, index) => {
               return (
                 <Box sx={tagStyles}>
@@ -131,14 +126,17 @@ const ProfileRecipe = (props: Props) => {
                 </Box>
               )
             })
-          }
+          } */}
 
           <Box sx={tagStyles}>
             <Grid container direction="row" alignItems="center">
-              <FavoriteIcon fontSize='small'/> {props.post.like}
+              <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5}}/> 
+              <Typography>
+                {props.post.numberLike}
+              </Typography>
             </Grid>
           </Box>
-        </Grid> */}
+        </Grid>
       </Grid>
     </Grid>
 

@@ -1,35 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography, Container, Grid, Box, Avatar } from '@mui/material';
 import ProfileRecipe from '../components/profile/ProfileRecipe';
-import { API, Auth } from "aws-amplify";
-import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { Auth } from "aws-amplify";
 import { Recipe } from '../types/instacook-types';
 import { useNavigate, useParams } from 'react-router-dom';
 
 type Props = {}
-
-const listRecipes = /* GraphQL */ `
-query ListRecipes(
-  $filter: ModelRecipeFilterInput
-  $limit: Int
-  $nextToken: String
-  ) {
-  listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      name
-      content
-      contributor
-      fileImage
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-`;
-
 
 const Profile = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -39,8 +15,9 @@ const Profile = (props: Props) => {
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
+  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyMjM3NzIsImV4cCI6MTY2NzIyNzM3Mn0.xX2qtzfDFVjOzQoKDHwGaQQJmC4KtMDa0jUpQ2f2kIg"
 
-
+  
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -56,7 +33,6 @@ const Profile = (props: Props) => {
             }
           `
         };
-
         const res = await fetch('http://localhost:3000/graphql', {
           body: JSON.stringify(requestBody),
           method: "POST",
@@ -65,12 +41,8 @@ const Profile = (props: Props) => {
           }
         });
 
-        console.log("TRIGGERRREDD");
         const apiData = await res.json();
         const recipes = apiData.data.getListRecipeByContributor
-        // console.log(apiData);
-        // console.log(recipes);
-        // console.log(recipes[0].title);
 
         const newList: Recipe[] = recipes.map((item: Recipe) => ({
             title: item.title,
@@ -86,6 +58,35 @@ const Profile = (props: Props) => {
       }
 
     };
+
+    const checkSubscribe = async () => {
+      try {
+        const requestBody = {
+          query: `
+            query {
+              isFollowing(followUser: "${profileUsername === undefined ? username : profileUsername}")
+              }
+          `
+          };
+  
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+          }
+        });
+  
+        const apiData = await res.json();
+        console.log(apiData)
+        setIsSubscribed(apiData.data.isFollowing);
+        isSubscribed ? setButtonText("Unsubscribe") : setButtonText("Subscribe");
+      } catch (error) {
+        console.log("checkSubscribe failed:", error);
+      }
+
+    }
 
     const setUserData = async () => {
       try {
@@ -116,13 +117,40 @@ const Profile = (props: Props) => {
         navigate('/login');
       }
     }
-    setUserData()
+    setUserData();
+    checkSubscribe();
     fetchRecipes();
-  }, [navigate, profileUsername]);
+  }, [navigate, profileUsername, isSubscribed]);
 
-  const subscribe = () => {
-    setIsSubscribed(!isSubscribed);
-    isSubscribed ? setButtonText("Subscribe") : setButtonText("Unsubscribe");
+  const subscribe = async () => {
+    try {
+      const requestBody = {
+        query: `
+          mutation {
+            follow(followUsername: "${profileUsername === undefined ? username : profileUsername}")
+            }
+        `
+        };
+
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token,
+        }
+      });
+
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+      // console.log(apiData)
+      setIsSubscribed(!isSubscribed);
+      isSubscribed ? setButtonText("Unsubscribe") : setButtonText("Subscribe");
+    } catch (error) {
+      console.log("subscribe button failed:", error);
+    }
   }
 
   return (
