@@ -11,6 +11,7 @@ type User {
 
 type UserInfo{
   username: String!
+  email: String!
   numberFollower: Int!
   numberFollowing: Int!
 }
@@ -49,13 +50,13 @@ type RecipeThumbnail{
 
 type RecipeDetail{
   _id: ID!
+  contributorUsername: String!
   title: String!
   content: String!
-  dateCreated: String!
-  contributorUsername: String!
   numberLike :Int!
-  listComments: [Comment!]!
   tags: [String!]!
+  dateCreated: String!
+  listComments: [Comment!]!
 }
 
 type Comment{
@@ -87,7 +88,8 @@ type RootQuery {
     getUserInfo(username:String!):UserInfo!
     isFollowing(followUser:String!): Boolean!
     getTags: [Tag!]!
-    isUserAuth: Boolean!
+    isUserAuth: UserInfo!
+    isRecipeLiked(recipeID: String!): Boolean!
 }
 
 type RootMutation {
