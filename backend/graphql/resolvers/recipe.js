@@ -14,6 +14,7 @@ module.exports = {
       title: args.recipeInput.title,
       content: args.recipeInput.content,
       dateCreated: new Date(args.recipeInput.dateCreated),
+      numberLike: 0,
       like: [],
       tags: args.recipeInput.tags,
       contributor: req.userId,
@@ -74,7 +75,7 @@ module.exports = {
       content: recipe.content,
       dateCreated: recipe.dateCreated.toISOString(),
       contributorUsername: contributor.username,
-      numberLike: recipe.like.length,
+      numberLike: recipe.numberLike,
       listComments: comments,
       tags: tagNames,
     };
@@ -91,7 +92,7 @@ module.exports = {
 
     const sortedListRecipe = Recipe.find({
       _id: { $in: user.listRecipes },
-    }).sort({ dateCreated: -1 });
+    }).sort({ dateCreated: -1, numberLike: -1 });
 
     return (await sortedListRecipe).map(async (recipe) => {
       // query and sort list of tags
@@ -102,7 +103,7 @@ module.exports = {
         contributorUsername: user.username,
         title: recipe.title,
         content: recipe.content,
-        numberLike: recipe.like.length,
+        numberLike: recipe.numberLike,
         tags: tagNames,
       };
     });
@@ -126,7 +127,7 @@ module.exports = {
       }
     }
 
-    const sortedNewsFeed = newsFeed.sort({ dateCreated: -1 });
+    const sortedNewsFeed = newsFeed.sort({ dateCreated: -1, numberLike: -1 });
     return sortedNewsFeed.map((recipe) => {
       const listTags = recipe.tags.map(async (tagId) => {
         return await Tag.findById(tagId);
@@ -137,7 +138,7 @@ module.exports = {
         contributorUsername: contributor.username,
         title: recipe.title,
         content: recipe.content,
-        numberLike: recipe.like.length,
+        numberLike: recipe.numberLike,
         tags: listTags,
       };
     });
@@ -153,8 +154,10 @@ module.exports = {
 
     if (recipe.like.includes(authUser.username)) {
       recipe.like.pop(authUser.username);
+      recipe.numberLike--;
     } else {
       recipe.like.push(authUser.username);
+      recipe.numberLike++;
     }
 
     await recipe.save();

@@ -49,13 +49,13 @@ type RecipeThumbnail{
 
 type RecipeDetail{
   _id: ID!
+  contributorUsername: String!
   title: String!
   content: String!
-  dateCreated: String!
-  contributorUsername: String!
   numberLike :Int!
-  listComments: [Comment!]!
   tags: [String!]!
+  dateCreated: String!
+  listComments: [Comment!]!
 }
 
 type Comment{

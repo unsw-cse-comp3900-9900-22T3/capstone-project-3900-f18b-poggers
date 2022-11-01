@@ -19,6 +19,10 @@ const recipeSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  numberLike: {
+    type: Number,
+    required: true,
+  },
   like: [
     {
       type: String,
