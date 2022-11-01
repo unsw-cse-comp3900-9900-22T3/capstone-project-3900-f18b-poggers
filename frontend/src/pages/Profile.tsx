@@ -15,7 +15,7 @@ const Profile = (props: Props) => {
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
-  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjczMDE5NjUsImV4cCI6MTY2NzMwNTU2NX0.09DaRMN7SHoZF_vP50kaZ0CraC3oAkk-WZyJQJlxO9g"
+  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjczMDkyNDEsImV4cCI6MTY2NzMxMjg0MX0.gyX6fkb58m6JzpKPEKNv3aROu6tglqoY18VInD4Jlsg"
 
   
   useEffect(() => {
@@ -52,6 +52,7 @@ const Profile = (props: Props) => {
             title: item.title,
             content: item.content,
             numberLike: item.numberLike,
+            tags: item.tags,
         }))
 
         console.log(newList);

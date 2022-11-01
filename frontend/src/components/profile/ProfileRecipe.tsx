@@ -124,15 +124,6 @@ const ProfileRecipe = (props: Props) => {
           direction="row"
           alignItems="flex-end"
         >
-          {/* {
-            props.post.tag.map((item, index) => {
-              return (
-                <Box sx={tagStyles}>
-                  {item}
-                </Box>
-              )
-            })
-          } */}
 
           <Box sx={tagStyles}>
             <Grid container direction="row" alignItems="center">
@@ -142,6 +133,18 @@ const ProfileRecipe = (props: Props) => {
               </Typography>
             </Grid>
           </Box>
+
+          {
+            props.post.tags.map((item, index) => {
+              return (
+                <Box key={index} sx={tagStyles}>
+                  <Typography>
+                    {item}
+                  </Typography>
+                </Box>
+              )
+            })
+          }
         </Grid>
       </Grid>
     </Grid>

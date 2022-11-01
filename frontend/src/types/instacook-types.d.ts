@@ -5,4 +5,5 @@ export type Recipe = {
   content: string,
   contributor: string,
   numberLike: number,
+  tags: string[],
 }

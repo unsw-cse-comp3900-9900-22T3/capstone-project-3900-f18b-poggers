@@ -7,7 +7,7 @@ import ProfileRecipe from '../components/profile/ProfileRecipe';
 
 type Props = {}
 
-const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyOTM3MTUsImV4cCI6MTY2NzI5NzMxNX0.WkZl_UrJ0kWthlgY9pjcUzWWn8kJ9ztBbizo4nxFp84"
+const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjczMDkyNDEsImV4cCI6MTY2NzMxMjg0MX0.gyX6fkb58m6JzpKPEKNv3aROu6tglqoY18VInD4Jlsg"
 
 
 const Feed = (props: Props) => {
@@ -47,18 +47,19 @@ const Feed = (props: Props) => {
         if (apiData.errors) {
           throw new Error(apiData.errors[0].message);
         }
-        // const recipes = apiData.data.getListRecipeByContributor
+        const recipes = apiData.data.getNewsFeed
 
-        // const newList: Recipe[] = recipes.map((item: Recipe) => ({
-        //   _id: item._id,
-        //   contributorUsername: item.contributorUsername,
-        //   title: item.title,
-        //   content: item.content,
-        //   numberLike: item.numberLike,
-        // }))
+        const newList: Recipe[] = recipes.map((item: Recipe) => ({
+          _id: item._id,
+          contributorUsername: item.contributorUsername,
+          title: item.title,
+          content: item.content,
+          numberLike: item.numberLike,
+          tags: item.tags,
+        }))
 
-        // console.log(newList);
-        // setRecipeList([...newList]);
+        console.log(newList);
+        setRecipeList([...newList]);
       } catch (error) {
         console.log("Error on fetching recipe", error);
       }
