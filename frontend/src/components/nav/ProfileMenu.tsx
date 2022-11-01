@@ -1,5 +1,4 @@
 import { Divider, Menu, MenuItem } from '@mui/material'
-import { Auth } from 'aws-amplify'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -15,7 +14,7 @@ const ProfileMenu = (props: Props) => {
 
   const handleSignOut = async () => {
     try {
-      await Auth.signOut();
+      localStorage.removeItem('token');
 
       // close menu, log out and redirect to /login
       props.handleMenuClose();

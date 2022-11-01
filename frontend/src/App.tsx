@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import Recipe from './pages/Recipe';
 import CreateRecipe from './pages/CreateRecipe';
 import UpdateRecipe from './pages/UpdateRecipe';
+import Discovery from './pages/Discovery';
 
 
 const theme = createTheme({
@@ -60,6 +61,7 @@ const App = () => {
         <ThemeProvider theme={theme}>
           <Nav />
           <Routes>
+            <Route path="/" element={<Discovery />} />
             <Route path="/login" element={<Login />} />
             <Route path="/feed" element={<Feed />} />
             <Route path="/register" element={<Register />} />

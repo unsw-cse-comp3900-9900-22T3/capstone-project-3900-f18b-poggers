@@ -2,14 +2,19 @@ import { Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, 
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import authbackground from '../static/images/authbackground.jpeg'
-import { Auth } from 'aws-amplify';
-import ConfirmEmailModal from '../components/auth/ConfirmEmailModal';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
+
 type Props = {}
+
+const bgStyles = {
+  minHeight: `calc(100vh - 64px)`,
+  background: `url(${authbackground}) no-repeat center center fixed`,
+  backgroundSize: "cover"
+}
 
 const Login = (props: Props) => {
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [open, setOpen] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const navigate = useNavigate();
 
@@ -20,8 +25,34 @@ const Login = (props: Props) => {
 
   const logIn = async (password: string) => {
     try {
+      const body = {
+        query: `
+          query {
+            login(username: "${username}", password: "${password}") {
+              token
+            }
+          }
+        `
+      }
+
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(body),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+
       // successful login
-      await Auth.signIn(username, password);
+      // store jwt in localStorage (NOT SECURE)
+      localStorage.setItem('token', apiData.data.login.token);
+      console.log(localStorage.getItem('token'));
+
       navigate('/feed')
     } catch (e) {
       console.log('error signing in:', e);
@@ -55,10 +86,6 @@ const Login = (props: Props) => {
     } catch (e) {
       console.log('error signing in:', e);
       if (e instanceof Error) {
-        if (e.name === 'UserNotConfirmedException') {
-          setOpen(true);
-          return;
-        }
         displayError(e.message)
       } else if (typeof e === "string") {
         displayError(e);
@@ -70,28 +97,19 @@ const Login = (props: Props) => {
 
   };
 
-  const bgStyles = {
-    minHeight: `calc(100vh - 64px)`,
-    background: `url(${authbackground}) no-repeat center center fixed`,
-    backgroundSize: "cover"
-  }
 
   React.useEffect(() => {
-    const checkLoggedIn = async () => {
+    const checkIfLoggedIn = async () => {
       console.log("checkIfLoggedIn in Login.tsx called");
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        await Auth.currentAuthenticatedUser({
-          // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-          bypassCache: false
-        })
+        await currentAuthenticatedUser();
         // redirect if already logged in
         navigate('/feed');
       } catch (e) {
         // should do nothing if they aren't logged in
       }
     }
-    checkLoggedIn()
+    checkIfLoggedIn()
   }, [navigate])
 
   return (
@@ -168,7 +186,6 @@ const Login = (props: Props) => {
           </Box>
         </Container>
       </Grid>
-      <ConfirmEmailModal username={username} open={open} setOpen={setOpen} redirectPage="/feed" />
     </>
   )
 }

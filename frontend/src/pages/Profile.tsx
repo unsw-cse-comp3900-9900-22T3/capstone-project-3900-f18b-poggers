@@ -5,6 +5,7 @@ import { API, Auth } from "aws-amplify";
 import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Recipe } from '../types/instacook-types';
 import { useNavigate, useParams } from 'react-router-dom';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 
 type Props = {}
 
@@ -74,15 +75,12 @@ const Profile = (props: Props) => {
 
     const setUserData = async () => {
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        const user = await Auth.currentAuthenticatedUser({
-          bypassCache: false
-        })
+        const {user} = await currentAuthenticatedUser();
 
         if (profileUsername === undefined) {
           // username not in params
           console.log(user)
-          setUsername(user.username);
+          setUsername(user);
 
         } else {
           // username param provided
