@@ -74,9 +74,9 @@ const Recipe = (props: Props) => {
   React.useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const apiData: any = await API.graphql({ query: listRecipes });
-        const recipes = apiData.data.listRecipes.items;
-        console.log(recipes);
+        // const apiData: any = await API.graphql({ query: listRecipes });
+        // const recipes = apiData.data.listRecipes.items;
+        // console.log(recipes);
         const apiData2: any = await API.graphql({
           query: getRecipe,
           variables: { id: recipeId }
@@ -95,6 +95,40 @@ const Recipe = (props: Props) => {
 
         const fileAccessURL = await Storage.get(recipeById.fileImage.slice(5, -1), { expires: 30, level: "public" });
         setRecipeImage(fileAccessURL);
+
+        // const requestBody = {
+        //   query: `
+        //     query {
+        //       getRecipeById(recipeID: "6356718313e24bb2b4b2c650") {
+        //           title
+        //           content
+        //           dateCreated
+        //           contributorUsername
+        //           numberLike
+        //           listComments {
+        //               userName
+        //               recipeID
+        //               content
+        //               dateCreated
+        //           }
+        //           tags
+        //       }
+        //   }
+        //   `
+        // }
+
+        // const res = await fetch('http://localhost:3000/graphql', {
+        //   body: JSON.stringify(requestBody),
+        //   method: "POST",
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   }
+        // });
+
+        // console.log("TRIGGERRREDD");
+        // const apiData1 = await res.json();
+        // console.log(apiData1);
+
       } catch (error) {
         console.log("error on fetching recipe", error);
       }
@@ -253,24 +287,18 @@ const Recipe = (props: Props) => {
                 )}
               </ul>
             </Grid>
-            <Grid item sm={9}>
-            <Box
+            <Grid item sm={8}>
+            {/* <Box
             sx={{
             maxWidth: '100%',
             display: 'flex',
-            alignItems: 'flex-end',
-            flexDirection: 'row',
-            }}>
+            justifyContent: 'flex-end',
+            // flexDirection: 'row',
+            }}> */}
               <Typography variant="h5">
                 Cooking Instructions
               </Typography>
-              <IconButton
-                // sx={{}}
-                color='secondary'
-                type="submit">
-                <FavoriteIcon />
-              </IconButton>
-            </Box>
+            {/* </Box> */}
               <List>
                 {instructions.map((instruction, key) =>
                   <ListItem key={key}>
@@ -292,6 +320,14 @@ const Recipe = (props: Props) => {
                 )}
               </List>
             </Grid>
+          <Grid item sm={1}>
+          <IconButton
+            // sx={{}}
+            color='secondary'
+            type="submit">
+            <FavoriteIcon />
+          </IconButton>
+          </Grid>
           </Grid>
         </Box>
         <Box

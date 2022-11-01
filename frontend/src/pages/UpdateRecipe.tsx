@@ -69,6 +69,9 @@ const UpdateRecipe = (props: Props) => {
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
 
+  const [token, setToken] = React.useState<string>("");
+
+
   React.useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -79,6 +82,7 @@ const UpdateRecipe = (props: Props) => {
 
         const recipeById = apiData2.data.getRecipe;
         console.log(recipeById);
+        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjcyMjEyNjcsImV4cCI6MTY2NzIyNDg2N30.llHGTjrbGiconjE26Or8fC953Gq3grCd6flFCbp4mxs")
         setRecipeName(recipeById.name);
         setDescription(JSON.parse(recipeById.content)[2])
         setContributorName(recipeById.contributor);
@@ -280,33 +284,66 @@ const UpdateRecipe = (props: Props) => {
               <Button variant="contained"
                 onClick={async () => {
                   if (recipe !== undefined) {
+                    // let newRecipe = {
+                    //   id: recipe.id,
+                    //   name: recipeName,
+                    //   content: [ingredientsData, instructionsData, JSON.stringify(description)],
+                    //   contributor: contributorName,
+                    //   fileImage: recipe.fileImage,
+                    // };
+                    // if (imgKey === true) {
+                    //   const storageResult = await Storage.put(
+                    //     uuidv4(),
+                    //     selectedImage
+                    //   );
+                    //   newRecipe.fileImage = `{key=${storageResult.key}}`;
+                    // }
+                    // console.log(recipe);
+                    // try {
+                    //   const data: any = await API.graphql(graphqlOperation(updateRecipe, { input: newRecipe }));
+                    //   const id = data.data.updateRecipe.id;
+                    //   navigate(`/recipe/${id}`)
+                    //   console.log(newRecipe);
 
-                    let newRecipe = {
-                      id: recipe.id,
-                      name: recipeName,
-                      content: [ingredientsData, instructionsData, JSON.stringify(description)],
-                      contributor: contributorName,
-                      fileImage: recipe.fileImage,
-                    };
-                    if (imgKey === true) {
-                      const storageResult = await Storage.put(
-                        uuidv4(),
-                        selectedImage
-                      );
-                      newRecipe.fileImage = `{key=${storageResult.key}}`;
-                    }
-                    console.log(recipe);
-                    try {
-                      const data: any = await API.graphql(graphqlOperation(updateRecipe, { input: newRecipe }));
-                      const id = data.data.updateRecipe.id;
-                      navigate(`/recipe/${id}`)
-                      console.log(newRecipe);
+                    // } catch (error) {
+                    //   console.log("error on fetching recipe", error);
+                    // }
+                    // const requestBody = {
+                    //   query: `
+                    //     mutation {
+                    //       updateRecipe(recipeID: "${recipeId}", recipeInput:
+                    //           {
+                    //               title: "${recipeName}",
+                    //               content: """[[${ingredientsData}], [${instructionsData}], [${(description)}], "${imgData}"]""",
+                    //               dateCreated: "2023-03-25",
+                    //               tags: []
 
-                    } catch (error) {
-                      console.log("error on fetching recipe", error);
-                    }
+                    //           }
+                    //       ) {
+                    //           title
+                    //           content
+                    //           dateCreated
+                    //           contributorUsername
+                    //           numberLike
+                    //           tags
+                    //       }
+                    //   }
+                    //   `
+                    // }
+                    // console.log(requestBody)
+                    // const res = await fetch('http://localhost:3000/graphql', {
+                    //   body: JSON.stringify(requestBody),
+                    //   method: "POST",
+                    //   headers: {
+                    //     Authorization: token,
+                    //     'Content-Type': 'application/json'
+                    //   }
+                    // });
+                    // console.log("TRIGGERRREDD");
+                    // const apiData1 = await res.json();
+                    // console.log(apiData1);
+
                   }
-
                 }}
               >Update</Button>
             </Box>

@@ -6,6 +6,7 @@ import { graphqlOperation } from "aws-amplify";
 import RecipeContents from '../components/recipe/RecipeContents';
 import { useNavigate } from 'react-router-dom';
 import Image from 'mui-image';
+import authbackground from '../static/images/authbackground.jpeg';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
@@ -40,7 +41,9 @@ const CreateRecipe = (props: Props) => {
   const [preview, setPreview] = React.useState<string>("");
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
-  const [imgData, setImgData] = React.useState('');
+  const [imgData, setImgData] = React.useState<any>('');
+
+  const [token, setToken] = React.useState<string>("");
 
   React.useEffect(() => {
     const setUserData = async () => {
@@ -51,6 +54,7 @@ const CreateRecipe = (props: Props) => {
         })
         console.log(user)
         setUsername(user.username);
+        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjcyMjEyNjcsImV4cCI6MTY2NzIyNDg2N30.llHGTjrbGiconjE26Or8fC953Gq3grCd6flFCbp4mxs")
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -71,6 +75,7 @@ const CreateRecipe = (props: Props) => {
     minHeight: `calc(100vh - 64px)`,
     backgroundColor: "#d3d3d3",
   }
+  // const dataURI = ""
 
   const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -184,7 +189,15 @@ const CreateRecipe = (props: Props) => {
                     setSelectedImage(e.target.files[0]);
                     setPreview(e.target.files[0].name);
                     console.log(e.target.files[0]);
-                    setImgData(URL.createObjectURL(e.target.files[0]));
+                    // setImgData(URL.createObjectURL(e.target.files[0]));
+                    const reader = new FileReader();
+                    reader.addEventListener("load", () => {
+                      console.log("below")
+                      console.log(reader.result);
+                      setImgData(reader.result);
+                    });
+                    reader.readAsDataURL(e.target.files[0]);
+                    // console.log(reader.result)
                   }
                 }} />
                 <AddPhotoAlternateIcon fontSize='large' sx={{}} />
@@ -221,23 +234,58 @@ const CreateRecipe = (props: Props) => {
             >
               <Button variant="contained"
                 onClick={async () => {
-                  const storageResult = await Storage.put(
-                    uuidv4(),
-                    selectedImage
-                  );
+                  // const storageResult = await Storage.put(
+                  //   uuidv4(),
+                  //   selectedImage
+                  // );
 
-                  // Insert predictions code here later
-                  console.log(storageResult);
-                  const newRecipe = {
-                    name: recipeName,
-                    content: [ingredientsData, instructionsData, description],
-                    contributor: username,
-                    fileImage: storageResult,
-                  };
-                  const data: any = await API.graphql(graphqlOperation(createRecipe, { input: newRecipe }));
-                  const id = data.data.createRecipe.id;
+                  // // Insert predictions code here later
+                  // console.log(storageResult);
+                  // const newRecipe = {
+                  //   name: recipeName,
+                  //   content: [ingredientsData, instructionsData, description],
+                  //   contributor: username,
+                  //   fileImage: storageResult,
+                  // };
+                  // const data: any = await API.graphql(graphqlOperation(createRecipe, { input: newRecipe }));
+                  // const id = data.data.createRecipe.id;
 
-                  navigate(`/recipe/${id}`)
+                  const requestBody = {
+                    query: `
+                      mutation {
+                        createRecipe(recipeInput:
+                            {
+                                title: "${recipeName}",
+                                content: """[[${ingredientsData}], [${instructionsData}], [${(description)}], "${imgData}"]""",
+                                dateCreated: "2023-03-25",
+                                tags: []
+
+                            }
+                        ) {
+                            title
+                            content
+                            dateCreated
+                            contributorUsername
+                            numberLike
+                            tags
+                        }
+                    }
+                    `
+                  }
+                  console.log(requestBody)
+                  const res = await fetch('http://localhost:3000/graphql', {
+                    body: JSON.stringify(requestBody),
+                    method: "POST",
+                    headers: {
+                      Authorization: token,
+                      'Content-Type': 'application/json'
+                    }
+                  });
+                  console.log("TRIGGERRREDD");
+                  const apiData1 = await res.json();
+                  console.log(apiData1);
+
+                  // navigate(`/recipe/${id}`)
                 }}
               >Done</Button>
             </Box>
