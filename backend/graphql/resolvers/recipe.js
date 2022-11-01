@@ -190,4 +190,19 @@ module.exports = {
     await recipe.remove();
     return true;
   },
+
+  
+  isRecipeLiked: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+    const recipe = await Recipe.findById(args.recipeID);
+    const authUser = await User.findById(req.userId);
+  
+    if (recipe.like.includes(authUser.username)) {
+      return true 
+    }
+    return false; 
+  },
+  
 };
