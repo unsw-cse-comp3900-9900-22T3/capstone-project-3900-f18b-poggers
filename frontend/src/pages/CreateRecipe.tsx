@@ -10,25 +10,6 @@ import authbackground from '../static/images/authbackground.jpeg';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
-
-const createRecipe = /* GraphQL */ `
-  mutation CreateRecipe(
-    $input: CreateRecipeInput!
-    $condition: ModelRecipeConditionInput
-  ) {
-    createRecipe(input: $input, condition: $condition) {
-      id
-      name
-      content
-      contributor
-      fileImage
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-
 const CreateRecipe = (props: Props) => {
 
   const navigate = useNavigate();
@@ -43,6 +24,7 @@ const CreateRecipe = (props: Props) => {
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
   const [imgData, setImgData] = React.useState<any>('');
 
+  const [tags, setTags] = React.useState<string[]>([]);
   const [token, setToken] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -54,7 +36,7 @@ const CreateRecipe = (props: Props) => {
         })
         console.log(user)
         setUsername(user.username);
-        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjcyMjEyNjcsImV4cCI6MTY2NzIyNDg2N30.llHGTjrbGiconjE26Or8fC953Gq3grCd6flFCbp4mxs")
+        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjczMDA4NzksImV4cCI6MTY2NzMwNDQ3OX0.dLRKvEKXBKnm7FEdctMQNDMpNDmlBC1uN4gsdf8yYok")
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -218,6 +200,7 @@ const CreateRecipe = (props: Props) => {
             <RecipeContents
               ingredients={ingredients}
               instructions={instructions}
+              tags={tags}
               handleInstruction={handleInstruction}
               handleIngredient={handleIngredient}
               handleRemoveIngredient={handleRemoveIngredient}
@@ -249,6 +232,7 @@ const CreateRecipe = (props: Props) => {
                   // };
                   // const data: any = await API.graphql(graphqlOperation(createRecipe, { input: newRecipe }));
                   // const id = data.data.createRecipe.id;
+                  const d = new Date();
 
                   const requestBody = {
                     query: `
@@ -257,11 +241,12 @@ const CreateRecipe = (props: Props) => {
                             {
                                 title: "${recipeName}",
                                 content: """[[${ingredientsData}], [${instructionsData}], [${(description)}], "${imgData}"]""",
-                                dateCreated: "2023-03-25",
+                                dateCreated: "${d.toString()}",
                                 tags: []
 
                             }
                         ) {
+                            _id
                             title
                             content
                             dateCreated
@@ -282,10 +267,10 @@ const CreateRecipe = (props: Props) => {
                     }
                   });
                   console.log("TRIGGERRREDD");
-                  const apiData1 = await res.json();
-                  console.log(apiData1);
+                  const apiData = await res.json();
+                  console.log(apiData);
 
-                  // navigate(`/recipe/${id}`)
+                  navigate(`/recipe/${apiData.data.createRecipe._id}`)
                 }}
               >Done</Button>
             </Box>

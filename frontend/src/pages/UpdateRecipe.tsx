@@ -65,10 +65,11 @@ const UpdateRecipe = (props: Props) => {
   const [selectedImage, setSelectedImage] = React.useState<File>();
   const [preview, setPreview] = React.useState<string>("");
   const [imgKey, setImgKey] = React.useState<boolean>(false);
-  const [imgData, setImgData] = React.useState('');
+  const [imgData, setImgData] = React.useState<any>('');
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
 
+  const [tags, setTags] = React.useState<string[]>([]);
   const [token, setToken] = React.useState<string>("");
 
 
@@ -82,37 +83,95 @@ const UpdateRecipe = (props: Props) => {
 
         const recipeById = apiData2.data.getRecipe;
         console.log(recipeById);
-        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjcyMjEyNjcsImV4cCI6MTY2NzIyNDg2N30.llHGTjrbGiconjE26Or8fC953Gq3grCd6flFCbp4mxs")
-        setRecipeName(recipeById.name);
-        setDescription(JSON.parse(recipeById.content)[2])
-        setContributorName(recipeById.contributor);
+        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjczMDA4NzksImV4cCI6MTY2NzMwNDQ3OX0.dLRKvEKXBKnm7FEdctMQNDMpNDmlBC1uN4gsdf8yYok")
+        // setRecipeName(recipeById.name);
+        // setDescription(JSON.parse(recipeById.content)[2])
+        // setContributorName(recipeById.contributor);
 
-        if (recipeById.content[0] != null) {
-          console.log(JSON.parse(recipeById.content)[0].length);
-          setIngredients(JSON.parse(recipeById.content)[0]);
+        // if (recipeById.content[0] != null) {
+        //   console.log(JSON.parse(recipeById.content)[0].length);
+        //   setIngredients(JSON.parse(recipeById.content)[0]);
+        //   let tempIngredients = [];
+        //   for (let x of (JSON.parse(recipeById.content)[0])) {
+        //     tempIngredients.push(JSON.stringify(x));
+        //   }
+        //   setIngredientsData([...ingredientsData, ...tempIngredients]);
+        // }
+
+        // if (recipeById.content[1] != null) {
+        //   setInstructions(JSON.parse(recipeById.content)[1]);
+        //   let tempInstructions = [];
+        //   for (let x of (JSON.parse(recipeById.content)[1])) {
+        //     tempInstructions.push(JSON.stringify(x));
+        //   }
+        //   setInstructionsData([...instructionsData, ...tempInstructions]);
+        // }
+
+        // setImgKey(recipeById.fileImage);
+
+        // if (recipeById != null) {
+        //   recipeById.name = "hi";
+        // }
+
+        const requestBody = {
+          query: `
+            query {
+              getRecipeById(recipeID: "${recipeId}") {
+                  title
+                  content
+                  dateCreated
+                  contributorUsername
+                  numberLike
+                  listComments {
+                      userName
+                      recipeID
+                      content
+                      dateCreated
+                  }
+                  tags
+              }
+          }
+          `
+        }
+
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        console.log("TRIGGERRREDD");
+        const apiData = await res.json();
+        setRecipe(apiData.data.getRecipeById);
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+        console.log(apiData);
+        setRecipeName(apiData.data.getRecipeById.title)
+        setDescription(JSON.parse(apiData.data.getRecipeById.content)[2])
+        setContributorName(apiData.data.getRecipeById.contributorUsername)
+        setImgData(JSON.parse(apiData.data.getRecipeById.content)[3])
+        if (apiData.data.getRecipeById.content[0] != null) {
+          setIngredients(JSON.parse(apiData.data.getRecipeById.content)[0]);
           let tempIngredients = [];
-          for (let x of (JSON.parse(recipeById.content)[0])) {
+          for (let x of (JSON.parse(apiData.data.getRecipeById.content)[0])) {
             tempIngredients.push(JSON.stringify(x));
           }
           setIngredientsData([...ingredientsData, ...tempIngredients]);
         }
-
-        if (recipeById.content[1] != null) {
-          setInstructions(JSON.parse(recipeById.content)[1]);
+        if (apiData.data.getRecipeById.content[1] != null) {
+          setInstructions(JSON.parse(apiData.data.getRecipeById.content)[1]);
           let tempInstructions = [];
-          for (let x of (JSON.parse(recipeById.content)[1])) {
+          for (let x of (JSON.parse(apiData.data.getRecipeById.content)[1])) {
             tempInstructions.push(JSON.stringify(x));
           }
           setInstructionsData([...instructionsData, ...tempInstructions]);
         }
 
-        setImgKey(recipeById.fileImage);
 
-        if (recipeById != null) {
-          recipeById.name = "hi";
-        }
 
-        setRecipe(recipeById);
       } catch (error) {
         console.log("error on fetching recipe", error);
       }
@@ -245,7 +304,13 @@ const UpdateRecipe = (props: Props) => {
                     setSelectedImage(e.target.files[0]);
                     setPreview(e.target.files[0].name);
                     setImgKey(true);
-                    setImgData(URL.createObjectURL(e.target.files[0]));
+                    const reader = new FileReader();
+                    reader.addEventListener("load", () => {
+                      console.log("below")
+                      console.log(reader.result);
+                      setImgData(reader.result);
+                    });
+                    reader.readAsDataURL(e.target.files[0]);
                   }
                 }} />
                 <AddPhotoAlternateIcon fontSize='large' sx={{}} />
@@ -266,6 +331,7 @@ const UpdateRecipe = (props: Props) => {
             <RecipeContents
               ingredients={ingredients}
               instructions={instructions}
+              tags={tags}
               handleInstruction={handleInstruction}
               handleIngredient={handleIngredient}
               handleRemoveIngredient={handleRemoveIngredient}
@@ -308,40 +374,34 @@ const UpdateRecipe = (props: Props) => {
                     // } catch (error) {
                     //   console.log("error on fetching recipe", error);
                     // }
-                    // const requestBody = {
-                    //   query: `
-                    //     mutation {
-                    //       updateRecipe(recipeID: "${recipeId}", recipeInput:
-                    //           {
-                    //               title: "${recipeName}",
-                    //               content: """[[${ingredientsData}], [${instructionsData}], [${(description)}], "${imgData}"]""",
-                    //               dateCreated: "2023-03-25",
-                    //               tags: []
+                    const requestBody = {
+                      query: `
+                        mutation {
+                          updateRecipe(recipeID: "${recipeId}", recipeInput:
+                              {
+                                  title: "${recipeName}",
+                                  content: """[[${ingredientsData}], [${instructionsData}], [${JSON.stringify(description)}], "${imgData}"]""",
+                                  dateCreated: "2023-03-25",
+                                  tags: []
 
-                    //           }
-                    //       ) {
-                    //           title
-                    //           content
-                    //           dateCreated
-                    //           contributorUsername
-                    //           numberLike
-                    //           tags
-                    //       }
-                    //   }
-                    //   `
-                    // }
-                    // console.log(requestBody)
-                    // const res = await fetch('http://localhost:3000/graphql', {
-                    //   body: JSON.stringify(requestBody),
-                    //   method: "POST",
-                    //   headers: {
-                    //     Authorization: token,
-                    //     'Content-Type': 'application/json'
-                    //   }
-                    // });
-                    // console.log("TRIGGERRREDD");
-                    // const apiData1 = await res.json();
-                    // console.log(apiData1);
+                              }
+                          )
+                      }
+                      `
+                    }
+                    console.log(requestBody)
+                    const res = await fetch('http://localhost:3000/graphql', {
+                      body: JSON.stringify(requestBody),
+                      method: "POST",
+                      headers: {
+                        Authorization: token,
+                        'Content-Type': 'application/json'
+                      }
+                    });
+                    console.log("TRIGGERRREDD");
+                    const apiData1 = await res.json();
+                    console.log(apiData1);
+                    navigate(`/recipe/${recipeId}`)
 
                   }
                 }}

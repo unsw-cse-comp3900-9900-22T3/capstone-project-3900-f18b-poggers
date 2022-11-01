@@ -11,6 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 type Props = {
   ingredients : string[],
   instructions : string[],
+  tags: string[],
   // instructionText : string,
   // ingredientText: string,
   handleInstruction: (event: React.FormEvent<HTMLFormElement>) => void,
@@ -35,6 +36,7 @@ const RecipeContents = (props: Props) => {
   }
 
   return (
+  <>
       <Grid container spacing={5} sx={{ padding: 3 }}>
       <Grid item sm={3}>
         <Typography variant="h5">
@@ -133,6 +135,12 @@ const RecipeContents = (props: Props) => {
         </Box>
       </Grid>
     </Grid>
+    <Box sx={{padding: 3}}>
+      <Typography variant="h5">
+        Tags
+      </Typography>
+    </Box>
+    </>
   )
 }
 

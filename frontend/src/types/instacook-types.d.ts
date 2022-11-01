@@ -8,3 +8,15 @@ export type Recipe = {
   updatedAt: string,
   owner: string,
 }
+
+export type Comment = {
+  userName: string,
+  content: string,
+  dateCreated: string,
+  recipeID: string,
+}
+
+export type Tag = {
+  _id: string,
+  content: string,
+}

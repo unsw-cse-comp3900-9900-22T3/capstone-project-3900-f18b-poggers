@@ -7,50 +7,47 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { API, Auth, Storage } from "aws-amplify";
 import EditIcon from '@mui/icons-material/Edit';
 import Image from 'mui-image';
+import { Comment } from '../types/instacook-types';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 type Props = {}
 
-type Comment = {
-  author: string,
-  comment: string,
-}
+// const listRecipes = /* GraphQL */ `
+// query ListRecipes(
+//   $filter: ModelRecipeFilterInput
+//   $limit: Int
+//   $nextToken: String
+//   ) {
+//   listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+//     items {
+//       id
+//       name
+//       content
+//       contributor
+//       fileImage
+//       createdAt
+//       updatedAt
+//       owner
+//     }
+//     nextToken
+//   }
+// }
+// `;
 
-const listRecipes = /* GraphQL */ `
-query ListRecipes(
-  $filter: ModelRecipeFilterInput
-  $limit: Int
-  $nextToken: String
-  ) {
-  listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      name
-      content
-      contributor
-      fileImage
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-`;
-
-const getRecipe = /* GraphQL */ `
-query GetRecipe($id: ID!) {
-  getRecipe(id: $id) {
-    id
-    name
-    content
-    contributor
-    fileImage
-    createdAt
-    updatedAt
-    owner
-  }
-}
-`;
+// const getRecipe = /* GraphQL */ `
+// query GetRecipe($id: ID!) {
+//   getRecipe(id: $id) {
+//     id
+//     name
+//     content
+//     contributor
+//     fileImage
+//     createdAt
+//     updatedAt
+//     owner
+//   }
+// }
+// `;
 
 const sampleComments = [
   { author: "Gordon Ramsay", comment: "This lamb is so undercooked, it’s following Mary to school!" },
@@ -69,7 +66,11 @@ const Recipe = (props: Props) => {
   const [ingredients, setIngredients] = React.useState([""]);
   const [instructions, setInstructions] = React.useState([""]);
   const [similarRecipes, setSimilarRecipes] = React.useState([1, 2, 3, 4, 5, 6, 7])
-  const [comments, setComments] = React.useState(sampleComments);
+  const [comments, setComments] = React.useState<Comment[]>([]);
+  const [numberLike, setNumberLike] = React.useState(0);
+  const [tags, setTags] = React.useState([""]);
+  const [token, setToken] = React.useState<string>("");
+
 
   React.useEffect(() => {
     const fetchRecipes = async () => {
@@ -77,58 +78,73 @@ const Recipe = (props: Props) => {
         // const apiData: any = await API.graphql({ query: listRecipes });
         // const recipes = apiData.data.listRecipes.items;
         // console.log(recipes);
-        const apiData2: any = await API.graphql({
-          query: getRecipe,
-          variables: { id: recipeId }
-        });
-        const recipeById = apiData2.data.getRecipe;
+        // const apiData2: any = await API.graphql({
+        //   query: getRecipe,
+        //   variables: { id: recipeId }
+        // });
+        // const recipeById = apiData2.data.getRecipe;
 
-        setRecipeName(recipeById.name);
-        setDescription(JSON.parse(recipeById.content)[2])
-        setContributorName(recipeById.contributor);
-        if (recipeById.content[0] != null) {
-          setIngredients(JSON.parse(recipeById.content)[0]);
-        }
-        if (recipeById.content[1] != null) {
-          setInstructions(JSON.parse(recipeById.content)[1]);
-        }
-
-        const fileAccessURL = await Storage.get(recipeById.fileImage.slice(5, -1), { expires: 30, level: "public" });
-        setRecipeImage(fileAccessURL);
-
-        // const requestBody = {
-        //   query: `
-        //     query {
-        //       getRecipeById(recipeID: "6356718313e24bb2b4b2c650") {
-        //           title
-        //           content
-        //           dateCreated
-        //           contributorUsername
-        //           numberLike
-        //           listComments {
-        //               userName
-        //               recipeID
-        //               content
-        //               dateCreated
-        //           }
-        //           tags
-        //       }
-        //   }
-        //   `
+        // setRecipeName(recipeById.name);
+        // setDescription(JSON.parse(recipeById.content)[2])
+        // setContributorName(recipeById.contributor);
+        // if (recipeById.content[0] != null) {
+        //   setIngredients(JSON.parse(recipeById.content)[0]);
+        // }
+        // if (recipeById.content[1] != null) {
+        //   setInstructions(JSON.parse(recipeById.content)[1]);
         // }
 
-        // const res = await fetch('http://localhost:3000/graphql', {
-        //   body: JSON.stringify(requestBody),
-        //   method: "POST",
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   }
-        // });
+        // const fileAccessURL = await Storage.get(recipeById.fileImage.slice(5, -1), { expires: 30, level: "public" });
+        // setRecipeImage(fileAccessURL);
 
-        // console.log("TRIGGERRREDD");
-        // const apiData1 = await res.json();
-        // console.log(apiData1);
+        const requestBody = {
+          query: `
+            query {
+              getRecipeById(recipeID: "${recipeId}") {
+                  title
+                  content
+                  dateCreated
+                  contributorUsername
+                  numberLike
+                  listComments {
+                      userName
+                      recipeID
+                      content
+                      dateCreated
+                  }
+                  tags
+              }
+          }
+          `
+        }
 
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        console.log("TRIGGERRREDD");
+        const apiData = await res.json();
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+        console.log(apiData);
+        setRecipeName(apiData.data.getRecipeById.title)
+        setDescription(JSON.parse(apiData.data.getRecipeById.content)[2])
+        setContributorName(apiData.data.getRecipeById.contributorUsername)
+        setRecipeImage(JSON.parse(apiData.data.getRecipeById.content)[3])
+        setNumberLike(apiData.data.getRecipeById.numberLike)
+        setComments(apiData.data.getRecipeById.listComments)
+        setTags(apiData.data.getRecipeById.tags)
+        if (apiData.data.getRecipeById.content[0] != null) {
+          setIngredients(JSON.parse(apiData.data.getRecipeById.content)[0]);
+        }
+        if (apiData.data.getRecipeById.content[1] != null) {
+          setInstructions(JSON.parse(apiData.data.getRecipeById.content)[1]);
+        }
       } catch (error) {
         console.log("error on fetching recipe", error);
       }
@@ -142,6 +158,7 @@ const Recipe = (props: Props) => {
         })
         console.log(user)
         setUsername(user.username);
+        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjcyOTE4MDMsImV4cCI6MTY2NzI5NTQwM30.f9S7XJp9-BcGmpo-4hZy60yaGXe6-Ykxkd3PKF-GteM")
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -192,16 +209,87 @@ const Recipe = (props: Props) => {
   }
   items.push(carouselTab);
 
-  const handleSubmitComment = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitComment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     console.log(formData.get("comment"))
+    const d = new Date();
     const data: Comment = {
-      author: username,
-      comment: JSON.parse(JSON.stringify(formData.get("comment"))),
+      userName: username,
+      content: JSON.parse(JSON.stringify(formData.get("comment"))),
+      dateCreated: d.toString(),
+      recipeID: recipeId!
     };
+    const requestBody = {
+      query: `
+        mutation {
+          createComment(recipeID: "${recipeId}",
+          content: "${JSON.parse(JSON.stringify(formData.get("comment")))}",
+          dateCreated: "${d.toString()}"
+          )
+      }
+      `
+    }
+    console.log(requestBody)
+    const res = await fetch('http://localhost:3000/graphql', {
+      body: JSON.stringify(requestBody),
+      method: "POST",
+      headers: {
+        Authorization: token,
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log("TRIGGERRREDD");
+    const apiData1 = await res.json();
+    console.log(apiData1);
+
     setComments([data, ...comments]);
+    console.log(comments)
   };
+
+  const handleLike = async () => {
+    const requestBody = {
+      query: `
+        mutation {
+          likeRecipe(recipeID: "${recipeId}")
+        }
+      `
+    }
+    console.log(requestBody)
+    await fetch('http://localhost:3000/graphql', {
+      body: JSON.stringify(requestBody),
+      method: "POST",
+      headers: {
+        Authorization: token,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  const tagStyles = {
+    display: "flex",
+    backgroundColor: '#28343c',
+    paddingRight: 1,
+    paddingLeft: 1,
+    borderRadius: 2,
+    color: '#FFF',
+    margin: 0.5,
+    justifyItems: "center",
+    alignItems: "center",
+  }
+
+  const likeStyles = {
+    backgroundColor: '#FFF',
+    padding: 1,
+    borderRadius: 2,
+    color: '#28343c',
+    margin: 0.5,
+    minWidth: "60px",
+    '&:hover': {
+      backgroundColor: '#28343c',
+      color: '#fff',
+    },
+  }
 
   return (
     <Grid
@@ -255,12 +343,12 @@ const Recipe = (props: Props) => {
         >
           {description}
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
           <Card
             variant="outlined"
           >
@@ -274,7 +362,33 @@ const Recipe = (props: Props) => {
               }}
             />
           </Card>
-          <Grid container spacing={5} sx={{ padding: 3 }}>
+          <Box sx={{display: "flex"}}>
+            <Box sx={{display: "flex", width: "50%"}}>
+            {tags.map((tag, key) =>
+              <Box sx={tagStyles} key={key}>
+              <Typography variant='body2'>
+                {tag}
+              </Typography>
+            </Box>
+            )}
+
+            </Box>
+            <Box sx={{
+            display: "flex",
+            width: "50%",
+            alignItems: "flex-end",
+            flexDirection: "column"}}>
+                <IconButton sx={likeStyles} onClick={handleLike}>
+                  <Grid container direction="row" alignItems="center">
+                    <FavoriteIcon sx={{ fontSize: "30px", marginRight: 0.5}}/>
+                    <Typography>
+                      {numberLike}
+                    </Typography>
+                  </Grid>
+                </IconButton>
+            </Box>
+          </Box>
+          <Grid container spacing={3} sx={{ padding: 3}}>
             <Grid item sm={3}>
               <Typography variant="h5">
                 Ingredients
@@ -288,13 +402,6 @@ const Recipe = (props: Props) => {
               </ul>
             </Grid>
             <Grid item sm={8}>
-            {/* <Box
-            sx={{
-            maxWidth: '100%',
-            display: 'flex',
-            justifyContent: 'flex-end',
-            // flexDirection: 'row',
-            }}> */}
               <Typography variant="h5">
                 Cooking Instructions
               </Typography>
@@ -320,14 +427,7 @@ const Recipe = (props: Props) => {
                 )}
               </List>
             </Grid>
-          <Grid item sm={1}>
-          <IconButton
-            // sx={{}}
-            color='secondary'
-            type="submit">
-            <FavoriteIcon />
-          </IconButton>
-          </Grid>
+
           </Grid>
         </Box>
         <Box
@@ -372,7 +472,7 @@ const Recipe = (props: Props) => {
             }}
           >
             <ListItemAvatar>
-              <Avatar sx={{ maring: "5" }} alt="R" src={testimg} />
+              <Avatar sx={{ maring: "5" }} alt={username} src="" />
             </ListItemAvatar>
             <TextField
               fullWidth
@@ -403,13 +503,13 @@ const Recipe = (props: Props) => {
               <div key={key}>
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
-                    <Avatar alt={comment.author} src="/static/images/avatar/1.jpg" />
+                    <Avatar alt={comment.userName} src="" />
                   </ListItemAvatar>
                   <ListItemText
-                    primary={comment.author}
+                    primary={comment.userName}
                     secondary={
                       <Typography variant="body2">
-                        {comment.comment}
+                        {comment.content}
                       </Typography>
                     }
                   />
