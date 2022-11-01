@@ -29,14 +29,18 @@ module.exports = {
       authUser.listRecipes.push(recipe);
       await authUser.save();
 
+      const sortedListTag = await Tag.find({_id: {$in: recipe.tags}}).sort({content: 1});
+      const tagNames = sortedListTag.map((tag) => {return tag.content});
+
       return {
+        _id: recipe._id,
         title: recipe.title,
         content: recipe.content,
         dateCreated: recipe.dateCreated.toISOString(),
         contributorUsername: authUser.username,
         numberLike: 0,
         listComments: [],
-        tags: recipe.tags,
+        tags: tagNames,
       };
     } catch (err) {
       console.log(err);
@@ -44,24 +48,18 @@ module.exports = {
     }
   },
 
+
   getRecipeById: async (args) => {
     const recipe = await Recipe.findById(args.recipeID);
-
     const contributor = await User.findById(recipe.contributor._id);
 
-    const sortedListTags = await Tag.find({
-      _id: { $in: recipe.tags },
-    }).sort({
-      content: 1,
-    });
+    // query and sort list of tags
+    const sortedListTag = await Tag.find({_id: {$in: recipe.tags}}).sort({content: 1});
+    const tagNames = sortedListTag.map((tag) => {return tag.content});
 
-    const listTagNames = (await sortedListTags).map((tags) => {
-      return tags.content;
-    });
-
-    const listComments = await Comment.find({
-      _id: { $in: recipe.listComments },
-    }).map((comment) => {
+    // query and sort list of comments
+    const sortedListComment = await Comment.find({_id: {$in: recipe.listComments}}).sort({dateCreated: -1});
+    const comments = sortedListComment.map((comment) => {
       return {
         userName: comment.userName,
         recipeID: comment.recipeID,
@@ -71,13 +69,14 @@ module.exports = {
     });
 
     return {
+      _id: recipe._id,
       title: recipe.title,
       content: recipe.content,
       dateCreated: recipe.dateCreated.toISOString(),
       contributorUsername: contributor.username,
       numberLike: recipe.like.length,
-      listComments: listComments,
-      tags: listTagNames,
+      listComments: comments,
+      tags: tagNames,
     };
   },
 
@@ -94,15 +93,17 @@ module.exports = {
       _id: { $in: user.listRecipes },
     }).sort({ dateCreated: -1 });
 
-    return (await sortedListRecipe).map((recipe) => {
-      const listTags = recipe.tags.map(async (tagId) => {
-        return await Tag.findById(tagId);
-      });
+    return (await sortedListRecipe).map(async (recipe) => {
+      // query and sort list of tags
+      const sortedListTag = await Tag.find({_id: {$in: recipe.tags}}).sort({content: 1});
+      const tagNames = sortedListTag.map((tag) => {return tag.content});
       return {
+        _id: recipe._id,
+        contributorUsername: user.username,
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.like.length,
-        tags: listTags,
+        tags: tagNames,
       };
     });
   },
@@ -130,7 +131,10 @@ module.exports = {
       const listTags = recipe.tags.map(async (tagId) => {
         return await Tag.findById(tagId);
       });
+      const contributor = User.findById(recipe.contributor);
       return {
+        _id: recipe._id,
+        contributorUsername: contributor.username,
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.like.length,
