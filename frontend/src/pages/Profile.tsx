@@ -9,13 +9,13 @@ type Props = {}
 
 const Profile = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [buttonText, setButtonText] = useState("Subscribe");
+  const [buttonText, setButtonText] = useState("Loading");
   const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
   const [username, setUsername] = React.useState("");
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
-  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyNzg4NzksImV4cCI6MTY2NzI4MjQ3OX0.PJCG0QSJs9c5Ti2wiF09hxRCUZjS0beo5I7uYvjlVio"
+  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjczMDE5NjUsImV4cCI6MTY2NzMwNTU2NX0.09DaRMN7SHoZF_vP50kaZ0CraC3oAkk-WZyJQJlxO9g"
 
   
   useEffect(() => {
@@ -24,7 +24,7 @@ const Profile = (props: Props) => {
         const requestBody = {
           query: `
             query {
-              getListRecipeByContributor(username: "${profileUsername === undefined ? username : profileUsername}") {
+              getListRecipeByContributor(username: "${profileUsername}") {
                   _id
                   contributorUsername
                   title
@@ -67,7 +67,7 @@ const Profile = (props: Props) => {
         const requestBody = {
           query: `
             query {
-              isFollowing(followUser: "${profileUsername === undefined ? username : profileUsername}")
+              isFollowing(followUser: "${profileUsername}")
               }
           `
           };
@@ -130,7 +130,7 @@ const Profile = (props: Props) => {
       const requestBody = {
         query: `
           mutation {
-            follow(followUsername: "${profileUsername === undefined ? username : profileUsername}")
+            follow(followUsername: "${profileUsername}")
             }
         `
         };

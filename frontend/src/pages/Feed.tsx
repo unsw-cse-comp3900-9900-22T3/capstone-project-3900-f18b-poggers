@@ -7,7 +7,7 @@ import ProfileRecipe from '../components/profile/ProfileRecipe';
 
 type Props = {}
 
-const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyNzg4NzksImV4cCI6MTY2NzI4MjQ3OX0.PJCG0QSJs9c5Ti2wiF09hxRCUZjS0beo5I7uYvjlVio"
+const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyOTM3MTUsImV4cCI6MTY2NzI5NzMxNX0.WkZl_UrJ0kWthlgY9pjcUzWWn8kJ9ztBbizo4nxFp84"
 
 
 const Feed = (props: Props) => {
