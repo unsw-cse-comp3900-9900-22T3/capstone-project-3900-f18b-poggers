@@ -52,7 +52,7 @@ module.exports = {
 
   getRecipeById: async (args) => {
     const recipe = await Recipe.findById(args.recipeID);
-    const contributor = await User.findById(recipe.contributor._id);
+    const contributor = await User.findById(recipe.contributor);
 
     // query and sort list of tags
     const sortedListTag = await Tag.find({_id: {$in: recipe.tags}}).sort({content: 1});
@@ -109,37 +109,35 @@ module.exports = {
     });
   },
 
-  getNewsFeed: async (req) => {
+  getNewsFeed: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");
     }
 
-    let newsFeed = [];
     const authUser = await User.findById(req.userId);
+    const follwingUsers = await User.find({username: {$in: authUser.listFollowing}});
 
-    for (const followUser of authUser.following) {
-      const user = await User.findOne({
-        username: followUser.username,
-      });
-      for (const recipeID of user.listRecipes) {
-        const recipe = await Recipe.findById(recipeID);
-        newsFeed.push(recipe);
+    let listRecipeID = [];
+    for (const followingUser of follwingUsers) {
+      for (const recipeID of followingUser.listRecipes) {
+        listRecipeID.push(recipeID);
       }
     }
 
-    const sortedNewsFeed = newsFeed.sort({ dateCreated: -1, numberLike: -1 });
-    return sortedNewsFeed.map((recipe) => {
-      const listTags = recipe.tags.map(async (tagId) => {
-        return await Tag.findById(tagId);
-      });
-      const contributor = User.findById(recipe.contributor);
+    const sortedNewsFeed = await Recipe.find({_id: {$in: listRecipeID}}).sort({dateCreated: -1, numberLike: -1});
+    return sortedNewsFeed.map(async (recipe) => {
+      // query and sort list of tags
+      const sortedListTag = await Tag.find({_id: {$in: recipe.tags}}).sort({content: 1});
+      const tagNames = sortedListTag.map((tag) => {return tag.content});
+
+      const contributor = await User.findById(recipe.contributor);
       return {
         _id: recipe._id,
         contributorUsername: contributor.username,
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.numberLike,
-        tags: listTags,
+        tags: tagNames,
       };
     });
   },
