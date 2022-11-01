@@ -14,6 +14,7 @@ module.exports = {
       title: args.recipeInput.title,
       content: args.recipeInput.content,
       dateCreated: new Date(args.recipeInput.dateCreated),
+      numberLike: 0,
       like: [],
       tags: args.recipeInput.tags,
       contributor: req.userId,
@@ -51,7 +52,7 @@ module.exports = {
 
   getRecipeById: async (args) => {
     const recipe = await Recipe.findById(args.recipeID);
-    const contributor = await User.findById(recipe.contributor._id);
+    const contributor = await User.findById(recipe.contributor);
 
     // query and sort list of tags
     const sortedListTag = await Tag.find({_id: {$in: recipe.tags}}).sort({content: 1});
@@ -74,7 +75,7 @@ module.exports = {
       content: recipe.content,
       dateCreated: recipe.dateCreated.toISOString(),
       contributorUsername: contributor.username,
-      numberLike: recipe.like.length,
+      numberLike: recipe.numberLike,
       listComments: comments,
       tags: tagNames,
     };
@@ -91,7 +92,7 @@ module.exports = {
 
     const sortedListRecipe = Recipe.find({
       _id: { $in: user.listRecipes },
-    }).sort({ dateCreated: -1 });
+    }).sort({ dateCreated: -1, numberLike: -1 });
 
     return (await sortedListRecipe).map(async (recipe) => {
       // query and sort list of tags
@@ -102,43 +103,41 @@ module.exports = {
         contributorUsername: user.username,
         title: recipe.title,
         content: recipe.content,
-        numberLike: recipe.like.length,
+        numberLike: recipe.numberLike,
         tags: tagNames,
       };
     });
   },
 
-  getNewsFeed: async (req) => {
+  getNewsFeed: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");
     }
 
-    let newsFeed = [];
     const authUser = await User.findById(req.userId);
+    const follwingUsers = await User.find({username: {$in: authUser.listFollowing}});
 
-    for (const followUser of authUser.following) {
-      const user = await User.findOne({
-        username: followUser.username,
-      });
-      for (const recipeID of user.listRecipes) {
-        const recipe = await Recipe.findById(recipeID);
-        newsFeed.push(recipe);
+    let listRecipeID = [];
+    for (const followingUser of follwingUsers) {
+      for (const recipeID of followingUser.listRecipes) {
+        listRecipeID.push(recipeID);
       }
     }
 
-    const sortedNewsFeed = newsFeed.sort({ dateCreated: -1 });
-    return sortedNewsFeed.map((recipe) => {
-      const listTags = recipe.tags.map(async (tagId) => {
-        return await Tag.findById(tagId);
-      });
-      const contributor = User.findById(recipe.contributor);
+    const sortedNewsFeed = await Recipe.find({_id: {$in: listRecipeID}}).sort({dateCreated: -1, numberLike: -1});
+    return sortedNewsFeed.map(async (recipe) => {
+      // query and sort list of tags
+      const sortedListTag = await Tag.find({_id: {$in: recipe.tags}}).sort({content: 1});
+      const tagNames = sortedListTag.map((tag) => {return tag.content});
+
+      const contributor = await User.findById(recipe.contributor);
       return {
         _id: recipe._id,
         contributorUsername: contributor.username,
         title: recipe.title,
         content: recipe.content,
-        numberLike: recipe.like.length,
-        tags: listTags,
+        numberLike: recipe.numberLike,
+        tags: tagNames,
       };
     });
   },
@@ -153,8 +152,10 @@ module.exports = {
 
     if (recipe.like.includes(authUser.username)) {
       recipe.like.pop(authUser.username);
+      recipe.numberLike--;
     } else {
       recipe.like.push(authUser.username);
+      recipe.numberLike++;
     }
 
     await recipe.save();
