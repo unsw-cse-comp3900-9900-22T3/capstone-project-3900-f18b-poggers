@@ -19,6 +19,7 @@ export type User = {
 
 export type UserInfo = {
   username?: string
+  email?: string
   numberFollower?: int
   numberFollowing?: int
 }
@@ -72,7 +73,7 @@ export type Comment = {
 
 export type isUserAuthData = {
   data: {
-    [key: string]: boolean
+    [key: string]: UserInfo
   },
   errors: [{ message: string }] | undefined | null;
 }

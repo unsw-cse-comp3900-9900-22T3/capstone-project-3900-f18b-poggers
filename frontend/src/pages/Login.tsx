@@ -4,8 +4,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import authbackground from '../static/images/authbackground.jpeg'
 import { Auth } from 'aws-amplify';
 import ConfirmEmailModal from '../components/auth/ConfirmEmailModal';
-import { checkLoggedIn } from '../util/checkLoggedIn';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
+
 type Props = {}
+
+const bgStyles = {
+  minHeight: `calc(100vh - 64px)`,
+  background: `url(${authbackground}) no-repeat center center fixed`,
+  backgroundSize: "cover"
+}
 
 const Login = (props: Props) => {
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
@@ -100,11 +107,6 @@ const Login = (props: Props) => {
 
   };
 
-  const bgStyles = {
-    minHeight: `calc(100vh - 64px)`,
-    background: `url(${authbackground}) no-repeat center center fixed`,
-    backgroundSize: "cover"
-  }
 
   React.useEffect(() => {
     const checkIfLoggedIn = async () => {
@@ -116,7 +118,7 @@ const Login = (props: Props) => {
         //   bypassCache: false
         // })
 
-        await checkLoggedIn();
+        await currentAuthenticatedUser();
         // redirect if already logged in
         navigate('/feed');
       } catch (e) {

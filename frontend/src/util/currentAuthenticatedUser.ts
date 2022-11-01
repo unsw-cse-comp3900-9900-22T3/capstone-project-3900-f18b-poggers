@@ -1,10 +1,15 @@
-import { isUserAuthData } from "../types/instacook-types";
+import { isUserAuthData, UserInfo } from "../types/instacook-types";
 
-export const checkLoggedIn = async () => {
+export const currentAuthenticatedUser = async (): Promise<UserInfo> => {
   const body = {
     query: `
       query {
-        isUserAuth
+        isUserAuth {
+          username
+          email
+          numberFollower
+          numberFollowing
+        }
       }
     `
   }
@@ -29,5 +34,12 @@ export const checkLoggedIn = async () => {
 
   if (!apiData.data.isUserAuth) {
     throw new Error('User not authenticated.');
+  }
+
+  return {
+    username: apiData.data.isUserAuth.username,
+    email: apiData.data.isUserAuth.email,
+    numberFollower: apiData.data.isUserAuth.numberFollower,
+    numberFollowing: apiData.data.isUserAuth.numberFollowing
   }
 }

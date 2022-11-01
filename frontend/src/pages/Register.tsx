@@ -4,9 +4,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import authbackground from '../static/images/authbackground.jpeg'
 import { Auth } from 'aws-amplify';
 import ConfirmEmailModal from '../components/auth/ConfirmEmailModal';
-import { checkLoggedIn } from '../util/checkLoggedIn';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 
 type Props = {}
+
+const bgStyles = {
+  minHeight: `calc(100vh - 64px)`,
+  background: `url(${authbackground}) no-repeat center center fixed`,
+  backgroundSize: "cover"
+}
 
 const Register = (props: Props) => {
   // const [open, setOpen] = React.useState(false);
@@ -141,18 +147,14 @@ const Register = (props: Props) => {
     navigate('/login');
   };
 
-  const bgStyles = {
-    minHeight: `calc(100vh - 64px)`,
-    background: `url(${authbackground}) no-repeat center center fixed`,
-    backgroundSize: "cover"
-  }
+
 
   React.useEffect(() => {
     const checkIfLoggedIn = async () => {
       console.log("checkIfLoggedIn in Login.tsx called");
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        await checkLoggedIn();
+        await currentAuthenticatedUser();
+
         // redirect if already logged in
         navigate('/feed');
       } catch (e) {
