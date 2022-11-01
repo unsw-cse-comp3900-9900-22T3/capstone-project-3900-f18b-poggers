@@ -11,6 +11,7 @@ type User {
 
 type UserInfo{
   username: String!
+  email: String!
   numberFollower: Int!
   numberFollowing: Int!
 }
@@ -87,7 +88,8 @@ type RootQuery {
     getUserInfo(username:String!):UserInfo!
     isFollowing(followUser:String!): Boolean!
     getTags: [Tag!]!
-    isUserAuth: Boolean!
+    isUserAuth: UserInfo!
+    isRecipeLiked(recipeID: String!): Boolean!
 }
 
 type RootMutation {
