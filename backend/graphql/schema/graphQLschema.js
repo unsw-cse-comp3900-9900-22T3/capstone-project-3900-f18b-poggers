@@ -39,6 +39,8 @@ type Tag{
 }
 
 type RecipeThumbnail{
+  _id: ID!
+  contributorUsername: String!
   title: String!
   content: String!
   numberLike :Int!
@@ -46,6 +48,7 @@ type RecipeThumbnail{
 }
 
 type RecipeDetail{
+  _id: ID!
   title: String!
   content: String!
   dateCreated: String!
