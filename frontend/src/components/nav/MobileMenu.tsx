@@ -3,7 +3,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Auth } from 'aws-amplify';
 
 type Props = {
   handleMenuClose: () => void,
@@ -28,7 +27,7 @@ const MobileMenu = (props: Props) => {
 
   const handleSignOut = async () => {
     try {
-      await Auth.signOut();
+      localStorage.removeItem('token');
 
       // close menu, log out and redirect to /login
       props.handleMenuClose();

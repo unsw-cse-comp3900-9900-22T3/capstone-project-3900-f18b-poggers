@@ -7,6 +7,7 @@ import { graphqlOperation } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
 import RemoveIcon from '@mui/icons-material/Remove';
 import Image from 'mui-image';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
@@ -48,12 +49,9 @@ const CreateRecipe = (props: Props) => {
   React.useEffect(() => {
     const setUserData = async () => {
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        const user = await Auth.currentAuthenticatedUser({
-          bypassCache: false
-        })
+        const { user } = await currentAuthenticatedUser();
         console.log(user)
-        setUsername(user.username);
+        setUsername(user);
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);

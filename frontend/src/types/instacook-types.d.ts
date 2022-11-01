@@ -18,7 +18,7 @@ export type User = {
 }
 
 export type UserInfo = {
-  username?: string
+  user: string
   email?: string
   numberFollower?: int
   numberFollowing?: int
@@ -69,11 +69,4 @@ export type Comment = {
   recipeID?: string
   content?: string
   dateCreated?: string
-}
-
-export type isUserAuthData = {
-  data: {
-    [key: string]: UserInfo
-  },
-  errors: [{ message: string }] | undefined | null;
 }

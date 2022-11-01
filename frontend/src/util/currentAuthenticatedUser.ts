@@ -1,4 +1,4 @@
-import { isUserAuthData, UserInfo } from "../types/instacook-types";
+import { UserInfo } from "../types/instacook-types";
 
 export const currentAuthenticatedUser = async (): Promise<UserInfo> => {
   const body = {
@@ -26,7 +26,7 @@ export const currentAuthenticatedUser = async (): Promise<UserInfo> => {
     }
   });
 
-  const apiData: isUserAuthData = await res.json();
+  const apiData = await res.json();
 
   if (apiData.errors) {
     throw new Error(apiData.errors[0].message);
@@ -37,7 +37,7 @@ export const currentAuthenticatedUser = async (): Promise<UserInfo> => {
   }
 
   return {
-    username: apiData.data.isUserAuth.username,
+    user: apiData.data.isUserAuth.username,
     email: apiData.data.isUserAuth.email,
     numberFollower: apiData.data.isUserAuth.numberFollower,
     numberFollowing: apiData.data.isUserAuth.numberFollowing

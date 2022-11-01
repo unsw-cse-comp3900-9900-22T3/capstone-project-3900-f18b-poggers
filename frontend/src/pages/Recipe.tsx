@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { API, Auth, Storage } from "aws-amplify";
 import EditIcon from '@mui/icons-material/Edit';
 import Image from 'mui-image';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 type Props = {}
 
 type Comment = {
@@ -101,12 +102,8 @@ const Recipe = (props: Props) => {
 
     const setUserData = async () => {
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        const user = await Auth.currentAuthenticatedUser({
-          bypassCache: false
-        })
-        console.log(user)
-        setUsername(user.username);
+        const { user } = await currentAuthenticatedUser();
+        setUsername(user);
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -203,12 +200,12 @@ const Recipe = (props: Props) => {
           <Typography variant="caption"
             onClick={() => { navigate(`/profile/${contributorName}`) }}
             sx={{ cursor: "pointer" }}>
-              posted by {contributorName}
+            posted by {contributorName}
           </Typography>
-              {(contributorName === username) &&
-                <IconButton onClick={() => { (navigate(`/updaterecipe/${recipeId}`)) }} color={"secondary"}>
-                  <EditIcon />
-                </IconButton>}
+          {(contributorName === username) &&
+            <IconButton onClick={() => { (navigate(`/updaterecipe/${recipeId}`)) }} color={"secondary"}>
+              <EditIcon />
+            </IconButton>}
 
         </Box>
         <Box

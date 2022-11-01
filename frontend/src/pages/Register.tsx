@@ -2,8 +2,6 @@ import { Box, Button, Container, CssBaseline, Grid, TextField, Typography } from
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import authbackground from '../static/images/authbackground.jpeg'
-import { Auth } from 'aws-amplify';
-import ConfirmEmailModal from '../components/auth/ConfirmEmailModal';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 
 type Props = {}
@@ -15,11 +13,9 @@ const bgStyles = {
 }
 
 const Register = (props: Props) => {
-  // const [open, setOpen] = React.useState(false);
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [email, setEmail] = React.useState("");
-  // const [username, setUsername] = React.useState("");
   const navigate = useNavigate();
 
   const displayError = (message: string) => {
@@ -29,19 +25,6 @@ const Register = (props: Props) => {
 
   const signUp = async (username: string, password: string, email: string) => {
     try {
-      // const { user } = await Auth.signUp({
-      //   'username': username,
-      //   'password': password,
-      //   attributes: {
-      //     'email': email,
-      //   },
-      //   autoSignIn: { // optional - enables auto sign in after user is confirmed
-      //     enabled: false,
-      //   }
-      // });
-      // console.log("successful signup");
-      // console.log(user);
-
       const body = {
         query: `
           mutation {
@@ -257,7 +240,6 @@ const Register = (props: Props) => {
           </Box>
         </Container>
       </Grid>
-      {/* <ConfirmEmailModal username={username} open={open} setOpen={setOpen} redirectPage="/login" /> */}
     </>
   )
 }

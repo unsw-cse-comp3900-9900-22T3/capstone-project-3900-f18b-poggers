@@ -1,4 +1,4 @@
-import { Divider, Grid, Typography } from '@mui/material'
+import { Divider, Typography } from '@mui/material'
 import React from 'react'
 import RecipeCard from './RecipeCard'
 import testimg from '../../static/images/authbackground.jpeg'
