@@ -7,6 +7,7 @@ import RecipeContents from '../components/recipe/RecipeContents';
 import { useNavigate } from 'react-router-dom';
 import Image from 'mui-image';
 import authbackground from '../static/images/authbackground.jpeg';
+import { Tag } from '../types/instacook-types';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
@@ -25,6 +26,7 @@ const CreateRecipe = (props: Props) => {
   const [imgData, setImgData] = React.useState<any>('');
 
   const [tags, setTags] = React.useState<string[]>([]);
+  const [allTags, setAllTags] = React.useState<Tag[]>([]);
   const [token, setToken] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -36,7 +38,32 @@ const CreateRecipe = (props: Props) => {
         })
         console.log(user)
         setUsername(user.username);
-        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjczMDA4NzksImV4cCI6MTY2NzMwNDQ3OX0.dLRKvEKXBKnm7FEdctMQNDMpNDmlBC1uN4gsdf8yYok")
+        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjczMjQxNTQsImV4cCI6MTY2NzMyNzc1NH0.Pd4xrjXdBkpDTO3oQewgx87jphg8eYw_Z9I0R0h-o7Q")
+
+        const requestBody = {
+          query: `
+            query{
+              getTags {
+                  _id
+                  content
+              }
+          }
+          `
+        }
+
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const apiData = await res.json();
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+        setAllTags(apiData.data.getTags);
+
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -74,6 +101,28 @@ const CreateRecipe = (props: Props) => {
     setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
   };
+
+  const handleTag = (newTag : string) => {
+    const copy = [...tags];
+    let index = copy.indexOf(newTag)
+    if (index > -1) {
+      console.log("removed tag")
+      copy.splice(index,1)
+      setTags(copy)
+    } else {
+      console.log("added tag")
+      setTags([...tags, newTag])
+    }
+  };
+
+  // const handleRemoveTag = () => {
+  //   const copy = [...tags];
+  //   copy.pop();
+  //   copyData.pop();
+  //   setIngredients(copy);
+  //   setIngredientsData(copyData);
+
+  // };
 
   const handleRemoveIngredient = () => {
     const copy = [...ingredients];
@@ -201,10 +250,12 @@ const CreateRecipe = (props: Props) => {
               ingredients={ingredients}
               instructions={instructions}
               tags={tags}
+              allTags={allTags}
               handleInstruction={handleInstruction}
               handleIngredient={handleIngredient}
               handleRemoveIngredient={handleRemoveIngredient}
               handleRemoveInstruction={handleRemoveInstruction}
+              handleTag={handleTag}
             />
 
             <Box
@@ -233,7 +284,7 @@ const CreateRecipe = (props: Props) => {
                   // const data: any = await API.graphql(graphqlOperation(createRecipe, { input: newRecipe }));
                   // const id = data.data.createRecipe.id;
                   const d = new Date();
-
+                  const tagsData = tags.map(i => `"${i}"`);
                   const requestBody = {
                     query: `
                       mutation {
@@ -242,7 +293,7 @@ const CreateRecipe = (props: Props) => {
                                 title: "${recipeName}",
                                 content: """[[${ingredientsData}], [${instructionsData}], [${(description)}], "${imgData}"]""",
                                 dateCreated: "${d.toString()}",
-                                tags: []
+                                tags: [${tagsData}]
 
                             }
                         ) {
