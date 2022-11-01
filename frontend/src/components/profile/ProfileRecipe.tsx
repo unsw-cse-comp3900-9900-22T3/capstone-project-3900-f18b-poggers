@@ -66,7 +66,7 @@ const ProfileRecipe = (props: Props) => {
     >
 
       {/* Recipe thumbnail */}
-      <Grid item md={4} mr={2} ml={{ md: 0, xs: 1.5 }} onClick={() => navigate(`/recipe/69`)}>
+      <Grid item md={4} mr={2} ml={{ md: 0, xs: 1.5 }} onClick={() => navigate(`/recipe/${props.post._id}`)}>
         <Image
           style={{
             minHeight: 200,
@@ -97,9 +97,9 @@ const ProfileRecipe = (props: Props) => {
             pl={0.5}
             variant="caption" 
             sx={{ cursor: "pointer" }}
-            onClick={() => location.pathname === '/feed' && navigate(`/profile/${props.post.contributor}`)}
+            onClick={() => location.pathname === '/feed' && navigate(`/profile/${props.post.contributorUsername}`)}
           >
-            Uploaded by {props.post.contributor}
+            Uploaded by {props.post.contributorUsername}
           </Typography> 
             
 

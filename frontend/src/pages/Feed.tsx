@@ -7,7 +7,7 @@ import ProfileRecipe from '../components/profile/ProfileRecipe';
 
 type Props = {}
 
-const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyMjc5MTgsImV4cCI6MTY2NzIzMTUxOH0.W6G48Hos5naG-2twVtM_nrWhnZ7Tchh9EI6zo-2yooc"
+const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyNzg4NzksImV4cCI6MTY2NzI4MjQ3OX0.PJCG0QSJs9c5Ti2wiF09hxRCUZjS0beo5I7uYvjlVio"
 
 
 const Feed = (props: Props) => {
@@ -24,10 +24,12 @@ const Feed = (props: Props) => {
           query: `
             query {
               getNewsFeed {
-                  title
-                  content
-                  numberLike
-                  tags
+                _id
+                contributorUsername
+                title
+                content
+                numberLike
+                tags
               }
             }
           `
@@ -48,10 +50,11 @@ const Feed = (props: Props) => {
         // const recipes = apiData.data.getListRecipeByContributor
 
         // const newList: Recipe[] = recipes.map((item: Recipe) => ({
-        //     title: item.title,
-        //     content: item.content,
-        //     contributor: "chefZap",
-        //     numberLike: item.numberLike,
+        //   _id: item._id,
+        //   contributorUsername: item.contributorUsername,
+        //   title: item.title,
+        //   content: item.content,
+        //   numberLike: item.numberLike,
         // }))
 
         // console.log(newList);

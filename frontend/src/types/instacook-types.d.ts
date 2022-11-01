@@ -1,9 +1,8 @@
 export type Recipe = {
-  // id: string,
+  _id: string,
+  contributorUsername: string,
   title: string,
   content: string,
   contributor: string,
-  // fileImage: string,
-  // createdAt: string,
   numberLike: number,
 }

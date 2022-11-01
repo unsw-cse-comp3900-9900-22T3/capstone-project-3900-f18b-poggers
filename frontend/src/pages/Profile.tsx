@@ -15,7 +15,7 @@ const Profile = (props: Props) => {
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
-  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyMjc5MTgsImV4cCI6MTY2NzIzMTUxOH0.W6G48Hos5naG-2twVtM_nrWhnZ7Tchh9EI6zo-2yooc"
+  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjcyNzg4NzksImV4cCI6MTY2NzI4MjQ3OX0.PJCG0QSJs9c5Ti2wiF09hxRCUZjS0beo5I7uYvjlVio"
 
   
   useEffect(() => {
@@ -25,6 +25,8 @@ const Profile = (props: Props) => {
           query: `
             query {
               getListRecipeByContributor(username: "${profileUsername === undefined ? username : profileUsername}") {
+                  _id
+                  contributorUsername
                   title
                   content
                   numberLike
@@ -45,9 +47,10 @@ const Profile = (props: Props) => {
         const recipes = apiData.data.getListRecipeByContributor
 
         const newList: Recipe[] = recipes.map((item: Recipe) => ({
+            _id: item._id,
+            contributorUsername: item.contributorUsername,
             title: item.title,
             content: item.content,
-            contributor: profileUsername,
             numberLike: item.numberLike,
         }))
 
