@@ -111,15 +111,23 @@ module.exports = {
     }
     return {
       username: user.username,
+      email: user.email,
       numberFollowing: user.listFollowing.length,
       numberFollower: user.listFollower.length,
     };
   },
 
-  isUserAuth: async (args, req) => {
+  isUserAuth: async (args,req) => {
     if (!req.isAuth) {
-      return false;
+      throw new Error("Unauthenticated!");
     }
-    return true;
+    const user = await User.findById(req.userId);
+    return {
+      username: user.username,
+      email: user.email,
+      numberFollowing: user.listFollowing.length,
+      numberFollower: user.listFollower.length,
+    };
   },
+  
 };
