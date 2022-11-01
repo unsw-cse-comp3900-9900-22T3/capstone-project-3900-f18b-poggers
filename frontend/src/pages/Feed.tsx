@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Auth } from "aws-amplify";
 import { useNavigate } from 'react-router-dom';
 import { Recipe } from '../types/instacook-types';
 import { Typography, Container, Grid, Link } from '@mui/material';
@@ -7,17 +6,15 @@ import ProfileRecipe from '../components/profile/ProfileRecipe';
 
 type Props = {}
 
-const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjczMDkyNDEsImV4cCI6MTY2NzMxMjg0MX0.gyX6fkb58m6JzpKPEKNv3aROu6tglqoY18VInD4Jlsg"
+const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjczMTI4OTcsImV4cCI6MTY2NzMxNjQ5N30.Zp5wmG5o2kzQkgMqpCSGkZ4hlhis2rMm45It4BZsgQE"
 
 
 const Feed = (props: Props) => {
-  const [userEmail, setUserEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [id, setId] = useState("");
   const [recipeList, setRecipeList] = useState<Recipe[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // get recipes from all the contributors user has subscribed to
     const fetchRecipes = async () => {
       try {
         const requestBody = {
@@ -65,25 +62,36 @@ const Feed = (props: Props) => {
       }
     };
 
+    // check if the logged in user's token is valid
     const setUserData = async () => {
       console.log("setUserData in Feed.tsx called");
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        const user = await Auth.currentAuthenticatedUser({
-          bypassCache: false
-        })
-        console.log(user)
-        setUsername(user.username);
-        setUserEmail(user.attributes.email);
-        setId(user.attributes.sub);
-      } catch (e) {
-        if (typeof e === "string") {
-          console.log(e);
-        } else if (e instanceof Error) {
-          console.log(e.message);
-        } else {
-          console.log(e);
+        const requestBody = {
+          query: `
+            query {
+              isUserAuth {
+                  username
+              }
+            }
+          `
+          };
+  
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+          }
+        });
+  
+        const apiData = await res.json();
+        if (apiData.errors) {
+          // error will be thrown if the token has expired or is invalid
+          throw new Error(apiData.errors[0].message);
         }
+      } catch (error) {
+        console.log("fetching user data failed:", error);
 
         // go to login page if not authenticated
         navigate('/login');

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography, Container, Grid, Box, Avatar } from '@mui/material';
 import ProfileRecipe from '../components/profile/ProfileRecipe';
-import { Auth } from "aws-amplify";
 import { Recipe } from '../types/instacook-types';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -10,15 +9,17 @@ type Props = {}
 const Profile = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [buttonText, setButtonText] = useState("Loading");
+  const [buttonLock, setButtonLock] = useState(true);
   const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
-  const [username, setUsername] = React.useState("");
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
-  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjczMDkyNDEsImV4cCI6MTY2NzMxMjg0MX0.gyX6fkb58m6JzpKPEKNv3aROu6tglqoY18VInD4Jlsg"
+  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjczMTI4OTcsImV4cCI6MTY2NzMxNjQ5N30.Zp5wmG5o2kzQkgMqpCSGkZ4hlhis2rMm45It4BZsgQE"
 
   
   useEffect(() => {
+
+    // get list of recipes from contributor
     const fetchRecipes = async () => {
       try {
         const requestBody = {
@@ -44,8 +45,11 @@ const Profile = (props: Props) => {
         });
 
         const apiData = await res.json();
-        const recipes = apiData.data.getListRecipeByContributor
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
 
+        const recipes = apiData.data.getListRecipeByContributor
         const newList: Recipe[] = recipes.map((item: Recipe) => ({
             _id: item._id,
             contributorUsername: item.contributorUsername,
@@ -63,6 +67,7 @@ const Profile = (props: Props) => {
 
     };
 
+    // check if the contributor is subscribed
     const checkSubscribe = async () => {
       try {
         const requestBody = {
@@ -83,7 +88,11 @@ const Profile = (props: Props) => {
         });
   
         const apiData = await res.json();
-        console.log(apiData)
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+
+        // if contributor is subscribed, set text to Unsubscribe, otherwise Subscribe
         setIsSubscribed(apiData.data.isFollowing);
         isSubscribed ? setButtonText("Unsubscribe") : setButtonText("Subscribe");
       } catch (error) {
@@ -92,30 +101,41 @@ const Profile = (props: Props) => {
 
     }
 
+    // check if the logged in user's token is valid
+    // and get logged in user's detail
     const setUserData = async () => {
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        const user = await Auth.currentAuthenticatedUser({
-          bypassCache: false
-        })
-
-        if (profileUsername === undefined) {
-          // username not in params
-          console.log(user)
-          setUsername(user.username);
-
-        } else {
-          // username param provided
-          setUsername(profileUsername);
+        const requestBody = {
+          query: `
+            query {
+              isUserAuth {
+                  username
+              }
+            }
+          `
+          };
+  
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token,
+          }
+        });
+  
+        const apiData = await res.json();
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
         }
-      } catch (e) {
-        if (typeof e === "string") {
-          console.log(e);
-        } else if (e instanceof Error) {
-          console.log(e.message);
-        } else {
-          console.log(e);
-        }
+
+        console.log(apiData.data);
+
+        // if the user is viewing their own profile, lock the subscribe button
+        apiData.data.isUserAuth.username === profileUsername 
+          ? setButtonLock(true) : setButtonLock(false);
+      } catch (error) {
+        console.log("fetching user data failed:", error);
 
         // go to login page if not authenticated
         navigate('/login');
@@ -124,8 +144,9 @@ const Profile = (props: Props) => {
     setUserData();
     checkSubscribe();
     fetchRecipes();
-  }, [navigate, profileUsername, isSubscribed]);
+  }, [navigate, profileUsername, isSubscribed, buttonLock]);
 
+  // subscribe/unsubscribe contributor
   const subscribe = async () => {
     try {
       const requestBody = {
@@ -149,7 +170,8 @@ const Profile = (props: Props) => {
       if (apiData.errors) {
         throw new Error(apiData.errors[0].message);
       }
-      // console.log(apiData)
+
+      // update the button text after subscribe/unsubscribe
       setIsSubscribed(!isSubscribed);
       isSubscribed ? setButtonText("Unsubscribe") : setButtonText("Subscribe");
     } catch (error) {
@@ -195,6 +217,7 @@ const Profile = (props: Props) => {
               variant="contained"
               color="secondary"
               size="small"
+              disabled={buttonLock}
             >
               {buttonText}
             </Button>
@@ -205,7 +228,7 @@ const Profile = (props: Props) => {
         {/* Username and description */}
         <Grid item xs={12} md={8}>
           <Typography variant="h3" mb={1}>
-            {username}
+            {profileUsername}
           </Typography>
 
           <Typography variant="subtitle1" pr={4}>
