@@ -15,8 +15,6 @@ const Profile = (props: Props) => {
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
-  const token = localStorage.getItem('token');
-
   useEffect(() => {
 
     // get list of recipes from contributor
@@ -63,6 +61,7 @@ const Profile = (props: Props) => {
         setRecipeList([...newList]);
       } catch (error) {
         console.log("Error on fetching recipe", error);
+        setRecipeList([]);
       }
 
     };
@@ -83,7 +82,7 @@ const Profile = (props: Props) => {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
           }
         });
   
@@ -147,7 +146,7 @@ const Profile = (props: Props) => {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         }
       });
 

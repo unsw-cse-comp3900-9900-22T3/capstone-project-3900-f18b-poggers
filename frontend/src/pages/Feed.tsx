@@ -7,8 +7,6 @@ import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 
 type Props = {}
 
-const token = localStorage.getItem('token');
-
 const Feed = (props: Props) => {
   const [recipeList, setRecipeList] = useState<Recipe[]>([]);
   const navigate = useNavigate();
@@ -36,7 +34,7 @@ const Feed = (props: Props) => {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
           }
         });
 
@@ -59,6 +57,7 @@ const Feed = (props: Props) => {
         setRecipeList([...newList]);
       } catch (error) {
         console.log("Error on fetching recipe", error);
+        setRecipeList([]);
       }
     };
 
@@ -110,7 +109,7 @@ const Feed = (props: Props) => {
           </Typography>
 
           <Typography variant="h4" align='center'>
-            Head to the <Link href='/#'>discovery page</Link> to get started.
+            Head to the <Link href='/'>discovery page</Link> to get started.
           </Typography>
         </Grid>
       )}
