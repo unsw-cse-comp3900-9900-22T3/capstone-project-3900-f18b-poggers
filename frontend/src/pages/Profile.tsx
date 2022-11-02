@@ -9,7 +9,6 @@ type Props = {}
 
 const Profile = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
-  // const [buttonText, setButtonText] = useState("Loading");
   const [buttonLock, setButtonLock] = useState(true);
   const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
   const { profileUsername } = useParams();
@@ -105,8 +104,6 @@ const Profile = (props: Props) => {
       console.log("setUserData in Feed.tsx called");
       try {
         const { user } = await currentAuthenticatedUser();
-        console.log(user)
-        // setUsername(user);
 
         // if the user is viewing their own profile, lock the subscribe button
         user === profileUsername 
@@ -217,9 +214,6 @@ const Profile = (props: Props) => {
               </Button>
             }
           </Box>
-
-          
-
         </Grid>
 
         {/* Username and description */}

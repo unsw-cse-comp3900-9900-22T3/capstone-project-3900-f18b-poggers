@@ -85,11 +85,12 @@ const ProfileRecipe = (props: Props) => {
       </Grid>
 
       {/* Recipe title and description */}
-      <Grid item md={7} xs={12} pl={2} pr={2} pb={2} mt={2}>
+      <Grid item md={7} xs={12} pl={2} pr={2}>
         <Grid item>
           <Typography 
             noWrap variant="h4" 
             ml={0.25}
+            mt={{xs: 1, md: 0}}
           >
             {props.post.title}
           </Typography>
@@ -111,8 +112,6 @@ const ProfileRecipe = (props: Props) => {
             WebkitLineClamp: '3',
             WebkitBoxOrient: 'vertical',
           }}
-            // variant="body2"
-            mt={1}
             pl={0.5}
             mb={0.5}>
             {description}
@@ -124,6 +123,7 @@ const ProfileRecipe = (props: Props) => {
           container
           direction="row"
           alignItems="flex-end"
+          mb={{xs: 2, md: 0}}
         >
 
           <Box sx={tagStyles}>
