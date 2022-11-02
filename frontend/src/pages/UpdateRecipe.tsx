@@ -133,6 +133,42 @@ const UpdateRecipe = (props: Props) => {
     backgroundColor: "#d3d3d3",
   }
 
+  const handleUpdate = async () => {
+    if (recipe !== undefined) {
+      const d = new Date();
+      const tagsData = tags.map(i => `"${i}"`);
+      const requestBody = {
+        query: `
+          mutation {
+            updateRecipe(recipeID: "${recipeId}", recipeInput:
+                {
+                    title: "${recipeName}",
+                    content: """[[${ingredientsData}], [${instructionsData}], [${JSON.stringify(description)}], "${imgData}"]""",
+                    dateCreated: "${d.toString()}",
+                    tags: [${tagsData}]
+
+                }
+            )
+        }
+        `
+      }
+      console.log(requestBody)
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const apiData1 = await res.json();
+      console.log(apiData1);
+      navigate(`/recipe/${recipeId}`)
+
+    }
+  }
+
   const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -316,41 +352,7 @@ const UpdateRecipe = (props: Props) => {
               }}
             >
               <Button variant="contained"
-                onClick={async () => {
-                  if (recipe !== undefined) {
-                    const d = new Date();
-                    const tagsData = tags.map(i => `"${i}"`);
-                    const requestBody = {
-                      query: `
-                        mutation {
-                          updateRecipe(recipeID: "${recipeId}", recipeInput:
-                              {
-                                  title: "${recipeName}",
-                                  content: """[[${ingredientsData}], [${instructionsData}], [${JSON.stringify(description)}], "${imgData}"]""",
-                                  dateCreated: "${d.toString()}",
-                                  tags: [${tagsData}]
-
-                              }
-                          )
-                      }
-                      `
-                    }
-                    console.log(requestBody)
-                    const res = await fetch('http://localhost:3000/graphql', {
-                      body: JSON.stringify(requestBody),
-                      method: "POST",
-                      headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                        'Content-Type': 'application/json'
-                      }
-                    });
-
-                    const apiData1 = await res.json();
-                    console.log(apiData1);
-                    navigate(`/recipe/${recipeId}`)
-
-                  }
-                }}
+                onClick={handleUpdate}
               >Update</Button>
             </Box>
           </Box>

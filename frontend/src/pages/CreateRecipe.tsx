@@ -75,7 +75,48 @@ const CreateRecipe = (props: Props) => {
     minHeight: `calc(100vh - 64px)`,
     backgroundColor: "#d3d3d3",
   }
-  // const dataURI = ""
+
+  const handleCreateRecipe = async () => {
+    const d = new Date();
+    const tagsData = tags.map(i => `"${i}"`);
+    const requestBody = {
+      query: `
+        mutation {
+          createRecipe(recipeInput:
+              {
+                  title: "${recipeName}",
+                  content: """[[${ingredientsData}], [${instructionsData}], [${(description)}], "${imgData}"]""",
+                  dateCreated: "${d.toString()}",
+                  tags: [${tagsData}]
+
+              }
+          ) {
+              _id
+              title
+              content
+              dateCreated
+              contributorUsername
+              numberLike
+              tags
+          }
+      }
+      `
+    }
+    console.log(requestBody)
+    const res = await fetch('http://localhost:3000/graphql', {
+      body: JSON.stringify(requestBody),
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log("TRIGGERRREDD");
+    const apiData = await res.json();
+    console.log(apiData);
+
+    navigate(`/recipe/${apiData.data.createRecipe._id}`)
+  }
 
   const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -259,47 +300,7 @@ const CreateRecipe = (props: Props) => {
               }}
             >
               <Button variant="contained"
-                onClick={async () => {
-                  const d = new Date();
-                  const tagsData = tags.map(i => `"${i}"`);
-                  const requestBody = {
-                    query: `
-                      mutation {
-                        createRecipe(recipeInput:
-                            {
-                                title: "${recipeName}",
-                                content: """[[${ingredientsData}], [${instructionsData}], [${(description)}], "${imgData}"]""",
-                                dateCreated: "${d.toString()}",
-                                tags: [${tagsData}]
-
-                            }
-                        ) {
-                            _id
-                            title
-                            content
-                            dateCreated
-                            contributorUsername
-                            numberLike
-                            tags
-                        }
-                    }
-                    `
-                  }
-                  console.log(requestBody)
-                  const res = await fetch('http://localhost:3000/graphql', {
-                    body: JSON.stringify(requestBody),
-                    method: "POST",
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem('token')}`,
-                      'Content-Type': 'application/json'
-                    }
-                  });
-                  console.log("TRIGGERRREDD");
-                  const apiData = await res.json();
-                  console.log(apiData);
-
-                  navigate(`/recipe/${apiData.data.createRecipe._id}`)
-                }}
+                onClick={handleCreateRecipe}
               >Done</Button>
             </Box>
           </Box>
