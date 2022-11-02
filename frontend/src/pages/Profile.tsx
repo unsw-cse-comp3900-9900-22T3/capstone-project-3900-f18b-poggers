@@ -9,7 +9,6 @@ type Props = {}
 
 const Profile = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [buttonText, setButtonText] = useState("Loading");
   const [buttonLock, setButtonLock] = useState(true);
   const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
   const { profileUsername } = useParams();
@@ -93,7 +92,6 @@ const Profile = (props: Props) => {
 
         // if contributor is subscribed, set text to Unsubscribe, otherwise Subscribe
         setIsSubscribed(apiData.data.isFollowing);
-        isSubscribed ? setButtonText("Unsubscribe") : setButtonText("Subscribe");
       } catch (error) {
         console.log("checkSubscribe failed:", error);
       }
@@ -106,8 +104,6 @@ const Profile = (props: Props) => {
       console.log("setUserData in Feed.tsx called");
       try {
         const { user } = await currentAuthenticatedUser();
-        console.log(user)
-        // setUsername(user);
 
         // if the user is viewing their own profile, lock the subscribe button
         user === profileUsername 
@@ -128,11 +124,13 @@ const Profile = (props: Props) => {
     setUserData();
     checkSubscribe();
     fetchRecipes();
-  }, [navigate, profileUsername, isSubscribed, buttonLock]);
+  }, [navigate, profileUsername]);
 
   // subscribe/unsubscribe contributor
   const subscribe = async () => {
     try {
+      // update the button text after subscribe/unsubscribe
+      setIsSubscribed(!isSubscribed);
       const requestBody = {
         query: `
           mutation {
@@ -155,9 +153,7 @@ const Profile = (props: Props) => {
         throw new Error(apiData.errors[0].message);
       }
 
-      // update the button text after subscribe/unsubscribe
-      setIsSubscribed(!isSubscribed);
-      isSubscribed ? setButtonText("Unsubscribe") : setButtonText("Subscribe");
+      
     } catch (error) {
       console.log("subscribe button failed:", error);
     }
@@ -196,17 +192,28 @@ const Profile = (props: Props) => {
             mr={{ md: 4 }}
             mt={1}
           >
-            <Button
-              onClick={() => subscribe()}
-              variant="contained"
-              color="secondary"
-              size="small"
-              disabled={buttonLock}
-            >
-              {buttonText}
-            </Button>
+            {isSubscribed ? 
+              <Button
+                onClick={() => subscribe()}
+                variant="contained"
+                color="secondary"
+                size="small"
+                disabled={buttonLock}
+              >
+                Unsubscribe
+              </Button>
+            :  
+              <Button
+                onClick={() => subscribe()}
+                variant="contained"
+                color="secondary"
+                size="small"
+                disabled={buttonLock}
+              >
+                Subscribe
+              </Button>
+            }
           </Box>
-
         </Grid>
 
         {/* Username and description */}

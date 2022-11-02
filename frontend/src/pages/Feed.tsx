@@ -9,6 +9,7 @@ type Props = {}
 
 const Feed = (props: Props) => {
   const [recipeList, setRecipeList] = useState<Recipe[]>([]);
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -67,7 +68,7 @@ const Feed = (props: Props) => {
       try {
         const { user } = await currentAuthenticatedUser();
         console.log(user)
-        // setUsername(user);
+        setUsername(user);
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -86,24 +87,13 @@ const Feed = (props: Props) => {
   }, [navigate])
 
   return (
-
-
-
     <Container
       maxWidth="md"
       sx={{ backgroundColor: 'white', paddingBottom: 2, minHeight: 'calc(100vh - 64px)' }}
     >
-      {/* <div style={{ backgroundColor: 'white' }}>
-        <div>This should be the feed (/feed)</div>
-        <div>You are logged in as: </div>
-        <div>Email: {userEmail}</div>
-        <div>Username: {username}</div>
-        <div>Id: {id}</div>
-      </div> */}
-
       {/* A message if there are no recipes displayed */}
-      {recipeList.length === 0 && (
-        <Grid item pt={10}>
+      {recipeList.length === 0 ? 
+        <Grid item pt={6}>
           <Typography variant="h2" align='center' mb={5}>
             No posts yet.
           </Typography>
@@ -112,7 +102,13 @@ const Feed = (props: Props) => {
             Head to the <Link href='/'>discovery page</Link> to get started.
           </Typography>
         </Grid>
-      )}
+        : 
+        <Grid item pt={6}>
+          <Typography variant="h2" align='center' mb={5}>
+            Hello, {username}.
+          </Typography>
+        </Grid>
+      }
 
       {/* Recipe Posts */}
       <Grid
