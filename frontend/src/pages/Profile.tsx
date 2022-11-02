@@ -15,9 +15,8 @@ const Profile = (props: Props) => {
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
-  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNjAyYmNjNTA0ZDJjZjMwYTQ0MDAiLCJlbWFpbCI6InN3eGVyZ2FtZXI2NUBnbWFpbC5jb20iLCJpYXQiOjE2NjczMTI4OTcsImV4cCI6MTY2NzMxNjQ5N30.Zp5wmG5o2kzQkgMqpCSGkZ4hlhis2rMm45It4BZsgQE"
+  const token = localStorage.getItem('token');
 
-  
   useEffect(() => {
 
     // get list of recipes from contributor
@@ -84,7 +83,7 @@ const Profile = (props: Props) => {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': token,
+            'Authorization': `Bearer ${token}`,
           }
         });
   
