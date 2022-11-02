@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Image from 'mui-image';
 import authbackground from '../static/images/authbackground.jpeg';
 import { Tag } from '../types/instacook-types';
+import { ConstructionOutlined } from '@mui/icons-material';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
@@ -26,6 +27,7 @@ const CreateRecipe = (props: Props) => {
   const [imgData, setImgData] = React.useState<any>('');
 
   const [tags, setTags] = React.useState<string[]>([]);
+  const [tagsText, setTagsText] = React.useState<string[]>([]);
   const [allTags, setAllTags] = React.useState<Tag[]>([]);
   const [token, setToken] = React.useState<string>("");
 
@@ -38,7 +40,7 @@ const CreateRecipe = (props: Props) => {
         })
         console.log(user)
         setUsername(user.username);
-        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjczMjQxNTQsImV4cCI6MTY2NzMyNzc1NH0.Pd4xrjXdBkpDTO3oQewgx87jphg8eYw_Z9I0R0h-o7Q")
+        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjczNzA1OTgsImV4cCI6MTY2NzM3NDE5OH0.w1sQk72WjQAt11JaRSBL--L4E1OyuKfvjjrmNQ4X4vQ")
 
         const requestBody = {
           query: `
@@ -63,7 +65,6 @@ const CreateRecipe = (props: Props) => {
           throw new Error(apiData.errors[0].message);
         }
         setAllTags(apiData.data.getTags);
-
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -103,15 +104,26 @@ const CreateRecipe = (props: Props) => {
   };
 
   const handleTag = (newTag : string) => {
+    let newTagText = "";
+    for (let tag of allTags) {
+      if (tag._id === newTag) {
+        newTagText = tag.content
+      }
+    }
     const copy = [...tags];
+    const copyTagsText = [...tagsText]
     let index = copy.indexOf(newTag)
+    let indexTagsText = copyTagsText.indexOf(newTagText)
     if (index > -1) {
       console.log("removed tag")
       copy.splice(index,1)
+      copyTagsText.splice(indexTagsText, 1)
       setTags(copy)
+      setTagsText(copyTagsText)
     } else {
       console.log("added tag")
       setTags([...tags, newTag])
+      setTagsText([...tagsText, newTagText])
     }
   };
 
@@ -249,7 +261,7 @@ const CreateRecipe = (props: Props) => {
             <RecipeContents
               ingredients={ingredients}
               instructions={instructions}
-              tags={tags}
+              tags={tagsText}
               allTags={allTags}
               handleInstruction={handleInstruction}
               handleIngredient={handleIngredient}

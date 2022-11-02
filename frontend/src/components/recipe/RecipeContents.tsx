@@ -30,7 +30,8 @@ const RecipeContents = (props: Props) => {
   const [ingredientText, setIngredientText] = React.useState<string>("");
   const [instructionText, setInstructionText] = React.useState<string>("");
   // const [tagClicked, setTagClicked] = React.useState(false);
-  const [modalTags, setmodalTags] = React.useState<string[]>(props.tags);
+  const [modalTags, setmodalTags] = React.useState<string[]>([]);
+  const [displayTags, setDisplayTags] = React.useState<string[]>([]);
   // const [modalTagsText, setmodalTagsText] = React.useState<string[]>(props.tags);
   // setmodalTags([...modalTags, props.tags])
   const handleOpen = () => setOpen(true);
@@ -54,17 +55,30 @@ const RecipeContents = (props: Props) => {
     handleOpen()
   }
 
+  // const updateDisplayTag = () => {
+  //   let tagIds = [];
+  //   for (let tag of props.allTags) {
+  //     if (props.tags.includes(tag._id)) {
+  //       console.log("found")
+  //       tagIds.push(tag._id)
+  //     }
+  //   }
+  //   setmodalTags([...modalTags, ...tagIds])
+  // }
+
   const handleTagClick = (tag : Tag) => {
+    // updateDisplayTag()
     props.handleTag(tag._id)
     console.log(tag)
-    const copy = [...modalTags];
-    const index = copy.indexOf(tag.content)
-    if (index > -1) {
-      copy.splice(index,1)
-      setmodalTags(copy)
-    } else {
-      setmodalTags([...modalTags, tag.content])
-    }
+    // const copy = [...modalTags];
+    // const index = copy.indexOf(tag.content)
+    // if (index > -1) {
+    //   copy.splice(index,1)
+    //   setmodalTags(copy)
+    // } else {
+    //   setmodalTags([...modalTags, tag.content])
+    // }
+    console.log(modalTags)
     // setTagClicked(!tagClicked)
   }
 

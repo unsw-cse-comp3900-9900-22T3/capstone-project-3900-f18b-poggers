@@ -71,7 +71,7 @@ const UpdateRecipe = (props: Props) => {
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
 
   const [allTags, setAllTags] = React.useState<Tag[]>([]);
-  // const [tagsText, setTagsText] = React.useState<string[]>([]);
+  const [tagsText, setTagsText] = React.useState<string[]>([]);
   const [tags, setTags] = React.useState<string[]>([]);
   const [token, setToken] = React.useState<string>("");
 
@@ -86,7 +86,7 @@ const UpdateRecipe = (props: Props) => {
 
         const recipeById = apiData2.data.getRecipe;
         console.log(recipeById);
-        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjczMDA4NzksImV4cCI6MTY2NzMwNDQ3OX0.dLRKvEKXBKnm7FEdctMQNDMpNDmlBC1uN4gsdf8yYok")
+        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjczNzA1OTgsImV4cCI6MTY2NzM3NDE5OH0.w1sQk72WjQAt11JaRSBL--L4E1OyuKfvjjrmNQ4X4vQ")
         // setRecipeName(recipeById.name);
         // setDescription(JSON.parse(recipeById.content)[2])
         // setContributorName(recipeById.contributor);
@@ -197,15 +197,14 @@ const UpdateRecipe = (props: Props) => {
           throw new Error(apiData.errors[0].message);
         }
         setAllTags(apiData1.data.getTags);
-        // let tagIds = [];
-        // for (let tag of allTags) {
-        //   if (apiData.data.getRecipeById.tags.includes(tag.content)) {
-        //     console.log("found")
-        //     tagIds.push(tag._id)
-        //   }
-        // }
-        // setTags([...tags, ...tagIds])
-        // setTagsText(apiData.data.getRecipeById.tags)
+        let tagIds = [];
+        for (let tag of apiData1.data.getTags) {
+          if (apiData.data.getRecipeById.tags.includes(tag.content)) {
+            tagIds.push(tag._id)
+          }
+        }
+        setTags([...tags, ...tagIds])
+        setTagsText(apiData.data.getRecipeById.tags)
 
       } catch (error) {
         console.log("error on fetching recipe", error);
@@ -222,7 +221,6 @@ const UpdateRecipe = (props: Props) => {
   const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("instruction"))
     setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
   };
@@ -230,21 +228,31 @@ const UpdateRecipe = (props: Props) => {
   const handleIngredient = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("ingredient"))
     setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
   };
 
   const handleTag = (newTag : string) => {
+    let newTagText = "";
+    for (let tag of allTags) {
+      if (tag._id === newTag) {
+        newTagText = tag.content
+      }
+    }
     const copy = [...tags];
+    const copyTagsText = [...tagsText]
     let index = copy.indexOf(newTag)
+    let indexTagsText = copyTagsText.indexOf(newTagText)
     if (index > -1) {
       console.log("removed tag")
       copy.splice(index,1)
+      copyTagsText.splice(indexTagsText, 1)
       setTags(copy)
+      setTagsText(copyTagsText)
     } else {
       console.log("added tag")
       setTags([...tags, newTag])
+      setTagsText([...tagsText, newTagText])
     }
   };
 
@@ -347,15 +355,12 @@ const UpdateRecipe = (props: Props) => {
               <IconButton color="primary" aria-label="upload picture" component="label">
                 <input hidden accept="image/*" type="file" onChange={(e) => {
                   e.preventDefault();
-                  console.log(e.target.value);
                   if (e.target.files != null) {
                     setSelectedImage(e.target.files[0]);
                     setPreview(e.target.files[0].name);
                     setImgKey(true);
                     const reader = new FileReader();
                     reader.addEventListener("load", () => {
-                      console.log("below")
-                      console.log(reader.result);
                       setImgData(reader.result);
                     });
                     reader.readAsDataURL(e.target.files[0]);
@@ -379,7 +384,7 @@ const UpdateRecipe = (props: Props) => {
             <RecipeContents
               ingredients={ingredients}
               instructions={instructions}
-              tags={tags}
+              tags={tagsText}
               allTags={allTags}
               handleInstruction={handleInstruction}
               handleIngredient={handleIngredient}
@@ -400,33 +405,8 @@ const UpdateRecipe = (props: Props) => {
               <Button variant="contained"
                 onClick={async () => {
                   if (recipe !== undefined) {
-                    // let newRecipe = {
-                    //   id: recipe.id,
-                    //   name: recipeName,
-                    //   content: [ingredientsData, instructionsData, JSON.stringify(description)],
-                    //   contributor: contributorName,
-                    //   fileImage: recipe.fileImage,
-                    // };
-                    // if (imgKey === true) {
-                    //   const storageResult = await Storage.put(
-                    //     uuidv4(),
-                    //     selectedImage
-                    //   );
-                    //   newRecipe.fileImage = `{key=${storageResult.key}}`;
-                    // }
-                    // console.log(recipe);
-                    // try {
-                    //   const data: any = await API.graphql(graphqlOperation(updateRecipe, { input: newRecipe }));
-                    //   const id = data.data.updateRecipe.id;
-                    //   navigate(`/recipe/${id}`)
-                    //   console.log(newRecipe);
-
-                    // } catch (error) {
-                    //   console.log("error on fetching recipe", error);
-                    // }
                     const d = new Date();
                     const tagsData = tags.map(i => `"${i}"`);
-                    console.log(tags)
                     const requestBody = {
                       query: `
                         mutation {
@@ -443,18 +423,18 @@ const UpdateRecipe = (props: Props) => {
                       `
                     }
                     console.log(requestBody)
-                    // const res = await fetch('http://localhost:3000/graphql', {
-                    //   body: JSON.stringify(requestBody),
-                    //   method: "POST",
-                    //   headers: {
-                    //     Authorization: token,
-                    //     'Content-Type': 'application/json'
-                    //   }
-                    // });
-                    // console.log("TRIGGERRREDD");
-                    // const apiData1 = await res.json();
-                    // console.log(apiData1);
-                    // navigate(`/recipe/${recipeId}`)
+                    const res = await fetch('http://localhost:3000/graphql', {
+                      body: JSON.stringify(requestBody),
+                      method: "POST",
+                      headers: {
+                        Authorization: token,
+                        'Content-Type': 'application/json'
+                      }
+                    });
+
+                    const apiData1 = await res.json();
+                    console.log(apiData1);
+                    navigate(`/recipe/${recipeId}`)
 
                   }
                 }}
