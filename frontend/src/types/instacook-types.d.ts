@@ -70,3 +70,9 @@ export type Comment = {
   content?: string
   dateCreated?: string
 }
+
+export type Tag = {
+  _id: string,
+  content: string,
+}
+
