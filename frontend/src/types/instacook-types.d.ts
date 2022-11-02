@@ -1,5 +1,4 @@
 export type Recipe = {
-<<<<<<< HEAD
   _id: string,
   contributorUsername: string,
   title: string,
@@ -7,16 +6,6 @@ export type Recipe = {
   contributor: string,
   numberLike: number,
   tags: string[],
-}
-=======
-  id: string
-  name: string
-  content: string
-  contributor: string
-  fileImage: string
-  createdAt: string
-  updatedAt: string
-  owner: string
 }
 
 export type User = {
@@ -80,4 +69,3 @@ export type Comment = {
   content?: string
   dateCreated?: string
 }
->>>>>>> main
