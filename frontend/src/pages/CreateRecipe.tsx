@@ -1,15 +1,11 @@
 import React from 'react'
 import { IconButton, Box, Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { API, Auth, Storage } from "aws-amplify";
-import { graphqlOperation } from "aws-amplify";
 import RecipeContents from '../components/recipe/RecipeContents';
 import { useNavigate } from 'react-router-dom';
 import Image from 'mui-image';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
-import authbackground from '../static/images/authbackground.jpeg';
 import { Tag } from '../types/instacook-types';
-const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
 const CreateRecipe = (props: Props) => {
@@ -20,7 +16,6 @@ const CreateRecipe = (props: Props) => {
   const [username, setUsername] = React.useState<string>("");
   const [ingredients, setIngredients] = React.useState<string[]>([]);
   const [instructions, setInstructions] = React.useState<string[]>([]);
-  const [selectedImage, setSelectedImage] = React.useState<File>();
   const [preview, setPreview] = React.useState<string>("");
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
@@ -29,7 +24,6 @@ const CreateRecipe = (props: Props) => {
   const [tags, setTags] = React.useState<string[]>([]);
   const [tagsText, setTagsText] = React.useState<string[]>([]);
   const [allTags, setAllTags] = React.useState<Tag[]>([]);
-  const [token, setToken] = React.useState<string>("");
 
   React.useEffect(() => {
     const setUserData = async () => {
@@ -37,7 +31,6 @@ const CreateRecipe = (props: Props) => {
         const { user } = await currentAuthenticatedUser();
         console.log(user)
         setUsername(user);
-        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjczNzA1OTgsImV4cCI6MTY2NzM3NDE5OH0.w1sQk72WjQAt11JaRSBL--L4E1OyuKfvjjrmNQ4X4vQ")
 
         const requestBody = {
           query: `
@@ -103,7 +96,7 @@ const CreateRecipe = (props: Props) => {
   const handleTag = (newTag : string) => {
     let newTagText = "";
     for (let tag of allTags) {
-      if (tag._id === newTag) {
+      if (tag._id === newTag  && tag.content) {
         newTagText = tag.content
       }
     }
@@ -123,15 +116,6 @@ const CreateRecipe = (props: Props) => {
       setTagsText([...tagsText, newTagText])
     }
   };
-
-  // const handleRemoveTag = () => {
-  //   const copy = [...tags];
-  //   copy.pop();
-  //   copyData.pop();
-  //   setIngredients(copy);
-  //   setIngredientsData(copyData);
-
-  // };
 
   const handleRemoveIngredient = () => {
     const copy = [...ingredients];
@@ -226,7 +210,6 @@ const CreateRecipe = (props: Props) => {
                   e.preventDefault();
                   console.log(e.target.value);
                   if (e.target.files != null) {
-                    setSelectedImage(e.target.files[0]);
                     setPreview(e.target.files[0].name);
                     console.log(e.target.files[0]);
                     // setImgData(URL.createObjectURL(e.target.files[0]));
@@ -277,21 +260,6 @@ const CreateRecipe = (props: Props) => {
             >
               <Button variant="contained"
                 onClick={async () => {
-                  // const storageResult = await Storage.put(
-                  //   uuidv4(),
-                  //   selectedImage
-                  // );
-
-                  // // Insert predictions code here later
-                  // console.log(storageResult);
-                  // const newRecipe = {
-                  //   name: recipeName,
-                  //   content: [ingredientsData, instructionsData, description],
-                  //   contributor: username,
-                  //   fileImage: storageResult,
-                  // };
-                  // const data: any = await API.graphql(graphqlOperation(createRecipe, { input: newRecipe }));
-                  // const id = data.data.createRecipe.id;
                   const d = new Date();
                   const tagsData = tags.map(i => `"${i}"`);
                   const requestBody = {
@@ -322,7 +290,7 @@ const CreateRecipe = (props: Props) => {
                     body: JSON.stringify(requestBody),
                     method: "POST",
                     headers: {
-                      Authorization: token,
+                      Authorization: `Bearer ${localStorage.getItem('token')}`,
                       'Content-Type': 'application/json'
                     }
                   });

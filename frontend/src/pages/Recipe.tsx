@@ -4,7 +4,6 @@ import Carousel from 'react-material-ui-carousel'
 import testimg from '../static/images/authbackground.jpeg'
 import SendIcon from '@mui/icons-material/Send';
 import { useNavigate, useParams } from 'react-router-dom';
-import { API, Auth, Storage } from "aws-amplify";
 import EditIcon from '@mui/icons-material/Edit';
 import Image from 'mui-image';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
@@ -12,49 +11,6 @@ import { Comment } from '../types/instacook-types';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 type Props = {}
-
-// const listRecipes = /* GraphQL */ `
-// query ListRecipes(
-//   $filter: ModelRecipeFilterInput
-//   $limit: Int
-//   $nextToken: String
-//   ) {
-//   listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
-//     items {
-//       id
-//       name
-//       content
-//       contributor
-//       fileImage
-//       createdAt
-//       updatedAt
-//       owner
-//     }
-//     nextToken
-//   }
-// }
-// `;
-
-// const getRecipe = /* GraphQL */ `
-// query GetRecipe($id: ID!) {
-//   getRecipe(id: $id) {
-//     id
-//     name
-//     content
-//     contributor
-//     fileImage
-//     createdAt
-//     updatedAt
-//     owner
-//   }
-// }
-// `;
-
-const sampleComments = [
-  { author: "Gordon Ramsay", comment: "This lamb is so undercooked, it’s following Mary to school!" },
-  { author: "Gordon Ramsay", comment: "My gran could do better! And she’s dead!" },
-  { author: "Gordon Ramsay", comment: "This pizza is so disgusting, if you take it to Italy you’ll get arrested." }
-]
 
 const Recipe = (props: Props) => {
   const navigate = useNavigate();
@@ -70,33 +26,11 @@ const Recipe = (props: Props) => {
   const [comments, setComments] = React.useState<Comment[]>([]);
   const [numberLike, setNumberLike] = React.useState(0);
   const [tags, setTags] = React.useState([""]);
-  const [token, setToken] = React.useState<string>("");
-
+  const [recipeLiked, setRecipeLiked] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        // const apiData: any = await API.graphql({ query: listRecipes });
-        // const recipes = apiData.data.listRecipes.items;
-        // console.log(recipes);
-        // const apiData2: any = await API.graphql({
-        //   query: getRecipe,
-        //   variables: { id: recipeId }
-        // });
-        // const recipeById = apiData2.data.getRecipe;
-
-        // setRecipeName(recipeById.name);
-        // setDescription(JSON.parse(recipeById.content)[2])
-        // setContributorName(recipeById.contributor);
-        // if (recipeById.content[0] != null) {
-        //   setIngredients(JSON.parse(recipeById.content)[0]);
-        // }
-        // if (recipeById.content[1] != null) {
-        //   setInstructions(JSON.parse(recipeById.content)[1]);
-        // }
-
-        // const fileAccessURL = await Storage.get(recipeById.fileImage.slice(5, -1), { expires: 30, level: "public" });
-        // setRecipeImage(fileAccessURL);
 
         const requestBody = {
           query: `
@@ -149,13 +83,38 @@ const Recipe = (props: Props) => {
       } catch (error) {
         console.log("error on fetching recipe", error);
       }
+      const requestBody2 = {
+        query: `
+          query {
+            isRecipeLiked(recipeID: "${recipeId}")
+          }
+        `
+      }
+
+      const res2 = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody2),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+      });
+      const apiData2 = await res2.json();
+      if (apiData2.errors) {
+        throw new Error(apiData2.errors[0].message);
+      }
+      if (apiData2.data.isRecipeLiked) {
+        setRecipeLiked(true)
+      } else {
+        setRecipeLiked(false)
+      }
     };
+
 
     const setUserData = async () => {
       try {
         const { user } = await currentAuthenticatedUser();
         setUsername(user);
-        setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjcyOTE4MDMsImV4cCI6MTY2NzI5NTQwM30.f9S7XJp9-BcGmpo-4hZy60yaGXe6-Ykxkd3PKF-GteM")
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -232,7 +191,7 @@ const Recipe = (props: Props) => {
       body: JSON.stringify(requestBody),
       method: "POST",
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json'
       }
     });
@@ -257,10 +216,18 @@ const Recipe = (props: Props) => {
       body: JSON.stringify(requestBody),
       method: "POST",
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json'
       }
     });
+
+    if (recipeLiked) {
+      setRecipeLiked(false)
+      setNumberLike(numberLike - 1)
+    } else {
+      setRecipeLiked(true)
+      setNumberLike(numberLike + 1)
+    }
   }
 
   const tagStyles = {
@@ -377,7 +344,7 @@ const Recipe = (props: Props) => {
             flexDirection: "column"}}>
                 <IconButton sx={likeStyles} onClick={handleLike}>
                   <Grid container direction="row" alignItems="center">
-                    <FavoriteIcon sx={{ fontSize: "30px", marginRight: 0.5}}/>
+                    {recipeLiked ? <FavoriteIcon sx={{ fontSize: "30px", marginRight: 0.5}}/> : <FavoriteBorderIcon sx={{ fontSize: "30px", marginRight: 0.5}}/>}
                     <Typography>
                       {numberLike}
                     </Typography>
