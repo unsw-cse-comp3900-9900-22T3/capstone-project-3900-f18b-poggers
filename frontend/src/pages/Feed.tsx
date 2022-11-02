@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Recipe } from '../types/instacook-types';
 import { Typography, Container, Grid, Link } from '@mui/material';
 import ProfileRecipe from '../components/profile/ProfileRecipe';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 
 type Props = {}
 
@@ -66,35 +67,20 @@ const Feed = (props: Props) => {
     const setUserData = async () => {
       console.log("setUserData in Feed.tsx called");
       try {
-        const requestBody = {
-          query: `
-            query {
-              isUserAuth {
-                  username
-              }
-            }
-          `
-          };
-  
-        const res = await fetch('http://localhost:3000/graphql', {
-          body: JSON.stringify(requestBody),
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token,
-          }
-        });
-  
-        const apiData = await res.json();
-        if (apiData.errors) {
-          // error will be thrown if the token has expired or is invalid
-          throw new Error(apiData.errors[0].message);
+        const { user } = await currentAuthenticatedUser();
+        console.log(user)
+        // setUsername(user);
+      } catch (e) {
+        if (typeof e === "string") {
+          console.log(e);
+        } else if (e instanceof Error) {
+          console.log(e.message);
+        } else {
+          console.log(e);
         }
-      } catch (error) {
-        console.log("fetching user data failed:", error);
 
-        // go to login page if not authenticated
-        navigate('/login');
+          // go to login page if not authenticated
+          navigate('/login');
       }
     }
     setUserData();

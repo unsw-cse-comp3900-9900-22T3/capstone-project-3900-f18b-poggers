@@ -3,6 +3,7 @@ import { Button, Typography, Container, Grid, Box, Avatar } from '@mui/material'
 import ProfileRecipe from '../components/profile/ProfileRecipe';
 import { Recipe } from '../types/instacook-types';
 import { useNavigate, useParams } from 'react-router-dom';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 
 type Props = {}
 
@@ -104,41 +105,26 @@ const Profile = (props: Props) => {
     // check if the logged in user's token is valid
     // and get logged in user's detail
     const setUserData = async () => {
+      console.log("setUserData in Feed.tsx called");
       try {
-        const requestBody = {
-          query: `
-            query {
-              isUserAuth {
-                  username
-              }
-            }
-          `
-          };
-  
-        const res = await fetch('http://localhost:3000/graphql', {
-          body: JSON.stringify(requestBody),
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token,
-          }
-        });
-  
-        const apiData = await res.json();
-        if (apiData.errors) {
-          throw new Error(apiData.errors[0].message);
-        }
-
-        console.log(apiData.data);
+        const { user } = await currentAuthenticatedUser();
+        console.log(user)
+        // setUsername(user);
 
         // if the user is viewing their own profile, lock the subscribe button
-        apiData.data.isUserAuth.username === profileUsername 
+        user === profileUsername 
           ? setButtonLock(true) : setButtonLock(false);
-      } catch (error) {
-        console.log("fetching user data failed:", error);
+      } catch (e) {
+        if (typeof e === "string") {
+          console.log(e);
+        } else if (e instanceof Error) {
+          console.log(e.message);
+        } else {
+          console.log(e);
+        }
 
-        // go to login page if not authenticated
-        navigate('/login');
+          // go to login page if not authenticated
+          navigate('/login');
       }
     }
     setUserData();

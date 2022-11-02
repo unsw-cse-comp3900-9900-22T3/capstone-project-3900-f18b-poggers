@@ -14,7 +14,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import MobileMenu from './MobileMenu';
 import ProfileMenu from './ProfileMenu';
-import { Auth } from 'aws-amplify';
+import TextLink from '../TextLink';
+import { currentAuthenticatedUser } from '../../util/currentAuthenticatedUser';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -98,12 +99,8 @@ export default function Nav() {
     const setUserData = async () => {
       console.log("setUserData in Nav.tsx called");
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        const user = await Auth.currentAuthenticatedUser({
-          // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-          bypassCache: false
-        })
-        setUsername(user.username);
+        const { user } = await currentAuthenticatedUser();
+        setUsername(user);
         setLoggedIn(true);
         console.log("Nav: Logged In User: ", username);
       } catch (e) {
@@ -165,6 +162,9 @@ export default function Nav() {
             <Box sx={{ flexGrow: 1 }} />
             {loggedIn ?
               <>
+                <Box sx={{ display: { xs: 'none', md: 'flex' }, marginRight: 2 }}>
+                  <TextLink text='Discover' route="/" />
+                </Box>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                   <Tooltip title="Account">
                     <IconButton
