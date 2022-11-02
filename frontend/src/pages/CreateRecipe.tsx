@@ -6,9 +6,9 @@ import { graphqlOperation } from "aws-amplify";
 import RecipeContents from '../components/recipe/RecipeContents';
 import { useNavigate } from 'react-router-dom';
 import Image from 'mui-image';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 import authbackground from '../static/images/authbackground.jpeg';
 import { Tag } from '../types/instacook-types';
-import { ConstructionOutlined } from '@mui/icons-material';
 const { v4: uuidv4 } = require('uuid');
 type Props = {}
 
@@ -34,12 +34,9 @@ const CreateRecipe = (props: Props) => {
   React.useEffect(() => {
     const setUserData = async () => {
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        const user = await Auth.currentAuthenticatedUser({
-          bypassCache: false
-        })
+        const { user } = await currentAuthenticatedUser();
         console.log(user)
-        setUsername(user.username);
+        setUsername(user);
         setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjczNzA1OTgsImV4cCI6MTY2NzM3NDE5OH0.w1sQk72WjQAt11JaRSBL--L4E1OyuKfvjjrmNQ4X4vQ")
 
         const requestBody = {

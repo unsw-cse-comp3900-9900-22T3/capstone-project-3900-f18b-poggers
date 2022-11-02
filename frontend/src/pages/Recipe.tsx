@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { API, Auth, Storage } from "aws-amplify";
 import EditIcon from '@mui/icons-material/Edit';
 import Image from 'mui-image';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 import { Comment } from '../types/instacook-types';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -152,12 +153,8 @@ const Recipe = (props: Props) => {
 
     const setUserData = async () => {
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        const user = await Auth.currentAuthenticatedUser({
-          bypassCache: false
-        })
-        console.log(user)
-        setUsername(user.username);
+        const { user } = await currentAuthenticatedUser();
+        setUsername(user);
         setToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmNzcwNWNjNTA0ZDJjZjMwYTQ0MWUiLCJlbWFpbCI6InNoYWRvd0BnbWFpbC5jb20iLCJpYXQiOjE2NjcyOTE4MDMsImV4cCI6MTY2NzI5NTQwM30.f9S7XJp9-BcGmpo-4hZy60yaGXe6-Ykxkd3PKF-GteM")
       } catch (e) {
         if (typeof e === "string") {
@@ -326,12 +323,12 @@ const Recipe = (props: Props) => {
           <Typography variant="caption"
             onClick={() => { navigate(`/profile/${contributorName}`) }}
             sx={{ cursor: "pointer" }}>
-              posted by {contributorName}
+            posted by {contributorName}
           </Typography>
-              {(contributorName === username) &&
-                <IconButton onClick={() => { (navigate(`/updaterecipe/${recipeId}`)) }} color={"secondary"}>
-                  <EditIcon />
-                </IconButton>}
+          {(contributorName === username) &&
+            <IconButton onClick={() => { (navigate(`/updaterecipe/${recipeId}`)) }} color={"secondary"}>
+              <EditIcon />
+            </IconButton>}
 
         </Box>
         <Box

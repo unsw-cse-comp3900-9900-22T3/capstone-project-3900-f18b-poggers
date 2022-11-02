@@ -1,6 +1,6 @@
 import React from 'react'
-import { Auth } from 'aws-amplify';
 import { useNavigate } from 'react-router-dom';
+import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 
 type Props = {}
 
@@ -14,14 +14,9 @@ const Feed = (props: Props) => {
     const setUserData = async () => {
       console.log("setUserData in Feed.tsx called");
       try {
-        // TS types are wrong: https://github.com/aws-amplify/amplify-js/issues/4927
-        const user = await Auth.currentAuthenticatedUser({
-          bypassCache: false
-        })
+        const { user } = await currentAuthenticatedUser();
         console.log(user)
-        setUsername(user.username);
-        setUserEmail(user.attributes.email);
-        setId(user.attributes.sub);
+        setUsername(user);
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
