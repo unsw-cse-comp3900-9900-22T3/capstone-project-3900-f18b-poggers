@@ -109,7 +109,7 @@ const UpdateRecipe = (props: Props) => {
         });
         const apiData1 = await res1.json();
         if (apiData1.errors) {
-          throw new Error(apiData.errors[0].message);
+          throw new Error(apiData1.errors[0].message);
         }
         setAllTags(apiData1.data.getTags);
         let tagIds = [];
@@ -188,7 +188,7 @@ const UpdateRecipe = (props: Props) => {
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
   };
 
-  const handleTag = (newTag : string) => {
+  const handleTag = (newTag: string) => {
     let newTagText = "";
     for (let tag of allTags) {
       if (tag._id === newTag && tag.content) {
@@ -201,7 +201,7 @@ const UpdateRecipe = (props: Props) => {
     let indexTagsText = copyTagsText.indexOf(newTagText)
     if (index > -1) {
       console.log("removed tag")
-      copy.splice(index,1)
+      copy.splice(index, 1)
       copyTagsText.splice(indexTagsText, 1)
       setTags(copy)
       setTagsText(copyTagsText)
@@ -245,7 +245,7 @@ const UpdateRecipe = (props: Props) => {
         <CssBaseline />
         <Box>
 
-        {/* Recipe Title */}
+          {/* Recipe Title */}
           <Box
             sx={{
               display: 'flex',
@@ -306,7 +306,7 @@ const UpdateRecipe = (props: Props) => {
             }}
           >
 
-          {/* Upload an Image */}
+            {/* Upload an Image */}
             <Box>
               <IconButton color="primary" aria-label="upload picture" component="label">
                 <input hidden accept="image/*" type="file" onChange={(e) => {

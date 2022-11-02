@@ -141,8 +141,8 @@ export default function Nav() {
             <Typography
               variant="h6"
               noWrap
-              onClick={() => { navigate('/feed') }}
-              sx={{ display: { xs: 'none', sm: 'none', md: 'block' }, cursor: 'pointer' }}
+              onClick={() => { navigate('/') }}
+              sx={{ display: { xs: 'block', sm: 'block', md: 'block' }, cursor: 'pointer' }}
             >
               Instacook
             </Typography>
@@ -163,7 +163,7 @@ export default function Nav() {
             {loggedIn ?
               <>
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, marginRight: 2 }}>
-                  <TextLink text='Discover' route="/" />
+                  <TextLink text='Your Feed' route="/feed" />
                 </Box>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                   <Tooltip title="Account">

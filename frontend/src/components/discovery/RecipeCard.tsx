@@ -7,8 +7,6 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import testimg from '../../static/images/authbackground.jpeg'
-import testavatar from '../../static/images/logo.jpeg'
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -16,7 +14,8 @@ type Props = {
   author: string,
   authorImg?: string,
   img: string,
-  recipeId?: string // temporarily optional
+  recipeId: string,
+  numberOfLikes: number
 }
 
 const RecipeCard = (props: Props) => {
@@ -28,28 +27,28 @@ const RecipeCard = (props: Props) => {
         avatar={
           <Avatar
             onClick={() => { navigate('/profile/' + props.author) }}
-            src={props.authorImg && testavatar}
             sx={{ bgcolor: red[500], cursor: 'pointer' }}
-            aria-label="recipe">
-
+            aria-label="recipe"
+          >
+            {props.author[0]}
           </Avatar>
         }
-        title={props.title}
+        title={<Typography noWrap>{props.title}</Typography>}
         subheader={"by " + props.author}
+
       />
       <CardMedia
         component="img"
         height="194"
-        image={testimg && props.img}
+        image={props.img}
         alt="Recipe Image"
         sx={{ cursor: 'pointer' }}
-        // onClick={() => { navigate('/recipe/' + props.recipeId) }}
-        onClick={() => { navigate('/recipe/98ce17ef-7047-422b-981b-c25d93046510') }}
+        onClick={() => { navigate('/recipe/' + props.recipeId) }}
       />
       <CardActions disableSpacing>
         <FavoriteIcon aria-label="likes" style={{ color: '#ed415b', marginRight: 2 }} />
         <Typography>
-          6000
+          {props.numberOfLikes}
         </Typography>
       </CardActions>
     </Card>

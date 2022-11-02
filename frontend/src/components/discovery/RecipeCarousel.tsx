@@ -1,19 +1,21 @@
 import { Divider, Typography } from '@mui/material'
 import React from 'react'
 import RecipeCard from './RecipeCard'
-import testimg from '../../static/images/authbackground.jpeg'
-import testimg2 from '../../static/images/logo.jpeg'
 import Slider from "react-slick";
 import DiscoveryCardLoader from './DiscoveryCardLoader'
 
 type Props = {
-  heading: string
+  heading: string,
+  categoryTagId: string
 }
 
 type DiscoveryRecipe = {
   title: string,
-  author: string,
-  img: string
+  contributorUsername: string,
+  img: string,
+  content: any,
+  numberLike: number,
+  _id: string
 }
 
 const sliderSettings = {
@@ -77,88 +79,74 @@ const carouselStyles = {
   borderBottom: '1px solid #eeeeee'
 }
 
-const testData: DiscoveryRecipe[] = [
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg2
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg2
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg2
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg2
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg2
-  },
-  {
-    title: "Beef Wellington",
-    author: "gordonramsay",
-    img: testimg2
-  },
-]
+const placeholderArr = [0, 1, 2, 3, 4, 5];
 
 const RecipeCarousel = (props: Props) => {
+  const [recipes, setRecipes] = React.useState<DiscoveryRecipe[]>([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const getRecipes = async () => {
-      fetch("https://jsonplaceholder.typicode.com/posts")
-        .then(response => response.json())
-        .then(json => {
-          setTimeout(() => setLoading(false), 4000);
-        });
+      // fetch("https://jsonplaceholder.typicode.com/posts")
+      //   .then(response => response.json())
+      //   .then(json => {
+      //     setTimeout(() => setLoading(false), 4000);
+      //   });
+
+
+      console.log("category tag id", props.categoryTagId);
+      const body = {
+        query: `
+          query {
+            getListRecipeByTags(tags: ["${props.categoryTagId}"]) {
+              _id
+              contributorUsername
+              title
+              content
+              numberLike
+              tags
+            }
+          }
+        `
+      }
+
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(body),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const apiData = await res.json();
+
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+
+      setRecipes([...apiData.data.getListRecipeByTags]);
+
+      if (props.categoryTagId !== undefined) {
+        // all api calls are done
+        setLoading(false);
+        console.log(recipes);
+      }
+
     }
     getRecipes();
-  }, [])
+  }, [props.categoryTagId])
+
+
   return (
     <div style={carouselStyles}>
       <Typography variant="h5" style={{ paddingBottom: 4 }}>{props.heading}</Typography>
       <Slider {...sliderSettings}>
-        {testData.map((data) => (
-          loading ? <DiscoveryCardLoader /> : <RecipeCard title={data.title} author={data.author} img={data.img} />
+        {loading && placeholderArr.map((index) => (
+          <DiscoveryCardLoader key={index} />
+        ))}
+
+        {recipes.map((data, index) => (
+          !loading && <RecipeCard key={index} title={data.title} author={data.contributorUsername} img={JSON.parse(data.content)[3]} numberOfLikes={data.numberLike} recipeId={data._id} />
         ))}
       </Slider>
       <Divider />

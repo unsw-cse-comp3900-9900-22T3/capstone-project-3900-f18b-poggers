@@ -42,8 +42,8 @@ export type Recipe = {
 }
 
 export type Tag = {
-  _id?: string
-  content?: string
+  _id: string
+  content: string
 }
 
 export type RecipeThumbnail = {
