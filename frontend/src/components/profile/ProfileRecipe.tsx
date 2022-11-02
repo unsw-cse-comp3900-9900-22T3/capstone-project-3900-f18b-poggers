@@ -59,10 +59,11 @@ const ProfileRecipe = (props: Props) => {
       justifyContent={{ xs: 'center', md: 'left' }}
       alignItems="center"
       sx={{
-        border: 1,
         borderRadius: '15px',
         marginTop: 2,
-        padding: 0
+        padding: 0,
+        backgroundColor: '#eeeeee',
+        boxShadow: '0px 2px 0px 0px rgba(210,210,210,1)'
       }}
     >
 
