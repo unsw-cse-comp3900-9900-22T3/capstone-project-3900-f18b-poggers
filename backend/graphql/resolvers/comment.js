@@ -28,30 +28,5 @@ module.exports = {
       console.log(err);
       throw err;
     }
-  },
-
-  updateComment: async (args, req) => {
-    if (!req.isAuth) {
-      throw new Error("Unauthenticated!");
-    }
-
-    const comment = await Comment.findById(args.commentID);
-    comment.content = args.content;
-    comment.dateCreated = new Date(args.dateCreated);
-    await comment.save();
-    return true;
-  },
-
-  deleteComment: async (args, req) => {
-    if (!req.isAuth) {
-      throw new Error("Unauthenticated!");
-    }
-
-    const recipe = await Recipe.findById(args.recipeID);
-    const comment = await Comment.findById(args.commentID);
-    recipe.listComments.pop(args.commentID);
-    await recipe.save();
-    await comment.remove();
-    return true;
   }
 };

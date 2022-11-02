@@ -88,6 +88,7 @@ type RootQuery {
     isFollowing(followUser:String!): Boolean!
     getTags: [Tag!]!
     isUserAuth: Boolean!
+    getListRecipeByTags(tags: [ID!]!): [RecipeThumbnail!]!
 }
 
 type RootMutation {
