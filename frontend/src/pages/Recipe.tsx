@@ -266,15 +266,25 @@ const Recipe = (props: Props) => {
 
   const likeStyles = {
     backgroundColor: '#FFF',
-    padding: 1,
+    padding: 0,
+    borderRadius: 2,
+    color: '#28343c',
+    margin: 0.5,
+    minWidth: "50px",
+    justifyItems: "center",
+  }
+
+  const likeStylesUnAuth = {
+    backgroundColor: '#FFF',
+    padding: 0,
     borderRadius: 2,
     color: '#28343c',
     margin: 0.5,
     minWidth: "60px",
-    '&:hover': {
-      backgroundColor: '#28343c',
-      color: '#fff',
-    },
+    // '&:hover': {
+    //   backgroundColor: '#28343c',
+    //   color: '#fff',
+    // },
   }
 
   return (
@@ -364,14 +374,29 @@ const Recipe = (props: Props) => {
             width: "50%",
             alignItems: "flex-end",
             flexDirection: "column"}}>
+            {loggedIn ?
                 <IconButton sx={likeStyles} onClick={handleLike}>
-                  <Grid container direction="row" alignItems="center">
+                  <Grid container direction="row" alignItems="center" justifyItems="center">
                     {recipeLiked ? <FavoriteIcon sx={{ fontSize: "30px", marginRight: 0.5}}/> : <FavoriteBorderIcon sx={{ fontSize: "30px", marginRight: 0.5}}/>}
                     <Typography>
                       {numberLike}
                     </Typography>
                   </Grid>
                 </IconButton>
+                :
+                // <Box sx={likeStyles}>
+                <>
+                <Box sx={likeStylesUnAuth}>
+                  <Grid container direction="row" alignItems="center">
+                    <FavoriteBorderIcon sx={{ fontSize: "30px", marginRight: 0.5}}/>
+                    <Typography>
+                      {numberLike}
+                    </Typography>
+                  </Grid>
+                </Box>
+                </>
+                // <Box>
+                }
             </Box>
           </Box>
           <Grid container spacing={3} sx={{ padding: 3}}>
