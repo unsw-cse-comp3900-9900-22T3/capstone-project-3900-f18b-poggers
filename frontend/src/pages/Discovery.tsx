@@ -1,12 +1,8 @@
 import React from 'react'
 import RecipeCarousel from '../components/discovery/RecipeCarousel'
-import { Tag } from '../types/instacook-types'
+import { Tag, TagObj } from '../types/instacook-types'
 
 type Props = {}
-
-type TagObj = {
-  [tagName: string]: string
-}
 
 const Discovery = (props: Props) => {
   const [tagIds, setTagIds] = React.useState<TagObj>({});
@@ -51,9 +47,9 @@ const Discovery = (props: Props) => {
 
   return (
     <>
-      <RecipeCarousel heading={"Beef Recipes"} categoryTagId={tagIds['Beef']} />
-      <RecipeCarousel heading={"Lunch Recipes"} categoryTagId={tagIds['Chicken']} />
-      <RecipeCarousel heading={"Dinner Recipes"} categoryTagId={tagIds['Dessert']} />
+      <RecipeCarousel heading={"Most Popular Beef Recipes"} categoryTagId={tagIds['Beef']} />
+      <RecipeCarousel heading={"Most Popular Chicken Recipes"} categoryTagId={tagIds['Chicken']} />
+      <RecipeCarousel heading={"Most Popular Dessert Recipes"} categoryTagId={tagIds['Dessert']} />
     </>
   )
 }

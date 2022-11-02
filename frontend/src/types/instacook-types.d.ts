@@ -47,10 +47,12 @@ export type Tag = {
 }
 
 export type RecipeThumbnail = {
-  title?: string
-  content?: string
-  numberLike?: int
-  tags?: string[]
+  _id: string
+  contributorUsername: string
+  title: string
+  content: string
+  numberLike: number
+  tags: string[]
 }
 
 export type RecipeDetail = {
@@ -75,3 +77,6 @@ export type Tag = {
   content: string,
 }
 
+export type TagObj = {
+  [tagName: string]: string
+}

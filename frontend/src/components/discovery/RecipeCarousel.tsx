@@ -3,19 +3,11 @@ import React from 'react'
 import RecipeCard from './RecipeCard'
 import Slider from "react-slick";
 import DiscoveryCardLoader from './DiscoveryCardLoader'
+import { RecipeThumbnail } from '../../types/instacook-types';
 
 type Props = {
   heading: string,
   categoryTagId: string
-}
-
-type DiscoveryRecipe = {
-  title: string,
-  contributorUsername: string,
-  img: string,
-  content: any,
-  numberLike: number,
-  _id: string
 }
 
 const sliderSettings = {
@@ -82,19 +74,11 @@ const carouselStyles = {
 const placeholderArr = [0, 1, 2, 3, 4, 5];
 
 const RecipeCarousel = (props: Props) => {
-  const [recipes, setRecipes] = React.useState<DiscoveryRecipe[]>([]);
+  const [recipes, setRecipes] = React.useState<RecipeThumbnail[]>([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const getRecipes = async () => {
-      // fetch("https://jsonplaceholder.typicode.com/posts")
-      //   .then(response => response.json())
-      //   .then(json => {
-      //     setTimeout(() => setLoading(false), 4000);
-      //   });
-
-
-      console.log("category tag id", props.categoryTagId);
       const body = {
         query: `
           query {
