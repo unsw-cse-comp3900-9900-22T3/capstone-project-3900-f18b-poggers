@@ -1,12 +1,11 @@
 export type Recipe = {
-  id: string
-  name: string
-  content: string
-  contributor: string
-  fileImage: string
-  createdAt: string
-  updatedAt: string
-  owner: string
+  _id: string,
+  contributorUsername: string,
+  title: string,
+  content: string,
+  contributor: string,
+  numberLike: number,
+  tags: string[],
 }
 
 export type User = {

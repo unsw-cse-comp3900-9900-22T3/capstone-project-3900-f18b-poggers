@@ -1,91 +1,117 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography, Container, Grid, Box, Avatar } from '@mui/material';
 import ProfileRecipe from '../components/profile/ProfileRecipe';
-import { API, Auth } from "aws-amplify";
-import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Recipe } from '../types/instacook-types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 
 type Props = {}
 
-const listRecipes = /* GraphQL */ `
-query ListRecipes(
-  $filter: ModelRecipeFilterInput
-  $limit: Int
-  $nextToken: String
-  ) {
-  listRecipes(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      name
-      content
-      contributor
-      fileImage
-      createdAt
-      updatedAt
-      owner
-    }
-    nextToken
-  }
-}
-`;
-
-
 const Profile = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [buttonText, setButtonText] = useState("Subscribe");
+  const [buttonText, setButtonText] = useState("Loading");
+  const [buttonLock, setButtonLock] = useState(true);
   const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
-  const [username, setUsername] = React.useState("");
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
+
+    // get list of recipes from contributor
     const fetchRecipes = async () => {
       try {
-        const filter = { 'contributor': { eq: profileUsername === undefined ? username : profileUsername } };
-        const apiData: GraphQLResult<any> = await API.graphql({
-          query: listRecipes,
-          variables: { filter: filter },
+        const requestBody = {
+          query: `
+            query {
+              getListRecipeByContributor(username: "${profileUsername}") {
+                  _id
+                  contributorUsername
+                  title
+                  content
+                  numberLike
+                  tags
+              }
+            }
+          `
+        };
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          }
         });
-        const recipes: Recipe[] = apiData.data.listRecipes.items;
-        const newList: Recipe[] = recipes.map((item) => ({
-          id: item.id,
-          name: item.name,
-          content: item.content,
-          fileImage: item.fileImage.slice(5).slice(0, -1),
-          contributor: item.contributor,
-          owner: item.owner,
-          createdAt: item.createdAt,
-          updatedAt: item.updatedAt
-          // tag: ['kfc', 'is', 'better'],
-          // like: 21,
-        }))
 
-        newList.sort((a, b) => {
-          return Date.parse(b.updatedAt) - Date.parse(a.updatedAt);
-        })
+        const apiData = await res.json();
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+
+        const recipes = apiData.data.getListRecipeByContributor
+        const newList: Recipe[] = recipes.map((item: Recipe) => ({
+            _id: item._id,
+            contributorUsername: item.contributorUsername,
+            title: item.title,
+            content: item.content,
+            numberLike: item.numberLike,
+            tags: item.tags,
+        }))
 
         console.log(newList);
         setRecipeList([...newList]);
       } catch (error) {
         console.log("Error on fetching recipe", error);
+        setRecipeList([]);
       }
+
     };
 
-    const setUserData = async () => {
+    // check if the contributor is subscribed
+    const checkSubscribe = async () => {
       try {
-        const {user} = await currentAuthenticatedUser();
-
-        if (profileUsername === undefined) {
-          // username not in params
-          console.log(user)
-          setUsername(user);
-
-        } else {
-          // username param provided
-          setUsername(profileUsername);
+        const requestBody = {
+          query: `
+            query {
+              isFollowing(followUser: "${profileUsername}")
+              }
+          `
+          };
+  
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          }
+        });
+  
+        const apiData = await res.json();
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
         }
+
+        // if contributor is subscribed, set text to Unsubscribe, otherwise Subscribe
+        setIsSubscribed(apiData.data.isFollowing);
+        isSubscribed ? setButtonText("Unsubscribe") : setButtonText("Subscribe");
+      } catch (error) {
+        console.log("checkSubscribe failed:", error);
+      }
+
+    }
+
+    // check if the logged in user's token is valid
+    // and get logged in user's detail
+    const setUserData = async () => {
+      console.log("setUserData in Feed.tsx called");
+      try {
+        const { user } = await currentAuthenticatedUser();
+        console.log(user)
+        // setUsername(user);
+
+        // if the user is viewing their own profile, lock the subscribe button
+        user === profileUsername 
+          ? setButtonLock(true) : setButtonLock(false);
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -95,17 +121,46 @@ const Profile = (props: Props) => {
           console.log(e);
         }
 
-        // go to login page if not authenticated
-        navigate('/login');
+          // go to login page if not authenticated
+          navigate('/login');
       }
     }
-    setUserData()
+    setUserData();
+    checkSubscribe();
     fetchRecipes();
-  }, [navigate, profileUsername]);
+  }, [navigate, profileUsername, isSubscribed, buttonLock]);
 
-  const subscribe = () => {
-    setIsSubscribed(!isSubscribed);
-    isSubscribed ? setButtonText("Subscribe") : setButtonText("Unsubscribe");
+  // subscribe/unsubscribe contributor
+  const subscribe = async () => {
+    try {
+      const requestBody = {
+        query: `
+          mutation {
+            follow(followUsername: "${profileUsername}")
+            }
+        `
+        };
+
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+      });
+
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+
+      // update the button text after subscribe/unsubscribe
+      setIsSubscribed(!isSubscribed);
+      isSubscribed ? setButtonText("Unsubscribe") : setButtonText("Subscribe");
+    } catch (error) {
+      console.log("subscribe button failed:", error);
+    }
   }
 
   return (
@@ -146,6 +201,7 @@ const Profile = (props: Props) => {
               variant="contained"
               color="secondary"
               size="small"
+              disabled={buttonLock}
             >
               {buttonText}
             </Button>
@@ -156,7 +212,7 @@ const Profile = (props: Props) => {
         {/* Username and description */}
         <Grid item xs={12} md={8}>
           <Typography variant="h3" mb={1}>
-            {username}
+            {profileUsername}
           </Typography>
 
           <Typography variant="subtitle1" pr={4}>

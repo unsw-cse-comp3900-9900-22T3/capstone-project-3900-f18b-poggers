@@ -1,9 +1,9 @@
-import { Typography, Grid } from '@mui/material';
+import { Typography, Grid, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Storage } from "aws-amplify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Recipe } from '../../types/instacook-types';
 import { Image } from 'mui-image'
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 type Props = {
   post: Recipe,
@@ -14,6 +14,7 @@ const ProfileRecipe = (props: Props) => {
   const [imageURL, setImageURL] = useState("");
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const getDescription = async () => {
@@ -28,22 +29,29 @@ const ProfileRecipe = (props: Props) => {
     }
 
     const getImageUrl = async () => {
-      const fileAccessURL = await Storage.get(props.post.fileImage, { expires: 30, level: "public" });
-      setImageURL(fileAccessURL);
+      try {
+        const imageBase64 = JSON.parse(props.post.content);
+        if (imageBase64[3] !== undefined) {
+          // if the array index for image doesnt exist, throw error 
+          setImageURL(imageBase64[3]);
+        }
+      } catch (e) {
+        console.log(e);
+      }
     };
 
     getImageUrl();
     getDescription();
 
-  }, [props.post.fileImage, props.post.content])
+  }, [props.post.content])
 
-  // const tagStyles = {
-  //   backgroundColor: '#28343c',
-  //   padding: 1,
-  //   borderRadius: 2,
-  //   color: '#FFF',
-  //   margin: 0.5,
-  // }
+  const tagStyles = {
+    backgroundColor: '#28343c',
+    padding: 1,
+    borderRadius: 2,
+    color: '#FFF',
+    margin: 0.5,
+  }
 
   return (
     <Grid
@@ -59,7 +67,7 @@ const ProfileRecipe = (props: Props) => {
     >
 
       {/* Recipe thumbnail */}
-      <Grid item md={4} mr={2} ml={{ md: 0, xs: 1.5 }} onClick={() => navigate(`/recipe/${props.post.id}`)}>
+      <Grid item md={4} mr={2} ml={{ md: 0, xs: 1.5 }} onClick={() => navigate(`/recipe/${props.post._id}`)}>
         <Image
           style={{
             minHeight: 200,
@@ -79,9 +87,22 @@ const ProfileRecipe = (props: Props) => {
       {/* Recipe title and description */}
       <Grid item md={7} xs={12}>
         <Grid item>
-          <Typography noWrap variant="h4" mb={1} ml={0.25}>
-            {props.post.name}
+          <Typography 
+            noWrap variant="h4" 
+            ml={0.25}
+          >
+            {props.post.title}
           </Typography>
+
+          <Typography 
+            pl={0.5}
+            variant="caption" 
+            sx={{ cursor: "pointer" }}
+            onClick={() => location.pathname === '/feed' && navigate(`/profile/${props.post.contributorUsername}`)}
+          >
+            Uploaded by {props.post.contributorUsername}
+          </Typography> 
+            
 
           <Typography sx={{
             overflow: 'hidden',
@@ -90,35 +111,42 @@ const ProfileRecipe = (props: Props) => {
             WebkitLineClamp: '3',
             WebkitBoxOrient: 'vertical',
           }}
-            variant="body2"
+            // variant="body2"
+            mt={1}
             pl={0.5}
-            mb={1}>
+            mb={0.5}>
             {description}
           </Typography>
         </Grid>
 
         {/* Tags and likes */}
-        {/* <Grid
+        <Grid
           container
           direction="row"
           alignItems="flex-end"
         >
+
+          <Box sx={tagStyles}>
+            <Grid container direction="row" alignItems="center">
+              <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5}}/> 
+              <Typography>
+                {props.post.numberLike}
+              </Typography>
+            </Grid>
+          </Box>
+
           {
-            props.post.tag.map((item, index) => {
+            props.post.tags.map((item, index) => {
               return (
-                <Box sx={tagStyles}>
-                  {item}
+                <Box key={index} sx={tagStyles}>
+                  <Typography>
+                    {item}
+                  </Typography>
                 </Box>
               )
             })
           }
-
-          <Box sx={tagStyles}>
-            <Grid container direction="row" alignItems="center">
-              <FavoriteIcon fontSize='small'/> {props.post.like}
-            </Grid>
-          </Box>
-        </Grid> */}
+        </Grid>
       </Grid>
     </Grid>
 
