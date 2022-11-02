@@ -92,23 +92,28 @@ const Recipe = (props: Props) => {
         `
       }
 
-      const res2 = await fetch('http://localhost:3000/graphql', {
-        body: JSON.stringify(requestBody2),
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      try {
+        const res2 = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody2),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          }
+        });
+        const apiData2 = await res2.json();
+        if (apiData2.errors) {
+          throw new Error(apiData2.errors[0].message);
         }
-      });
-      const apiData2 = await res2.json();
-      if (apiData2.errors) {
-        throw new Error(apiData2.errors[0].message);
+        if (apiData2.data.isRecipeLiked) {
+          setRecipeLiked(true)
+        } else {
+          setRecipeLiked(false)
+        }
+      } catch (error) {
+        console.log(error)
       }
-      if (apiData2.data.isRecipeLiked) {
-        setRecipeLiked(true)
-      } else {
-        setRecipeLiked(false)
-      }
+
     };
 
 
@@ -177,6 +182,7 @@ const Recipe = (props: Props) => {
       dateCreated: d.toString(),
       recipeID: recipeId!
     };
+    setComments([data, ...comments]);
     const requestBody = {
       query: `
         mutation {
@@ -188,24 +194,35 @@ const Recipe = (props: Props) => {
       `
     }
     console.log(requestBody)
-    const res = await fetch('http://localhost:3000/graphql', {
-      body: JSON.stringify(requestBody),
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json'
+    try {
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
       }
-    });
-    console.log("TRIGGERRREDD");
-    const apiData1 = await res.json();
-    console.log(apiData1);
 
-    setComments([data, ...comments]);
-    console.log(comments)
+    } catch (error) {
+      console.log(error)
+    }
+
     setCommentField("");
   };
 
   const handleLike = async () => {
+    if (recipeLiked) {
+      setRecipeLiked(false)
+      setNumberLike(numberLike - 1)
+    } else {
+      setRecipeLiked(true)
+      setNumberLike(numberLike + 1)
+    }
     const requestBody = {
       query: `
         mutation {
@@ -214,22 +231,24 @@ const Recipe = (props: Props) => {
       `
     }
     console.log(requestBody)
-    await fetch('http://localhost:3000/graphql', {
-      body: JSON.stringify(requestBody),
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json'
+    try {
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
       }
-    });
 
-    if (recipeLiked) {
-      setRecipeLiked(false)
-      setNumberLike(numberLike - 1)
-    } else {
-      setRecipeLiked(true)
-      setNumberLike(numberLike + 1)
+    } catch (error) {
+      console.log(error)
     }
+
   }
 
   const tagStyles = {

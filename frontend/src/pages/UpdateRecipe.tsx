@@ -153,17 +153,22 @@ const UpdateRecipe = (props: Props) => {
         `
       }
       console.log(requestBody)
-      const res = await fetch('http://localhost:3000/graphql', {
-        body: JSON.stringify(requestBody),
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+      try {
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        const apiData = await res.json();
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
         }
-      });
-
-      const apiData1 = await res.json();
-      console.log(apiData1);
+      } catch (error) {
+        console.log(error)
+      }
       navigate(`/recipe/${recipeId}`)
 
     }
