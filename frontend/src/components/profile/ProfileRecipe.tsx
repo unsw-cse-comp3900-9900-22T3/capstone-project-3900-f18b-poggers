@@ -85,7 +85,7 @@ const ProfileRecipe = (props: Props) => {
       </Grid>
 
       {/* Recipe title and description */}
-      <Grid item md={7} xs={12}>
+      <Grid item md={7} xs={12} pl={2} pr={2} pb={2} mt={2}>
         <Grid item>
           <Typography 
             noWrap variant="h4" 
@@ -100,7 +100,7 @@ const ProfileRecipe = (props: Props) => {
             sx={{ cursor: "pointer" }}
             onClick={() => location.pathname === '/feed' && navigate(`/profile/${props.post.contributorUsername}`)}
           >
-            Uploaded by {props.post.contributorUsername}
+            Posted by {props.post.contributorUsername}
           </Typography> 
             
 
