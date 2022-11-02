@@ -28,7 +28,7 @@ const Recipe = (props: Props) => {
   const [numberLike, setNumberLike] = React.useState(0);
   const [tags, setTags] = React.useState([""]);
   const [recipeLiked, setRecipeLiked] = React.useState<boolean>(false)
-
+  const [loggedIn, setLoggedIn] = React.useState<boolean>(false)
   React.useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -121,6 +121,7 @@ const Recipe = (props: Props) => {
       try {
         const { user } = await currentAuthenticatedUser();
         setUsername(user);
+        setLoggedIn(true)
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -131,7 +132,7 @@ const Recipe = (props: Props) => {
         }
 
         // go to login page if not authenticated
-        navigate('/login');
+        // navigate('/login');
       }
     }
     setUserData()
@@ -451,8 +452,11 @@ const Recipe = (props: Props) => {
             Comments
           </Typography>
           <Box
-            sx={{
+            sx={loggedIn ? {
               display: 'flex',
+              alignItems: "flex-start"
+            } : {
+              display: 'none',
               alignItems: "flex-start"
             }}
           >
