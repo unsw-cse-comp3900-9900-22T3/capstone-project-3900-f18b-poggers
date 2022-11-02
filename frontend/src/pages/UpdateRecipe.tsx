@@ -1,58 +1,13 @@
-import AddIcon from '@mui/icons-material/Add';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import RemoveIcon from '@mui/icons-material/Remove';
-import { Box, Button, Container, CssBaseline, Grid, IconButton, List, ListItem, ListItemText, TextField, Typography } from '@mui/material';
-import { API, graphqlOperation, Storage } from "aws-amplify";
+import { Box, Button, Container, CssBaseline, Grid, IconButton, TextField, Typography } from '@mui/material';
 import Image from 'mui-image';
 import React from 'react';
+import { Tag } from '../types/instacook-types';
+import RecipeContents from '../components/recipe/RecipeContents';
 import { useNavigate, useParams } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
+import { Recipe } from '../types/instacook-types';
 
 type Props = {}
-
-type Recipe = {
-  id: string,
-  name: string,
-  content: string,
-  contributor: string,
-  fileImage: string,
-  createdAt: string,
-  updatatedAt: string,
-  owner: string,
-}
-
-const updateRecipe = /* GraphQL */ `
-  mutation UpdateRecipe(
-    $input: UpdateRecipeInput!
-    $condition: ModelRecipeConditionInput
-  ) {
-    updateRecipe(input: $input, condition: $condition) {
-      id
-      name
-      content
-      contributor
-      fileImage
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-
-const getRecipe = /* GraphQL */ `
-query GetRecipe($id: ID!) {
-  getRecipe(id: $id) {
-    id
-    name
-    content
-    contributor
-    fileImage
-    createdAt
-    updatedAt
-    owner
-  }
-}
-`;
 
 const UpdateRecipe = (props: Props) => {
   const { recipeId } = useParams();
@@ -63,55 +18,109 @@ const UpdateRecipe = (props: Props) => {
   const [contributorName, setContributorName] = React.useState<string>("Matthew");
   const [ingredients, setIngredients] = React.useState<string[]>([]);
   const [instructions, setInstructions] = React.useState<string[]>([]);
-  const [selectedImage, setSelectedImage] = React.useState<File>();
   const [preview, setPreview] = React.useState<string>("");
-  const [imgKey, setImgKey] = React.useState<boolean>(false);
-  const [ingredientText, setIngredientText] = React.useState<string>("");
-  const [instructionText, setInstructionText] = React.useState<string>("");
-  const [imgData, setImgData] = React.useState('');
+  const [imgData, setImgData] = React.useState<any>('');
   const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
   const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
+
+  const [allTags, setAllTags] = React.useState<Tag[]>([]);
+  const [tagsText, setTagsText] = React.useState<string[]>([]);
+  const [tags, setTags] = React.useState<string[]>([]);
+
 
   React.useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const apiData2: any = await API.graphql({
-          query: getRecipe,
-          variables: { id: recipeId }
+        const requestBody = {
+          query: `
+            query {
+              getRecipeById(recipeID: "${recipeId}") {
+                  title
+                  content
+                  dateCreated
+                  contributorUsername
+                  numberLike
+                  listComments {
+                      userName
+                      recipeID
+                      content
+                      dateCreated
+                  }
+                  tags
+              }
+          }
+          `
+        }
+
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          }
         });
 
-        const recipeById = apiData2.data.getRecipe;
-        console.log(recipeById);
-        setRecipeName(recipeById.name);
-        setDescription(JSON.parse(recipeById.content)[2])
-        setContributorName(recipeById.contributor);
-
-        if (recipeById.content[0] != null) {
-          console.log(JSON.parse(recipeById.content)[0].length);
-          setIngredients(JSON.parse(recipeById.content)[0]);
+        console.log("TRIGGERRREDD");
+        const apiData = await res.json();
+        setRecipe(apiData.data.getRecipeById);
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+        console.log(apiData);
+        setRecipeName(apiData.data.getRecipeById.title)
+        setDescription(JSON.parse(apiData.data.getRecipeById.content)[2])
+        setContributorName(apiData.data.getRecipeById.contributorUsername)
+        setImgData(JSON.parse(apiData.data.getRecipeById.content)[3])
+        if (apiData.data.getRecipeById.content[0] != null) {
+          setIngredients(JSON.parse(apiData.data.getRecipeById.content)[0]);
           let tempIngredients = [];
-          for (let x of (JSON.parse(recipeById.content)[0])) {
+          for (let x of (JSON.parse(apiData.data.getRecipeById.content)[0])) {
             tempIngredients.push(JSON.stringify(x));
           }
           setIngredientsData([...ingredientsData, ...tempIngredients]);
         }
-
-        if (recipeById.content[1] != null) {
-          setInstructions(JSON.parse(recipeById.content)[1]);
+        if (apiData.data.getRecipeById.content[1] != null) {
+          setInstructions(JSON.parse(apiData.data.getRecipeById.content)[1]);
           let tempInstructions = [];
-          for (let x of (JSON.parse(recipeById.content)[1])) {
+          for (let x of (JSON.parse(apiData.data.getRecipeById.content)[1])) {
             tempInstructions.push(JSON.stringify(x));
           }
           setInstructionsData([...instructionsData, ...tempInstructions]);
         }
-
-        setImgKey(recipeById.fileImage);
-
-        if (recipeById != null) {
-          recipeById.name = "hi";
+        setTags(apiData.data.getRecipeById.tags)
+        console.log(apiData.data.getRecipeById.tags)
+        const requestBody1 = {
+          query: `
+            query{
+              getTags {
+                  _id
+                  content
+              }
+          }
+          `
         }
 
-        setRecipe(recipeById);
+        const res1 = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody1),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const apiData1 = await res1.json();
+        if (apiData1.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+        setAllTags(apiData1.data.getTags);
+        let tagIds = [];
+        for (let tag of apiData1.data.getTags) {
+          if (apiData.data.getRecipeById.tags.includes(tag.content)) {
+            tagIds.push(tag._id)
+          }
+        }
+        setTags([...tags, ...tagIds])
+        setTagsText(apiData.data.getRecipeById.tags)
+
       } catch (error) {
         console.log("error on fetching recipe", error);
       }
@@ -119,52 +128,83 @@ const UpdateRecipe = (props: Props) => {
     fetchRecipes();
   }, [recipeId]);
 
-  const listIngredient = ingredients.map((ingredient, key) =>
-    <li key={key}>
-      <ListItemText primary={ingredient} />
-    </li>
-  );
-
-  const listInstructions = instructions.map((instruction, key) =>
-    <ListItem key={key}>
-      <Grid
-        container
-        spacing={0}
-        direction="row"
-      >
-        <Grid item sm={0} sx={{ paddingTop: 0.75 }}>
-          <Typography variant="h5">
-            {key + 1}
-          </Typography>
-        </Grid>
-        <Grid item sm={10} sx={{ borderLeft: "1px solid", padding: 0, paddingLeft: 1, margin: 1 }}>
-          {instruction}
-        </Grid>
-      </Grid>
-    </ListItem>
-  );
-
   const bgStyles = {
     minHeight: `calc(100vh - 64px)`,
     backgroundColor: "#d3d3d3",
   }
 
+  const handleUpdate = async () => {
+    if (recipe !== undefined) {
+      const d = new Date();
+      const tagsData = tags.map(i => `"${i}"`);
+      const requestBody = {
+        query: `
+          mutation {
+            updateRecipe(recipeID: "${recipeId}", recipeInput:
+                {
+                    title: "${recipeName}",
+                    content: """[[${ingredientsData}], [${instructionsData}], [${JSON.stringify(description)}], "${imgData}"]""",
+                    dateCreated: "${d.toString()}",
+                    tags: [${tagsData}]
+
+                }
+            )
+        }
+        `
+      }
+      console.log(requestBody)
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const apiData1 = await res.json();
+      console.log(apiData1);
+      navigate(`/recipe/${recipeId}`)
+
+    }
+  }
+
   const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("instruction"))
     setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
-    setInstructionText("");
   };
 
   const handleIngredient = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("ingredient"))
     setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
-    setIngredientText("");
+  };
+
+  const handleTag = (newTag : string) => {
+    let newTagText = "";
+    for (let tag of allTags) {
+      if (tag._id === newTag && tag.content) {
+        newTagText = tag.content
+      }
+    }
+    const copy = [...tags];
+    const copyTagsText = [...tagsText]
+    let index = copy.indexOf(newTag)
+    let indexTagsText = copyTagsText.indexOf(newTagText)
+    if (index > -1) {
+      console.log("removed tag")
+      copy.splice(index,1)
+      copyTagsText.splice(indexTagsText, 1)
+      setTags(copy)
+      setTagsText(copyTagsText)
+    } else {
+      console.log("added tag")
+      setTags([...tags, newTag])
+      setTagsText([...tagsText, newTagText])
+    }
   };
 
   const handleRemoveIngredient = () => {
@@ -199,6 +239,8 @@ const UpdateRecipe = (props: Props) => {
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
         <Box>
+
+        {/* Recipe Title */}
           <Box
             sx={{
               display: 'flex',
@@ -206,9 +248,6 @@ const UpdateRecipe = (props: Props) => {
               alignItems: 'flex-start',
             }}
           >
-            <Typography variant="h5">
-              Recipe Name
-            </Typography>
             <TextField
               value={recipeName}
               fullWidth
@@ -220,6 +259,8 @@ const UpdateRecipe = (props: Props) => {
               }}
             />
           </Box>
+
+          {/* Contributor Name */}
           <Box
             sx={{
               display: 'flex',
@@ -232,6 +273,8 @@ const UpdateRecipe = (props: Props) => {
             </Typography>
 
           </Box>
+
+          {/* Recipe Description */}
           <Box
             sx={{
               display: 'flex',
@@ -239,9 +282,6 @@ const UpdateRecipe = (props: Props) => {
               alignItems: "flex-start"
             }}
           >
-            <Typography variant="h5">
-              Description
-            </Typography>
             <TextField
               fullWidth
               value={description}
@@ -261,16 +301,18 @@ const UpdateRecipe = (props: Props) => {
             }}
           >
 
+          {/* Upload an Image */}
             <Box>
               <IconButton color="primary" aria-label="upload picture" component="label">
                 <input hidden accept="image/*" type="file" onChange={(e) => {
                   e.preventDefault();
-                  console.log(e.target.value);
                   if (e.target.files != null) {
-                    setSelectedImage(e.target.files[0]);
                     setPreview(e.target.files[0].name);
-                    setImgKey(true);
-                    setImgData(URL.createObjectURL(e.target.files[0]));
+                    const reader = new FileReader();
+                    reader.addEventListener("load", () => {
+                      setImgData(reader.result);
+                    });
+                    reader.readAsDataURL(e.target.files[0]);
                   }
                 }} />
                 <AddPhotoAlternateIcon fontSize='large' sx={{}} />
@@ -287,82 +329,20 @@ const UpdateRecipe = (props: Props) => {
               {preview}
             </Box>
 
-            <Grid container spacing={5} sx={{ padding: 3 }}>
-              <Grid item sm={3}>
-                <Typography variant="h5">
-                  Ingredients
-                </Typography>
-                <ul>
-                  {listIngredient}
-                </ul>
-                <Box
-                  component="form"
-                  onSubmit={handleIngredient}
-                >
-                  <TextField
-                    value={ingredientText}
-                    fullWidth
-                    variant='standard'
-                    onChange={(e) => { setIngredientText(e.target.value) }}
-                    InputProps={{
-                      endAdornment:
-                        <>
-                          <IconButton
-                            color='secondary'
-                            onClick={(e) => { handleRemoveIngredient() }}>
-                            <RemoveIcon />
-                          </IconButton>
-                          <IconButton
-                            color='secondary'
-                            type="submit">
-                            <AddIcon />
-                          </IconButton>
-                        </>
+            {/* Ingredients and Instructions */}
+            <RecipeContents
+              ingredients={ingredients}
+              instructions={instructions}
+              tags={tagsText}
+              allTags={allTags}
+              handleInstruction={handleInstruction}
+              handleIngredient={handleIngredient}
+              handleRemoveIngredient={handleRemoveIngredient}
+              handleRemoveInstruction={handleRemoveInstruction}
+              handleTag={handleTag}
+            />
 
-                    }}
-                    name="ingredient"
-                    id="ingredient"
-                    placeholder="Add another ingredient"
-                  />
-                </Box>
-              </Grid>
-              <Grid item sm={9}>
-                <Typography variant="h5">
-                  Cooking Instructions
-                </Typography>
-                <List>
-                  {listInstructions}</List>
-                <Box
-                  component="form"
-                  onSubmit={handleInstruction}
-                >
-                  <TextField
-                    value={instructionText}
-                    fullWidth
-                    variant='standard'
-                    onChange={(e) => { setInstructionText(e.target.value) }}
-                    InputProps={{
-                      endAdornment:
-                        <>
-                          <IconButton
-                            color='secondary'
-                            onClick={(e) => { handleRemoveInstruction() }}>
-                            <RemoveIcon />
-                          </IconButton>
-                          <IconButton
-                            color='secondary'
-                            type="submit">
-                            <AddIcon />
-                          </IconButton>
-                        </>
-                    }}
-                    name="instruction"
-                    id="instruction"
-                    placeholder="Add another cooking instruction"
-                  />
-                </Box>
-              </Grid>
-            </Grid>
+            {/* Update Button */}
             <Box
               paddingTop={0}
               sx={{
@@ -372,36 +352,7 @@ const UpdateRecipe = (props: Props) => {
               }}
             >
               <Button variant="contained"
-                onClick={async () => {
-                  if (recipe !== undefined) {
-
-                    let newRecipe = {
-                      id: recipe.id,
-                      name: recipeName,
-                      content: [ingredientsData, instructionsData, JSON.stringify(description)],
-                      contributor: contributorName,
-                      fileImage: recipe.fileImage,
-                    };
-                    if (imgKey === true) {
-                      const storageResult = await Storage.put(
-                        uuidv4(),
-                        selectedImage
-                      );
-                      newRecipe.fileImage = `{key=${storageResult.key}}`;
-                    }
-                    console.log(recipe);
-                    try {
-                      const data: any = await API.graphql(graphqlOperation(updateRecipe, { input: newRecipe }));
-                      const id = data.data.updateRecipe.id;
-                      navigate(`/recipe/${id}`)
-                      console.log(newRecipe);
-
-                    } catch (error) {
-                      console.log("error on fetching recipe", error);
-                    }
-                  }
-
-                }}
+                onClick={handleUpdate}
               >Update</Button>
             </Box>
           </Box>
