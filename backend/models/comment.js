@@ -8,8 +8,8 @@ const commentSchema = new Schema({
     required: true,
   },
   recipeID: {
-    type: String,
-    required: true,
+    type: Schema.Types.ObjectId,
+    ref: "Recipe",
   },
   dateCreated: {
     type: Date,

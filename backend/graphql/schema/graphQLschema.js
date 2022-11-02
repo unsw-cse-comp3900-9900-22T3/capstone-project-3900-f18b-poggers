@@ -100,9 +100,7 @@ type RootMutation {
     likeRecipe(recipeID: String!): Boolean!
     follow(followUsername: String!): Boolean!
     updateRecipe(recipeID: String!,recipeInput: RecipeInput): Boolean!
-    deleteRecipe(recipeID: String!): Boolean!
-    updateComment(commentID: String!,content:String!,dateCreated:String!): Boolean!
-    deleteComment(commentID: String!,recipeID: String!): Boolean!
+    createTag(content: String!): Boolean!
 }
 schema {
     query: RootQuery
