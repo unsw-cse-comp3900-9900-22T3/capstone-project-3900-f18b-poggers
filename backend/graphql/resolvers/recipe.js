@@ -179,7 +179,7 @@ module.exports = {
   },
 
   getListRecipeByTags: async (args) => {
-    const sortedListRecipe = await Recipe.find({tags: {$all: args.tags}}).sort({dateCreated: -1, numberLike: -1});
+    const sortedListRecipe = await Recipe.find({tags: {$all: args.tags}}).sort({numberLike: -1, dateCreated: -1});
     return sortedListRecipe.map(async (recipe) => {
       // query and sort list of tags
       const sortedListTag = await Tag.find({_id: {$in: recipe.tags}}).sort({content: 1});
