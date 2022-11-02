@@ -24,6 +24,7 @@ const Recipe = (props: Props) => {
   const [instructions, setInstructions] = React.useState([""]);
   const [similarRecipes, setSimilarRecipes] = React.useState([1, 2, 3, 4, 5, 6, 7])
   const [comments, setComments] = React.useState<Comment[]>([]);
+  const [commentField, setCommentField] = React.useState("");
   const [numberLike, setNumberLike] = React.useState(0);
   const [tags, setTags] = React.useState([""]);
   const [recipeLiked, setRecipeLiked] = React.useState<boolean>(false)
@@ -201,6 +202,7 @@ const Recipe = (props: Props) => {
 
     setComments([data, ...comments]);
     console.log(comments)
+    setCommentField("");
   };
 
   const handleLike = async () => {
@@ -439,6 +441,7 @@ const Recipe = (props: Props) => {
               <Avatar sx={{ maring: "5" }} alt={username} src="" />
             </ListItemAvatar>
             <TextField
+              value={commentField}
               fullWidth
               variant='standard'
               InputProps={{
@@ -452,6 +455,9 @@ const Recipe = (props: Props) => {
               name="comment"
               id="comment"
               placeholder="Add a Comment"
+              onChange={(e) => {
+                setCommentField(e.target.value);
+              }}
             />
           </Box>
           <Box
