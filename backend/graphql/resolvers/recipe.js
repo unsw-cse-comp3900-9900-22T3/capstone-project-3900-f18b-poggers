@@ -178,17 +178,23 @@ module.exports = {
     return true;
   },
 
-  deleteRecipe: async (args, req) => {
-    if (!req.isAuth) {
-      throw new Error("Unauthenticated!");
-    }
+  getListRecipeByTags: async (args) => {
+    const sortedListRecipe = await Recipe.find({tags: {$all: args.tags}}).sort({dateCreated: -1, numberLike: -1});
+    return sortedListRecipe.map(async (recipe) => {
+      // query and sort list of tags
+      const sortedListTag = await Tag.find({_id: {$in: recipe.tags}}).sort({content: 1});
+      const tagNames = sortedListTag.map((tag) => {return tag.content});
 
-    const recipe = await Recipe.findById(args.recipeID);
-    const user = await User.findById(recipe.contributor);
-    user.listRecipes.pop(args.recipeID);
-    await user.save();
-    await recipe.remove();
-    return true;
+      const contributor = await User.findById(recipe.contributor);
+      return {
+        _id: recipe._id,
+        contributorUsername: contributor.username,
+        title: recipe.title,
+        content: recipe.content,
+        numberLike: recipe.numberLike,
+        tags: tagNames,
+      };
+    });
   },
 
   
@@ -203,6 +209,6 @@ module.exports = {
       return true 
     }
     return false; 
-  },
+  }
   
 };
