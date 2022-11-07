@@ -4,6 +4,7 @@ import ProfileRecipe from '../components/profile/ProfileRecipe';
 import { Recipe } from '../types/instacook-types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
+import GroupsIcon from '@mui/icons-material/Groups';
 
 type Props = {}
 
@@ -11,6 +12,8 @@ const Profile = (props: Props) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [buttonLock, setButtonLock] = useState(true);
   const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
@@ -98,6 +101,41 @@ const Profile = (props: Props) => {
 
     }
 
+    // get number of followers and following
+    const getFollowCount = async () => {
+      try {
+        const requestBody = {
+          query: `
+            query {
+              getUserInfo(username: "${profileUsername}") {
+                numberFollower
+                numberFollowing
+              }
+            }
+          `
+          };
+  
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        const apiData = await res.json();
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+
+        setFollowerCount(apiData.data.getUserInfo.numberFollower);
+        setFollowingCount(apiData.data.getUserInfo.numberFollowing);
+      } catch (error) {
+        console.log("get follow count failed:", error);
+      }
+
+    }
+
     // check if the logged in user's token is valid
     // and get logged in user's detail
     const setUserData = async () => {
@@ -124,6 +162,7 @@ const Profile = (props: Props) => {
     setUserData();
     checkSubscribe();
     fetchRecipes();
+    getFollowCount();
   }, [navigate, profileUsername]);
 
   // subscribe/unsubscribe contributor
@@ -222,9 +261,12 @@ const Profile = (props: Props) => {
             {profileUsername}
           </Typography>
 
-          <Typography variant="subtitle1" pr={4}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rutrum, erat ac aliquam scelerisque, est enim luctus leo, a pretium diam nisl nec eros. Cras sit amet viverra eros.
-          </Typography>
+          <Grid container direction="row" alignItems="center" pt={2}>
+            <GroupsIcon sx={{marginRight: 1}}/> 
+            <Typography variant="subtitle1" pr={4}>
+              {followerCount} followers / {followingCount} following
+            </Typography>
+          </Grid>
         </Grid>
 
         {/* Recipe header */}
