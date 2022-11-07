@@ -192,6 +192,9 @@ const Profile = (props: Props) => {
         throw new Error(apiData.errors[0].message);
       }
 
+      isSubscribed ? 
+        setFollowerCount(followerCount - 1) : setFollowerCount(followerCount + 1)
+
       
     } catch (error) {
       console.log("subscribe button failed:", error);
