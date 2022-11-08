@@ -51,6 +51,9 @@ const SavedRecipe = (props: Props) => {
                   backgroundColor: '#eeeeee',
                   borderRadius: '5px',
                   cursor: 'pointer',
+                  "&:hover": {
+                    backgroundColor: '#EDFAFC'
+                  }
                 }}
                 key={index}
                 alignItems="center"
@@ -63,7 +66,7 @@ const SavedRecipe = (props: Props) => {
                 </Grid>
 
                 <Grid item xs={3} md={2} pl={{ md:2}} justifyContent="flex-end">
-                  <ClearIcon/>
+                  <ClearIcon style={{ color: 'red' }}/>
                 </Grid>
               </Grid>
             ))}
