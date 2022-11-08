@@ -5,6 +5,7 @@ import { Recipe } from '../types/instacook-types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 import GroupsIcon from '@mui/icons-material/Groups';
+import { red } from '@mui/material/colors';
 
 type Props = {}
 
@@ -14,6 +15,7 @@ const Profile = (props: Props) => {
   const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+  const [isUserValid, setIsUserValid] = useState(true);
   const { profileUsername } = useParams();
   const navigate = useNavigate();
 
@@ -61,9 +63,11 @@ const Profile = (props: Props) => {
 
         console.log(newList);
         setRecipeList([...newList]);
+        setIsUserValid(true);
       } catch (error) {
         console.log("Error on fetching recipe", error);
         setRecipeList([]);
+        setIsUserValid(false);
       }
 
     };
@@ -132,6 +136,7 @@ const Profile = (props: Props) => {
         setFollowingCount(apiData.data.getUserInfo.numberFollowing);
       } catch (error) {
         console.log("get follow count failed:", error);
+        setButtonLock(true);
       }
 
     }
@@ -203,7 +208,6 @@ const Profile = (props: Props) => {
 
   return (
     <Container
-      maxWidth="md"
       sx={{ backgroundColor: 'white', paddingBottom: 2, minHeight: 'calc(100vh - 64px)' }}
     >
       <Grid
@@ -212,10 +216,16 @@ const Profile = (props: Props) => {
         alignItems="center"
       >
         {/* Profile image */}
-        <Grid item md={4}>
+        <Grid 
+          item
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+          md={4}
+        >
           <Box
             mt={2}
-            ml={{ md: 6 }}
+            ml={{ md: 12.5 }}
           >
             <Avatar
               sx={{
@@ -223,52 +233,58 @@ const Profile = (props: Props) => {
                 minWidth: 150,
                 maxHeight: 150,
                 maxWidth: 150,
+                bgcolor: red[500],
+                fontSize: '75px',
+                marginBottom: 2,
               }}
               alt={"Profile Image"}
-            />
-          </Box>
+            >
+              {profileUsername?.charAt(0)}
+            </Avatar>
 
-          {/* Subscribe button */}
-          <Box
-            textAlign='center'
-            mr={{ md: 4 }}
-            mt={1}
-          >
-            {isSubscribed ? 
-              <Button
+            {/* Subscribe button */}
+            <Button
                 onClick={() => subscribe()}
                 variant="contained"
                 color="secondary"
                 size="small"
                 disabled={buttonLock}
+                sx={{
+                  marginLeft: isSubscribed ? 1.1 : 2.5
+                }}
               >
-                Unsubscribe
-              </Button>
-            :  
-              <Button
-                onClick={() => subscribe()}
-                variant="contained"
-                color="secondary"
-                size="small"
-                disabled={buttonLock}
-              >
-                Subscribe
-              </Button>
-            }
+                {isSubscribed ? 
+                  <Typography>
+                    Unsubscribe
+                  </Typography>
+                : 
+                  <Typography>
+                    Subscribe
+                  </Typography>
+                }
+            </Button>
           </Box>
         </Grid>
 
         {/* Username and description */}
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={6}>
           <Typography variant="h3" mb={1}>
             {profileUsername}
           </Typography>
 
           <Grid container direction="row" alignItems="center" pt={2}>
-            <GroupsIcon sx={{marginRight: 1}}/> 
-            <Typography variant="subtitle1" pr={4}>
-              {followerCount} followers / {followingCount} following
-            </Typography>
+            { isUserValid ? 
+              <> 
+                <GroupsIcon sx={{marginRight: 1}}/> 
+                <Typography variant="subtitle1" pr={4}>
+                  {followerCount} followers / {followingCount} following
+                </Typography>
+              </>
+            :
+              <Typography sx={{ color: "#FF0000" }} variant="h5" pr={4}>
+                User does not exist
+              </Typography>
+            }
           </Grid>
         </Grid>
 
@@ -295,8 +311,8 @@ const Profile = (props: Props) => {
         justifyContent="center"
         alignItems="center"
         md={9}
-        ml={{ md: 15 }}
-        mr={{ md: 15 }}
+        ml={{ md: 18 }}
+        mr={{ md: 18 }}
       >
         {recipeList.map((item, index) => (
           <ProfileRecipe key={index} post={item} />
