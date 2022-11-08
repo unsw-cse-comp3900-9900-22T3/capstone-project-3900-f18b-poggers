@@ -33,10 +33,10 @@ const Discovery = (props: Props) => {
         throw new Error(apiData.errors[0].message);
       }
 
+      // create custom tag object
       const tagArr: Tag[] = apiData.data.getTags;
       const tags: TagObj = {}
 
-      // create custom tag object
       tagArr.map((tag: Tag) => {
         return tags[tag.content] = tag._id;
       })

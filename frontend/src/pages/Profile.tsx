@@ -48,12 +48,12 @@ const Profile = (props: Props) => {
 
         const recipes = apiData.data.getListRecipeByContributor
         const newList: Recipe[] = recipes.map((item: Recipe) => ({
-            _id: item._id,
-            contributorUsername: item.contributorUsername,
-            title: item.title,
-            content: item.content,
-            numberLike: item.numberLike,
-            tags: item.tags,
+          _id: item._id,
+          contributorUsername: item.contributorUsername,
+          title: item.title,
+          content: item.content,
+          numberLike: item.numberLike,
+          tags: item.tags,
         }))
 
         console.log(newList);
@@ -74,8 +74,8 @@ const Profile = (props: Props) => {
               isFollowing(followUser: "${profileUsername}")
               }
           `
-          };
-  
+        };
+
         const res = await fetch('http://localhost:3000/graphql', {
           body: JSON.stringify(requestBody),
           method: "POST",
@@ -84,7 +84,7 @@ const Profile = (props: Props) => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
           }
         });
-  
+
         const apiData = await res.json();
         if (apiData.errors) {
           throw new Error(apiData.errors[0].message);
@@ -106,7 +106,7 @@ const Profile = (props: Props) => {
         const { user } = await currentAuthenticatedUser();
 
         // if the user is viewing their own profile, lock the subscribe button
-        user === profileUsername 
+        user === profileUsername
           ? setButtonLock(true) : setButtonLock(false);
       } catch (e) {
         if (typeof e === "string") {
@@ -117,8 +117,8 @@ const Profile = (props: Props) => {
           console.log(e);
         }
 
-          // go to login page if not authenticated
-          navigate('/login');
+        // go to login page if not authenticated
+        navigate('/login');
       }
     }
     setUserData();
@@ -137,7 +137,7 @@ const Profile = (props: Props) => {
             follow(followUsername: "${profileUsername}")
             }
         `
-        };
+      };
 
       const res = await fetch('http://localhost:3000/graphql', {
         body: JSON.stringify(requestBody),
@@ -153,7 +153,7 @@ const Profile = (props: Props) => {
         throw new Error(apiData.errors[0].message);
       }
 
-      
+
     } catch (error) {
       console.log("subscribe button failed:", error);
     }
@@ -192,7 +192,7 @@ const Profile = (props: Props) => {
             mr={{ md: 4 }}
             mt={1}
           >
-            {isSubscribed ? 
+            {isSubscribed ?
               <Button
                 onClick={() => subscribe()}
                 variant="contained"
@@ -202,7 +202,7 @@ const Profile = (props: Props) => {
               >
                 Unsubscribe
               </Button>
-            :  
+              :
               <Button
                 onClick={() => subscribe()}
                 variant="contained"
