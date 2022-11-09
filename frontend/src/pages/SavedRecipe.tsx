@@ -32,7 +32,7 @@ const SavedRecipe = (props: Props) => {
     {id: "3", name: "This is recipe 3"}, 
     {id: "4", name: "zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz"} 
   ]);
-  const [savedRecipe, setsavedRecipe] = useState<SavedRecipe[]>([
+  const [savedRecipe, setSavedRecipe] = useState<SavedRecipe[]>([
     {
       id: "1",
       name: "This is recipe 1",
@@ -61,10 +61,33 @@ const SavedRecipe = (props: Props) => {
   ])
   const [selectedBook, setSelectedBook] = useState(""); 
 
+  // highlight currently selected recipe book
   const handleSelectBook = (id: string) => {
     setSelectedBook(id);
   }
+
+  // add new recipe book into the list 
+  const addNewRecipeBook = () => {
+    const newRecipeBook = {
+      id: "69",
+      name: newBookName,
+    };
+    setRecipeBook([...recipeBook, newRecipeBook]);
+    setNewBookName("");
+  }
+
+  // remove recipe book from the list
+  const removeRecipeBook = (id: string) => {
+    const newBookList = recipeBook.filter((item: BookInfo) => item.id !== id);
+    setRecipeBook(newBookList);
+  }
   
+
+  // removed saved recipe from the book
+  const removeSavedRecipe = (id: string) => {
+    const newRecipeList = savedRecipe.filter((item: BookInfo) => item.id !== id);
+    setSavedRecipe(newRecipeList);
+  }
   return (
     <Container
       sx={{ backgroundColor: 'white', paddingTop: 2, minHeight: 'calc(100vh - 64px)' }}
@@ -101,6 +124,7 @@ const SavedRecipe = (props: Props) => {
                 name={item.name} 
                 selectedBookId={selectedBook} 
                 handleSelectBook={handleSelectBook}
+                removeRecipeBook={removeRecipeBook}
               />
             ))}
 
@@ -114,6 +138,7 @@ const SavedRecipe = (props: Props) => {
             >
               <TextField
                 fullWidth
+                value={newBookName}
                 id="bookName"
                 name="bookName"
                 label="Enter New Book Name"
@@ -124,7 +149,9 @@ const SavedRecipe = (props: Props) => {
                   endAdornment:
                     <IconButton
                       color='secondary'
-                      type="submit">
+                      type="submit"
+                      onClick={() => { addNewRecipeBook() }}
+                    >
                       <AddIcon />
                     </IconButton>
                 }}
@@ -162,6 +189,7 @@ const SavedRecipe = (props: Props) => {
                 contributor={item.contributor}
                 like={item.like}
                 key={index}
+                removeSavedRecipe={removeSavedRecipe}
               />
             ))}
           </Grid>

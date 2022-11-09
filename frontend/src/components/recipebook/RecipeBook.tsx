@@ -5,7 +5,8 @@ type Props = {
   id: string,
   name: string,
   selectedBookId: string,
-  handleSelectBook: (id: string) => void
+  handleSelectBook: (id: string) => void,
+  removeRecipeBook: (id: string) => void,
 }
 
 const RecipeBook = (props: Props) => {
@@ -38,7 +39,7 @@ const RecipeBook = (props: Props) => {
         </Grid>
 
         <Grid item xs={3} md={2} pl={{ md:2}} justifyContent="flex-end">
-          <ClearIcon onClick={() => alert("delete book")} style={{ color: 'red' }}/>
+          <ClearIcon onClick={() => props.removeRecipeBook(props.id)} style={{ color: 'red' }}/>
         </Grid>
       </Grid>
     </Box>

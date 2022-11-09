@@ -8,7 +8,8 @@ type Props = {
   id: string,
   name: string,
   contributor: string,
-  like: number
+  like: number,
+  removeSavedRecipe: (id: string) => void,
 }
 
 const RecipeFolder = (props: Props) => {
@@ -81,7 +82,7 @@ const RecipeFolder = (props: Props) => {
           </Typography>
         </Grid>
         <Grid item xs={2} md={2} pl={{md:12}} justifyContent="flex-end">
-          <ClearIcon onClick={() => alert("delete book")} style={{ color: 'red' }}/>
+          <ClearIcon onClick={() => props.removeSavedRecipe(props.id)} style={{ color: 'red' }}/>
         </Grid>
       </Grid>
     </Box>
