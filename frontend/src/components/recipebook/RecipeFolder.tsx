@@ -1,18 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Typography, Container, Grid, Box, Avatar, TextField, IconButton } from '@mui/material';
-import GroupsIcon from '@mui/icons-material/Groups';
-import { red } from '@mui/material/colors';
+import {Typography,Grid, Box} from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
-// import Book from '../components/recipebook/Book';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import AddIcon from '@mui/icons-material/Add';
 
-type Props = {}
+type Props = {
+  id: string,
+  name: string,
+  contributor: string,
+  like: number
+}
 
 const RecipeFolder = (props: Props) => {
   return (
-    <div>RecipeFolder</div>
+    <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}}> 
+      <Grid item container
+        sx={{
+          marginTop: 1,
+          padding: 2,
+          borderRadius: '5px',
+          cursor: 'pointer',
+          "&:hover": {
+            backgroundColor: '#EDFAFC'
+          }
+        }}
+    
+        alignItems="center"
+        direction="row"
+      >
+        <Grid 
+          item
+          container 
+          direction="row" 
+          alignItems="center"  
+          xs={8} md={4} mr={4}
+          justifyContent="flex-start"
+          onClick={() => alert("go to recipe")}
+          // onClick={() => {setSelectedBook(item.id);console.log("SELECTED")}}
+        >
+          <Grid item md={2}>
+            <MenuBookIcon sx={{ fontSize: "25px"}}/>
+          </Grid>
+          <Grid item md={8}>
+            <Typography sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: '3',
+              WebkitBoxOrient: 'vertical',
+            }}>
+              {props.name}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid 
+          item 
+          container 
+          direction="row" 
+          alignItems="center" 
+          xs={8} md={3} mr={1} 
+          justifyContent="flex-start" 
+          onClick={() => alert("go to profile")}
+        >
+          <PersonIcon sx={{ fontSize: "25px", marginRight: 0.5}}/>
+          <Typography>
+            {props.contributor}
+          </Typography>
+        </Grid>
+        <Grid 
+          item 
+          container 
+          direction="row" 
+          alignItems="center" 
+          xs={8} md={2} mr={1} 
+          justifyContent="flex-start"
+        >
+          <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5}}/> 
+          <Typography>
+            {props.like}
+          </Typography>
+        </Grid>
+        <Grid item xs={2} md={2} pl={{md:12}} justifyContent="flex-end">
+          <ClearIcon onClick={() => alert("delete book")} style={{ color: 'red' }}/>
+        </Grid>
+      </Grid>
+    </Box>
   )
 }
+
+export default RecipeFolder

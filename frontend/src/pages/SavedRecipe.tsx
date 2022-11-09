@@ -12,6 +12,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AddIcon from '@mui/icons-material/Add';
+import RecipeBook from '../components/recipebook/RecipeBook';
+import RecipeFolder from '../components/recipebook/RecipeFolder';
 
 type Props = {}
 
@@ -57,14 +59,18 @@ const SavedRecipe = (props: Props) => {
     },
 
   ])
-  const [selectedBook, setSelectedBook] = useState("");  
+  const [selectedBook, setSelectedBook] = useState(""); 
+
+  const handleSelectBook = (id: string) => {
+    setSelectedBook(id);
+  }
   
   return (
     <Container
       sx={{ backgroundColor: 'white', paddingTop: 2, minHeight: 'calc(100vh - 64px)' }}
     >
       <Grid container spacing={2} >
-        {/* List of recipe books */}
+        {/* Saved Recipe Books column */}
         <Grid item xs={5} md={4} sx={{borderRight: 1, paddingRight: 2, minHeight: 'calc(100vh - 64px)'}}>
 
           {/* Title */}
@@ -80,7 +86,6 @@ const SavedRecipe = (props: Props) => {
           </Box>
 
           {/* List */}
-
           <Grid
             item
             justifyContent="center"
@@ -89,74 +94,46 @@ const SavedRecipe = (props: Props) => {
             pr={2}
           >
             {recipeBook.map((item, index) => (
-
-              <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}} key={index}> 
-                <Grid item container
-                  sx={{
-                    marginTop: 1,
-                    padding: 2,
-                    backgroundColor: selectedBook === item.id ?'#eeeeee' : 'white',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    "&:hover": {
-                      backgroundColor: '#EDFAFC'
-                    }
-                  }}
-                  
-                  alignItems="center"
-                  direction="row"
-                >
-                  <Grid 
-                    item 
-                    xs={9} md={10} 
-                    justifyContent="flex-start"
-                    onClick={() => {setSelectedBook(item.id);console.log("SELECTED")}}
-                  >
-                    <Typography>
-                      {item.name}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={3} md={2} pl={{ md:2}} justifyContent="flex-end">
-                    <ClearIcon onClick={() => alert("delete book")} style={{ color: 'red' }}/>
-                  </Grid>
-                </Grid>
-              </Box>
+              // Component to display list of recipe books
+              <RecipeBook 
+                key={index} 
+                id={item.id} 
+                name={item.name} 
+                selectedBookId={selectedBook} 
+                handleSelectBook={handleSelectBook}
+              />
             ))}
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: "flex-start"
-            }}
-          >
-            <TextField
-              fullWidth
-              id="bookName"
-              name="bookName"
-              label="Enter New Book Name"
-              variant="standard"
-              sx={{marginTop: 4}}
-              onChange={(e) => { setNewBookName(e.target.value) }}
-              InputProps={{
-                endAdornment:
-                  <IconButton
-                    color='secondary'
-                    type="submit">
-                    <AddIcon />
-                  </IconButton>
+            {/* Text input to create new recipe book */}  
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: "flex-start"
               }}
-            />
-          </Box>
+            >
+              <TextField
+                fullWidth
+                id="bookName"
+                name="bookName"
+                label="Enter New Book Name"
+                variant="standard"
+                sx={{marginTop: 4}}
+                onChange={(e) => { setNewBookName(e.target.value) }}
+                InputProps={{
+                  endAdornment:
+                    <IconButton
+                      color='secondary'
+                      type="submit">
+                      <AddIcon />
+                    </IconButton>
+                }}
+              />
+            </Box>
           </Grid>
-
-
-          {/* Text input to create list */}
-
         </Grid>
 
-        {/* List of recipe saved in the book */}
+        {/* Recipe Folder column */}
         <Grid item xs={7} md={8}>
           <Box sx={{
             borderColor: "#d2d2d2",
@@ -178,83 +155,14 @@ const SavedRecipe = (props: Props) => {
             pr={2}
           >
             {savedRecipe.map((item, index) => (
-
-              <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}} key={index}> 
-                <Grid item container
-                  sx={{
-                    marginTop: 1,
-                    padding: 2,
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    "&:hover": {
-                      backgroundColor: '#EDFAFC'
-                    }
-                  }}
-                  
-                  alignItems="center"
-                  direction="row"
-                >
-                  <Grid 
-                    item
-                    container 
-                    direction="row" 
-                    alignItems="center"  
-                    xs={8} md={4} mr={4}
-                    justifyContent="flex-start"
-                    onClick={() => alert("go to recipe")}
-                    // onClick={() => {setSelectedBook(item.id);console.log("SELECTED")}}
-                  >
-                    <Grid item md={2}>
-                      <MenuBookIcon sx={{ fontSize: "25px"}}/>
-                    </Grid>
-
-                    <Grid item md={8}>
-                      <Typography sx={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        WebkitLineClamp: '3',
-                        WebkitBoxOrient: 'vertical',
-                      }}>
-                        {item.name}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-
-                  <Grid 
-                    item 
-                    container 
-                    direction="row" 
-                    alignItems="center" 
-                    xs={8} md={3} mr={1} 
-                    justifyContent="flex-start" 
-                    onClick={() => alert("go to profile")}
-                  >
-                    <PersonIcon sx={{ fontSize: "25px", marginRight: 0.5}}/>
-                    <Typography>
-                      {item.contributor}
-                    </Typography>
-                  </Grid>
-
-                  <Grid 
-                    item 
-                    container 
-                    direction="row" 
-                    alignItems="center" 
-                    xs={8} md={2} mr={1} 
-                    justifyContent="flex-start"
-                  >
-                    <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5}}/> 
-                    <Typography>
-                      {item.like}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={2} md={2} pl={{md:12}} justifyContent="flex-end">
-                    <ClearIcon onClick={() => alert("delete book")} style={{ color: 'red' }}/>
-                  </Grid>
-                </Grid>
-              </Box>
+              // Component to display list of saved recipes
+              <RecipeFolder 
+                id={item.id}
+                name={item.name}
+                contributor={item.contributor}
+                like={item.like}
+                key={index}
+              />
             ))}
           </Grid>
         </Grid>
