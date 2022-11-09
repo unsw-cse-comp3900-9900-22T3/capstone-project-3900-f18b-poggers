@@ -80,3 +80,8 @@ export type Tag = {
 export type TagObj = {
   [tagName: string]: string
 }
+
+export type BookInfo = {
+  id: string,
+  name: string,
+}
