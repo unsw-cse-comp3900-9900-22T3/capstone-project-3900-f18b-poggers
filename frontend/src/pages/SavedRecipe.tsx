@@ -204,7 +204,7 @@ const SavedRecipe = (props: Props) => {
                     onClick={() => alert("go to recipe")}
                     // onClick={() => {setSelectedBook(item.id);console.log("SELECTED")}}
                   >
-                    <Grid item md={3}>
+                    <Grid item md={2}>
                       <MenuBookIcon sx={{ fontSize: "25px"}}/>
                     </Grid>
 
