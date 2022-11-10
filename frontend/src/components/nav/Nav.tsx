@@ -146,7 +146,7 @@ export default function Nav() {
             >
               Instacook
             </Typography>
-            {loggedIn && <Search>
+            <Search>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
@@ -158,7 +158,7 @@ export default function Nav() {
                 onChange={(e) => { setSearchbarValue(e.target.value) }}
                 inputProps={{ 'aria-label': 'search' }}
               />
-            </Search>}
+            </Search>
             <Box sx={{ flexGrow: 1 }} />
             {loggedIn ?
               <>
