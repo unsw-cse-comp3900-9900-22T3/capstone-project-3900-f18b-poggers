@@ -29,6 +29,8 @@ const RecipeFolder = (props: Props) => {
         alignItems="center"
         direction="row"
       >
+
+        {/* Recipe name */}
         <Grid 
           item
           container 
@@ -37,7 +39,6 @@ const RecipeFolder = (props: Props) => {
           xs={8} md={4} mr={4}
           justifyContent="flex-start"
           onClick={() => alert("go to recipe")}
-          // onClick={() => {setSelectedBook(item.id);console.log("SELECTED")}}
         >
           <Grid item md={2}>
             <MenuBookIcon sx={{ fontSize: "25px"}}/>
@@ -54,6 +55,8 @@ const RecipeFolder = (props: Props) => {
             </Typography>
           </Grid>
         </Grid>
+
+        {/* Contributor  */}
         <Grid 
           item 
           container 
@@ -68,6 +71,8 @@ const RecipeFolder = (props: Props) => {
             {props.contributor}
           </Typography>
         </Grid>
+
+        {/* Likes */}
         <Grid 
           item 
           container 
@@ -81,6 +86,8 @@ const RecipeFolder = (props: Props) => {
             {props.like}
           </Typography>
         </Grid>
+
+        {/* Clear button */}
         <Grid item xs={2} md={2} pl={{md:12}} justifyContent="flex-end">
           <ClearIcon onClick={() => props.removeSavedRecipe(props.id)} style={{ color: 'red' }}/>
         </Grid>

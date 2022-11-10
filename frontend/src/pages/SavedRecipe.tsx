@@ -173,7 +173,6 @@ const SavedRecipe = (props: Props) => {
             </Typography>
           </Box>
 
-
           <Grid
             item
             justifyContent="center"

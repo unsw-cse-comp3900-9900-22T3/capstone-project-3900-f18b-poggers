@@ -12,6 +12,7 @@ type Props = {
 const RecipeBook = (props: Props) => {
   return (
     <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}}> 
+      {/* Background colour changes when hovering, and toggles on click */}
       <Grid item container
         sx={{
           marginTop: 1,
@@ -27,6 +28,8 @@ const RecipeBook = (props: Props) => {
         alignItems="center"
         direction="row"
       >
+
+        {/* Recipe book name */}
         <Grid 
           item 
           xs={9} md={10} 
@@ -38,6 +41,7 @@ const RecipeBook = (props: Props) => {
           </Typography>
         </Grid>
 
+        {/* Clear button */}
         <Grid item xs={3} md={2} pl={{ md:2}} justifyContent="flex-end">
           <ClearIcon onClick={() => props.removeRecipeBook(props.id)} style={{ color: 'red' }}/>
         </Grid>
