@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Typography, Container, Grid, Box, TextField, IconButton } from '@mui/material';
-import { BookInfo } from '../types/instacook-types';
+import { BookInfo, SavedRecipeInfo } from '../types/instacook-types';
 import { useNavigate } from 'react-router-dom';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 import AddIcon from '@mui/icons-material/Add';
@@ -9,48 +9,10 @@ import RecipeFolder from '../components/recipebook/RecipeFolder';
 
 type Props = {}
 
-type SavedRecipeInfo = {
-  id: string,
-  name: string,
-  contributor: string, 
-  like: number,
-}
-
 const SavedRecipe = (props: Props) => {
   const [newBookName, setNewBookName] = useState("");
-  const [recipeBook, setRecipeBook] = useState<BookInfo[]>([
-    {id: "1", name: "This is recipe 1"}, 
-    {id: "2", name: "This is recipe 2"}, 
-    {id: "3", name: "This is recipe 3"}, 
-    {id: "4", name: "zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz"} 
-  ]);
-  const [savedRecipe, setSavedRecipe] = useState<SavedRecipeInfo[]>([
-    {
-      id: "1",
-      name: "This is recipe 1",
-      contributor: "somebody",
-      like: 1234
-    },
-    {
-      id: "2",
-      name: "This is recipe 2",
-      contributor: "somebodysome",
-      like: 1235
-    },
-    {
-      id: "3",
-      name: "This is recipe 3asd as da sd as das d as das d asd asd  dsaa a sda sda sa sd",
-      contributor: "somebody",
-      like: 1236
-    },
-    {
-      id: "4",
-      name: "This is recipe 4",
-      contributor: "somebody",
-      like: 1236
-    },
-
-  ])
+  const [recipeBook, setRecipeBook] = useState<BookInfo[]>([]);
+  const [savedRecipe, setSavedRecipe] = useState<SavedRecipeInfo[]>([])
   const [selectedBook, setSelectedBook] = useState(""); 
   const navigate = useNavigate();
 
@@ -75,34 +37,187 @@ const SavedRecipe = (props: Props) => {
       }
     }
     setUserData();
+    getRecipeBooks();
   },[navigate]);
 
+  const getRecipeBooks = async () => {
+    try {
+      const requestBody = {
+        query: `
+          query {
+            getListOfRecipeBook {
+                _id
+                name
+            }
+          }
+        `
+      };
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+
+      const books = apiData.data.getListOfRecipeBook;
+      const newBooks: BookInfo[] = books.map((item: BookInfo) => ({
+        _id: item._id,
+        name: item.name,
+      }))
+
+      console.log(newBooks);
+
+      setRecipeBook([...newBooks.reverse()]);
+    } catch (error) {
+      console.log("get recipe books failed: ", error);
+    }
+
+  }
+
   // highlight currently selected recipe book
-  const handleSelectBook = (id: string) => {
-    setSelectedBook(id);
+  const handleSelectBook = async (id: string) => {
+    try {
+      setSelectedBook(id);
+      const requestBody = {
+        query: `
+          query {
+            getSavedRecipe(recipeBookID: "${id}") {
+                _id
+                title
+                contributorUsername
+                numberLike
+            }
+          }
+        `
+      };
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+
+      const savedRecipe = apiData.data.getSavedRecipe;
+      const newSavedRecipe: SavedRecipeInfo[] = savedRecipe.map((item: SavedRecipeInfo) => ({
+        _id: item._id,
+        title: item.title,
+        contributorUsername: item.contributorUsername,
+        numberLike: item.numberLike
+      }))
+
+      setSavedRecipe([...newSavedRecipe]);
+
+    } catch (error) {
+      console.log("get saved recipe failed:", error);
+    } 
+      
   }
 
   // add new recipe book into the list 
-  const addNewRecipeBook = () => {
-    const newRecipeBook = {
-      id: "69",
-      name: newBookName,
-    };
-    setRecipeBook([...recipeBook, newRecipeBook]);
+  const addNewRecipeBook = async () => {
+    const dateCreated = new Date();
+    try {
+      const requestBody = {
+        query: `
+        mutation {
+          createRecipeBook(recipeBookName: "${newBookName}", dateCreated:"${dateCreated.toString()}")
+        }
+        `
+      };
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+
+      getRecipeBooks();
+    } catch(error) {
+      console.log("add recipe failed", error);
+    }
     setNewBookName("");
   }
 
   // remove recipe book from the list
-  const removeRecipeBook = (id: string) => {
-    const newBookList = recipeBook.filter((item: BookInfo) => item.id !== id);
-    setRecipeBook(newBookList);
+  const removeRecipeBook = async (id: string) => {
+    try {
+      const requestBody = {
+        query: `
+        mutation {
+          deleteRecipeBook(recipeBookID: "${id}")
+        }
+        `
+      };
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+      const newRecipeBook = recipeBook.filter((item: BookInfo) => item._id !== id);
+      setRecipeBook(newRecipeBook);
+    } catch(error) {
+      console.log("remove recipe failed", error);
+    }
   }
   
 
   // removed saved recipe from the book
-  const removeSavedRecipe = (id: string) => {
-    const newRecipeList = savedRecipe.filter((item: BookInfo) => item.id !== id);
-    setSavedRecipe(newRecipeList);
+  const removeSavedRecipe = async (id: string) => {
+    try {
+      const requestBody = {
+        query: `
+        mutation {
+          deleteRecipeIdInBook(recipeBookID: "${selectedBook}", recipeID: "${id}")
+        }
+        `
+      };
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+      const newRecipeList = savedRecipe.filter((item: SavedRecipeInfo) => item._id !== id);
+      setSavedRecipe(newRecipeList);
+    } catch(error) {
+      console.log("remove recipe failed", error);
+    }
   }
   return (
     <Container
@@ -136,7 +251,7 @@ const SavedRecipe = (props: Props) => {
               // Component to display list of recipe books
               <RecipeBook 
                 key={index} 
-                id={item.id} 
+                id={item._id} 
                 name={item.name} 
                 selectedBookId={selectedBook} 
                 handleSelectBook={handleSelectBook}
@@ -199,10 +314,10 @@ const SavedRecipe = (props: Props) => {
             {savedRecipe.map((item, index) => (
               // Component to display list of saved recipes
               <RecipeFolder 
-                id={item.id}
-                name={item.name}
-                contributor={item.contributor}
-                like={item.like}
+                id={item._id}
+                title={item.title}
+                contributor={item.contributorUsername}
+                like={item.numberLike}
                 key={index}
                 removeSavedRecipe={removeSavedRecipe}
               />
