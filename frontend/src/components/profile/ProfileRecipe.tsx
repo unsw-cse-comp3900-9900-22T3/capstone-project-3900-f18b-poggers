@@ -29,15 +29,7 @@ const ProfileRecipe = (props: Props) => {
     }
 
     const getImageUrl = async () => {
-      try {
-        const imageBase64 = JSON.parse(props.post.content);
-        if (imageBase64[3] !== undefined) {
-          // if the array index for image doesnt exist, throw error 
-          setImageURL(imageBase64[3]);
-        }
-      } catch (e) {
-        console.log(e);
-      }
+      setImageURL(props.post.image);
     };
 
     getImageUrl();

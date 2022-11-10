@@ -33,6 +33,7 @@ const Profile = (props: Props) => {
                   title
                   content
                   numberLike
+                  image
                   tags
               }
             }
@@ -58,6 +59,7 @@ const Profile = (props: Props) => {
             title: item.title,
             content: item.content,
             numberLike: item.numberLike,
+            image: item.image,
             tags: item.tags,
         }))
 
