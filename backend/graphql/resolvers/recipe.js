@@ -15,7 +15,6 @@ module.exports = {
       content: args.recipeInput.content,
       dateCreated: new Date(args.recipeInput.dateCreated),
       numberLike: 0,
-      like: [],
       tags: args.recipeInput.tags,
       contributor: req.userId,
     });

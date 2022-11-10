@@ -66,6 +66,11 @@ type Comment{
   dateCreated: String!
 }
 
+type RecipeBook{
+  _id: ID!
+  name: String!
+}
+
 input RecipeInput{
   title: String!
   dateCreated : String!
@@ -91,9 +96,9 @@ type RootQuery {
   isUserAuth: UserInfo!
   isRecipeLiked(recipeID: ID!): Boolean!
   getListRecipeByTags(tags: [ID!]!): [RecipeThumbnail!]!
-  getListOfRecipeBook: [String!]!
-  getSavedRecipe(recipeBookID: ID): [RecipeThumbnail!]!
-  checkRecipeInBook(recipeBookID: ID, recipeID: ID): Boolean!
+  getListOfRecipeBook: [RecipeBook!]!
+  getSavedRecipe(recipeBookID: ID!): [RecipeThumbnail!]!
+  checkRecipeInBook(recipeBookID: ID!, recipeID: ID!): Boolean!
 }
 
 
@@ -104,10 +109,10 @@ type RootMutation {
   likeRecipe(recipeID: ID!): Boolean!
   follow(followUsername: String!): Boolean!
   updateRecipe(recipeID: ID!,recipeInput: RecipeInput): Boolean!
-  createRecipeBook(recipeBookName: String!): Boolean!
-  addRecipeToBook(recipeBookID: ID, recipeID: ID): Boolean!
-  deleteRecipeBook(recipeBookID: ID): Boolean!
-  deleteRecipeIdInBook(recipeBookID: ID, recipeID: ID): Boolean!
+  createRecipeBook(recipeBookName: String!, dateCreated:String!): Boolean!
+  addRecipeToBook(recipeBookID: ID!, recipeID: ID!): Boolean!
+  deleteRecipeBook(recipeBookID: ID!): Boolean!
+  deleteRecipeIdInBook(recipeBookID: ID!, recipeID: ID!): Boolean!
 }
 
 
