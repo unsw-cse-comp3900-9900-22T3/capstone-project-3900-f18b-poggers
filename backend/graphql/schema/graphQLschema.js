@@ -61,7 +61,7 @@ type RecipeDetail{
 
 type Comment{
   userName: String!
-  recipeID: String!
+  recipeID: ID!
   content: String!
   dateCreated: String!
 }
@@ -81,28 +81,38 @@ input UserInput {
 
 
 type RootQuery {
-    login(username: String!, password: String!): AuthData!
-    getListRecipeByContributor(username: String!): [RecipeThumbnail!]!
-    getNewsFeed: [RecipeThumbnail!]!
-    getRecipeById(recipeID: String!): RecipeDetail!
-    getUserInfo(username:String!):UserInfo!
-    isFollowing(followUser:String!): Boolean!
-    getTags: [Tag!]!
-    isUserAuth: UserInfo!
-    isRecipeLiked(recipeID: String!): Boolean!
-    getListRecipeByTags(tags: [ID!]!): [RecipeThumbnail!]!
+  login(username: String!, password: String!): AuthData!
+  getListRecipeByContributor(username: String!): [RecipeThumbnail!]!
+  getNewsFeed: [RecipeThumbnail!]!
+  getRecipeById(recipeID: ID!): RecipeDetail!
+  getUserInfo(username:String!):UserInfo!
+  isFollowing(followUser:String!): Boolean!
+  getTags: [Tag!]!
+  isUserAuth: UserInfo!
+  isRecipeLiked(recipeID: ID!): Boolean!
+  getListRecipeByTags(tags: [ID!]!): [RecipeThumbnail!]!
+  getListOfRecipeBook: [String!]!
+  getSavedRecipe(recipeBookID: ID): [RecipeThumbnail!]!
+  checkRecipeInBook(recipeBookID: ID, recipeID: ID): Boolean!
 }
 
+
 type RootMutation {
-    createUser(userInput: UserInput): User
-    createRecipe(recipeInput: RecipeInput): RecipeDetail!
-    createComment(recipeID:String!,content:String!,dateCreated:String!): Boolean!
-    likeRecipe(recipeID: String!): Boolean!
-    follow(followUsername: String!): Boolean!
-    updateRecipe(recipeID: String!,recipeInput: RecipeInput): Boolean!
+  createUser(userInput: UserInput): User
+  createRecipe(recipeInput: RecipeInput): RecipeDetail!
+  createComment(recipeID: ID!,content:String!,dateCreated:String!): Boolean!
+  likeRecipe(recipeID: ID!): Boolean!
+  follow(followUsername: String!): Boolean!
+  updateRecipe(recipeID: ID!,recipeInput: RecipeInput): Boolean!
+  createRecipeBook(recipeBookName: String!): Boolean!
+  addRecipeToBook(recipeBookID: ID, recipeID: ID): Boolean!
+  deleteRecipeBook(recipeBookID: ID): Boolean!
+  deleteRecipeIdInBook(recipeBookID: ID, recipeID: ID): Boolean!
 }
+
+
 schema {
-    query: RootQuery
-    mutation: RootMutation
+  query: RootQuery
+  mutation: RootMutation
 }
 `);
