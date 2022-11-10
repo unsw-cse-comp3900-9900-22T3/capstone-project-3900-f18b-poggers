@@ -6,6 +6,7 @@ export type Recipe = {
   contributor: string,
   numberLike: number,
   tags: string[],
+  image?: string,
 }
 
 export type User = {

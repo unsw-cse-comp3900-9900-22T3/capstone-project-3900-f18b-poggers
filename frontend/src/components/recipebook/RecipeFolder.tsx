@@ -3,6 +3,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   id: string,
@@ -13,6 +14,8 @@ type Props = {
 }
 
 const RecipeFolder = (props: Props) => {
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}}> 
       <Grid item container
@@ -38,7 +41,7 @@ const RecipeFolder = (props: Props) => {
           alignItems="center"  
           xs={8} md={4} mr={4}
           justifyContent="flex-start"
-          onClick={() => alert("go to recipe")}
+          onClick={() => navigate(`/recipe/${props.id}`)}
         >
           <Grid item md={2}>
             <MenuBookIcon sx={{ fontSize: "25px"}}/>
@@ -64,7 +67,7 @@ const RecipeFolder = (props: Props) => {
           alignItems="center" 
           xs={8} md={3} mr={1} 
           justifyContent="flex-start" 
-          onClick={() => alert("go to profile")}
+          onClick={() => navigate(`/profile/${props.contributor}`)}
         >
           <PersonIcon sx={{ fontSize: "25px", marginRight: 0.5}}/>
           <Typography>

@@ -17,11 +17,11 @@ const RecipeBook = (props: Props) => {
         sx={{
           marginTop: 1,
           padding: 2,
-          backgroundColor: props.selectedBookId === props.id ?'#eeeeee' : 'white',
+          backgroundColor: props.selectedBookId === props.id ? '#eeeeee' : 'white',
           borderRadius: '5px',
           cursor: 'pointer',
           "&:hover": {
-            backgroundColor: '#EDFAFC'
+            backgroundColor: "#EDFAFC"
           }
         }}
         

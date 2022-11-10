@@ -85,7 +85,8 @@ const CreateRecipe = (props: Props) => {
           createRecipe(recipeInput:
               {
                   title: "${recipeName}",
-                  content: """[[${ingredientsData}], [${instructionsData}], [${(description)}], "${imgData}"]""",
+                  image: "${imgData}",
+                  content: """[[${ingredientsData}], [${instructionsData}], [${(description)}]]""",
                   dateCreated: "${d.toString()}",
                   tags: [${tagsData}]
 

@@ -1,23 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Typography, Container, Grid, Box, Avatar, TextField, IconButton } from '@mui/material';
-import ProfileRecipe from '../components/profile/ProfileRecipe';
-import { Recipe, BookInfo } from '../types/instacook-types';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Typography, Container, Grid, Box, TextField, IconButton } from '@mui/material';
+import { BookInfo } from '../types/instacook-types';
+import { useNavigate } from 'react-router-dom';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
-import GroupsIcon from '@mui/icons-material/Groups';
-import { red } from '@mui/material/colors';
-import ClearIcon from '@mui/icons-material/Clear';
-// import Book from '../components/recipebook/Book';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import PersonIcon from '@mui/icons-material/Person';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AddIcon from '@mui/icons-material/Add';
 import RecipeBook from '../components/recipebook/RecipeBook';
 import RecipeFolder from '../components/recipebook/RecipeFolder';
 
 type Props = {}
 
-type SavedRecipe = {
+type SavedRecipeInfo = {
   id: string,
   name: string,
   contributor: string, 
@@ -32,7 +24,7 @@ const SavedRecipe = (props: Props) => {
     {id: "3", name: "This is recipe 3"}, 
     {id: "4", name: "zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz zzz"} 
   ]);
-  const [savedRecipe, setSavedRecipe] = useState<SavedRecipe[]>([
+  const [savedRecipe, setSavedRecipe] = useState<SavedRecipeInfo[]>([
     {
       id: "1",
       name: "This is recipe 1",
@@ -60,6 +52,30 @@ const SavedRecipe = (props: Props) => {
 
   ])
   const [selectedBook, setSelectedBook] = useState(""); 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // check if the logged in user's token is valid
+    // and get logged in user's detail
+    const setUserData = async () => {
+      console.log("setUserData in Feed.tsx called");
+      try {
+        await currentAuthenticatedUser();
+      } catch (e) {
+        if (typeof e === "string") {
+          console.log(e);
+        } else if (e instanceof Error) {
+          console.log(e.message);
+        } else {
+          console.log(e);
+        }
+
+          // go to login page if not authenticated
+          navigate('/login');
+      }
+    }
+    setUserData();
+  },[navigate]);
 
   // highlight currently selected recipe book
   const handleSelectBook = (id: string) => {
