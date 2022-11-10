@@ -40,6 +40,7 @@ const UpdateRecipe = (props: Props) => {
                   dateCreated
                   contributorUsername
                   numberLike
+                  image
                   listComments {
                       userName
                       recipeID
@@ -70,7 +71,7 @@ const UpdateRecipe = (props: Props) => {
         setRecipeName(apiData.data.getRecipeById.title)
         setDescription(JSON.parse(apiData.data.getRecipeById.content)[2])
         setContributorName(apiData.data.getRecipeById.contributorUsername)
-        setImgData(JSON.parse(apiData.data.getRecipeById.content)[3])
+        setImgData(apiData.data.getRecipeById.image)
         if (apiData.data.getRecipeById.content[0] != null) {
           setIngredients(JSON.parse(apiData.data.getRecipeById.content)[0]);
           let tempIngredients = [];
@@ -143,7 +144,8 @@ const UpdateRecipe = (props: Props) => {
             updateRecipe(recipeID: "${recipeId}", recipeInput:
                 {
                     title: "${recipeName}",
-                    content: """[[${ingredientsData}], [${instructionsData}], [${JSON.stringify(description)}], "${imgData}"]""",
+                    image: "${imgData}",
+                    content: """[[${ingredientsData}], [${instructionsData}], [${JSON.stringify(description)}]]""",
                     dateCreated: "${d.toString()}",
                     tags: [${tagsData}]
 

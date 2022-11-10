@@ -42,6 +42,7 @@ const Recipe = (props: Props) => {
                   dateCreated
                   contributorUsername
                   numberLike
+                  image
                   listComments {
                       userName
                       recipeID
@@ -71,7 +72,7 @@ const Recipe = (props: Props) => {
         setRecipeName(apiData.data.getRecipeById.title)
         setDescription(JSON.parse(apiData.data.getRecipeById.content)[2])
         setContributorName(apiData.data.getRecipeById.contributorUsername)
-        setRecipeImage(JSON.parse(apiData.data.getRecipeById.content)[3])
+        setRecipeImage(apiData.data.getRecipeById.image)
         setNumberLike(apiData.data.getRecipeById.numberLike)
         setComments(apiData.data.getRecipeById.listComments)
         setTags(apiData.data.getRecipeById.tags)

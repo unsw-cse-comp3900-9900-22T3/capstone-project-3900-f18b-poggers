@@ -6,6 +6,7 @@ export type Recipe = {
   contributor: string,
   numberLike: number,
   tags: string[],
+  image: string,
 }
 
 export type User = {
@@ -79,4 +80,9 @@ export type Tag = {
 
 export type TagObj = {
   [tagName: string]: string
+}
+
+export type BookInfo = {
+  id: string,
+  name: string,
 }

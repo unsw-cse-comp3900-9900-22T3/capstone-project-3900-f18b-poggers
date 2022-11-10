@@ -14,6 +14,7 @@ import Recipe from './pages/Recipe';
 import CreateRecipe from './pages/CreateRecipe';
 import UpdateRecipe from './pages/UpdateRecipe';
 import Discovery from './pages/Discovery';
+import SavedRecipe from './pages/SavedRecipe';
 
 
 const theme = createTheme({
@@ -69,6 +70,7 @@ const App = () => {
             <Route path="/createrecipe" element={<CreateRecipe />} />
             <Route path="/updaterecipe/:recipeId" element={<UpdateRecipe />} />
             <Route path="/recipe/:recipeId" element={<Recipe />} />
+            <Route path="/savedrecipe/" element={<SavedRecipe />} />
             <Route path="*" element={<Login />} />
           </Routes>
         </ThemeProvider>
