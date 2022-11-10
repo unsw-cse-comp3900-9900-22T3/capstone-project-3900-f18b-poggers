@@ -97,7 +97,6 @@ export default function Nav() {
 
   React.useEffect(() => {
     const setUserData = async () => {
-      console.log("setUserData in Nav.tsx called");
       try {
         const { user } = await currentAuthenticatedUser();
         setUsername(user);
@@ -151,9 +150,12 @@ export default function Nav() {
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-                placeholder="Find Users"
+                placeholder="Find Recipes"
                 onKeyPress={(event) => {
-                  event.key === 'Enter' && navigate('/profile/' + searchbarValue)
+                  event.key === 'Enter' && navigate({
+                    pathname: '/search',
+                    search: '?query=' + searchbarValue,
+                  })
                 }}
                 onChange={(e) => { setSearchbarValue(e.target.value) }}
                 inputProps={{ 'aria-label': 'search' }}

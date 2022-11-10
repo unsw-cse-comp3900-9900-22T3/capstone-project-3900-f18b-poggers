@@ -1,7 +1,8 @@
-import { Container, Divider, Grid, Pagination } from '@mui/material';
+import { Button, Container, Divider, Grid, Pagination } from '@mui/material';
 import React from 'react'
 import { useSearchParams } from 'react-router-dom';
 import RecipeCard from '../components/discovery/RecipeCard';
+import FilterSearchBox from '../components/search/FilterSearchBox';
 import { RecipeThumbnail } from '../types/instacook-types';
 
 type Props = {}
@@ -19,9 +20,9 @@ const testRecipe: RecipeThumbnail = {
 
 const numTestData = 33;
 const Search = (_props: Props) => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [recipes, setRecipes] = React.useState<RecipeThumbnail[]>([]);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState<number>(1);
   const [displayedRecipes, setDisplayedRecipes] = React.useState<RecipeThumbnail[]>([]);
   const displayedRecipesNum = 8;
 
@@ -34,9 +35,6 @@ const Search = (_props: Props) => {
       setRecipes([...chickenRecipes]);
     }
     loadTestData();
-    console.log(searchParams);
-    console.log(searchParams.get('ingredient'));
-
   }, [])
 
   // run every time the page number changes
@@ -48,21 +46,29 @@ const Search = (_props: Props) => {
       const endRange = page * displayedRecipesNum;
       setDisplayedRecipes([...recipes.slice(startRange, endRange)]);
 
+      searchParams.set('page', page.toString());
+      setSearchParams(searchParams);
     }
     loadDisplayedRecipes();
   }, [page, recipes])
 
+
   return (
     <Container
-      sx={{ backgroundColor: 'white', paddingBottom: 2, minHeight: 'calc(100vh - 64px)' }}
+      sx={{ backgroundColor: 'white', paddingBottom: 2, paddingTop: 2, minHeight: 'calc(100vh - 64px)' }}
     >
       {/* Filter Container */}
-      <Grid container>
+      <Grid container sx={{ marginBottom: 2 }}>
         {/* Filter/Sort Dropdowns */}
-        <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={3}>Filter A Dropdown</Grid>
-        <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={3}>Filter B Dropdown</Grid>
-        <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={3}>Filter C Dropdown</Grid>
-        <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={3}>Sort Dropdown</Grid>
+        <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={5}>
+          <FilterSearchBox filterType='tags' buttonText={"Tags"} />
+        </Grid>
+        <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={5}>
+          <FilterSearchBox filterType='ingredients' buttonText="Ingredients" />
+        </Grid>
+        <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={2}>
+          <Button color="secondary" fullWidth variant="outlined">Sort by</Button>
+        </Grid>
       </Grid>
 
       {/* Recipe Search Result Container */}
