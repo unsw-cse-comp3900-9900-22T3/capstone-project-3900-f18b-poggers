@@ -30,7 +30,7 @@ const recipeSchema = new Schema({
   like: [
     {
       type: String,
-      required: true,
+      required: false,
     },
   ],
   listComments: [
