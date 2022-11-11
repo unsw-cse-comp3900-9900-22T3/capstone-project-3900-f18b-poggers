@@ -10,8 +10,6 @@ type Props = {
 }
 
 const ProfileRecipe = (props: Props) => {
-
-  const [imageURL, setImageURL] = useState("");
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,7 +25,6 @@ const ProfileRecipe = (props: Props) => {
         setDescription(props.post.content);
       }
     }
-    // getImageUrl();
     getDescription();
 
   }, [props.post.content])

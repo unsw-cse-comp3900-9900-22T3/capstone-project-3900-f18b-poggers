@@ -40,7 +40,7 @@ const CheckItem = (props: Props) => {
       }
     }
     checkRecipeInBook();
-  },[])
+  })
 
 
   // remove the recipe from the book
@@ -108,7 +108,8 @@ const CheckItem = (props: Props) => {
 
   return (
     <FormControlLabel 
-      control={<Checkbox checked={isInBook} onClick={()=> isInBook ? removeRecipeIdFromBook() : addRecipeIdToBook()}/>} 
+      onClick={()=> isInBook ? removeRecipeIdFromBook() : addRecipeIdToBook()}
+      control={<Checkbox checked={isInBook} />} 
       label={props.name} 
     />
   )

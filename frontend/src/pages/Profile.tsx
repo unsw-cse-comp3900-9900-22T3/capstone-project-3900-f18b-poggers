@@ -220,6 +220,7 @@ const Profile = (props: Props) => {
         {/* Profile image */}
         <Grid 
           item
+          container
           direction="column"
           justifyContent="center"
           alignItems="center"
