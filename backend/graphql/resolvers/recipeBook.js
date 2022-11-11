@@ -89,7 +89,7 @@ module.exports = {
     const authUser = await User.findById(req.userId);
     authUser.listRecipeBooks.pop(args.recipeBookID);
     await authUser.save();
-    await RecipeBook.deleteOne({_id: args.recipeBookID});
+    await recipeBook.delete();
     return true;
   },
 
