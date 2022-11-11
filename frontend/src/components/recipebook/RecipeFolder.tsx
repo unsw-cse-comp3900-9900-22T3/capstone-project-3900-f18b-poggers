@@ -39,7 +39,7 @@ const RecipeFolder = (props: Props) => {
           container 
           direction="row" 
           alignItems="center"  
-          xs={8} md={4}
+          xs={4} md={4}
           justifyContent="flex-start"
           onClick={() => navigate(`/recipe/${props.id}`)}
         >
@@ -65,7 +65,7 @@ const RecipeFolder = (props: Props) => {
           container 
           direction="row" 
           alignItems="center" 
-          xs={8} md={3}
+          xs={3} md={3}
           justifyContent="flex-start" 
           onClick={() => navigate(`/profile/${props.contributor}`)}
         >
@@ -81,7 +81,7 @@ const RecipeFolder = (props: Props) => {
           container 
           direction="row" 
           alignItems="center" 
-          xs={8} md={3}
+          xs={3} md={3}
           justifyContent="flex-start"
         >
           <FavoriteIcon sx={{ fontSize: "16px", paddingRight: 0.5}}/> 

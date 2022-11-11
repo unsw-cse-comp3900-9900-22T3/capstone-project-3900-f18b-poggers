@@ -32,7 +32,7 @@ const RecipeBook = (props: Props) => {
         {/* Recipe book name */}
         <Grid 
           item 
-          xs={9} md={10} 
+          xs={10} md={10} 
           justifyContent="flex-start"
           
         >
@@ -42,7 +42,7 @@ const RecipeBook = (props: Props) => {
         </Grid>
 
         {/* Clear button */}
-        <Grid item xs={3} md={2} pl={{ md:2}} justifyContent="flex-end">
+        <Grid item xs={2} md={2} pl={{ md:2}} justifyContent="flex-end">
           <ClearIcon onClick={() => props.removeRecipeBook(props.id)} style={{ color: 'red' }}/>
         </Grid>
       </Grid>
