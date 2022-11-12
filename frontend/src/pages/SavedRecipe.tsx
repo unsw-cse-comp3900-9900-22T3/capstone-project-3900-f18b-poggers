@@ -82,7 +82,7 @@ const SavedRecipe = (props: Props) => {
   }
 
   // highlight currently selected recipe book
-  const handleSelectBook = async (id: string) => {
+  const changeSelectedBook = async (id: string) => {
     try {
       setSelectedBook(id);
       const requestBody = {
@@ -162,6 +162,7 @@ const SavedRecipe = (props: Props) => {
   // remove recipe book from the list
   const removeRecipeBook = async (id: string) => {
     try {
+      
       const requestBody = {
         query: `
         mutation {
@@ -184,6 +185,10 @@ const SavedRecipe = (props: Props) => {
       }
       const newRecipeBook = recipeBook.filter((item: BookInfo) => item._id !== id);
       setRecipeBook(newRecipeBook);
+      if (id === selectedBook) {
+        setSelectedBook("")
+        setSavedRecipe([]);
+      }
     } catch(error) {
       console.log("remove recipe failed", error);
     }
@@ -254,7 +259,7 @@ const SavedRecipe = (props: Props) => {
                 id={item._id} 
                 name={item.name} 
                 selectedBookId={selectedBook} 
-                handleSelectBook={handleSelectBook}
+                changeSelectedBook={changeSelectedBook}
                 removeRecipeBook={removeRecipeBook}
               />
             ))}

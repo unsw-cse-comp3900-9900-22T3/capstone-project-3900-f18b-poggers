@@ -5,13 +5,13 @@ type Props = {
   id: string,
   name: string,
   selectedBookId: string,
-  handleSelectBook: (id: string) => void,
+  changeSelectedBook: (id: string) => void,
   removeRecipeBook: (id: string) => void,
 }
 
 const RecipeBook = (props: Props) => {
   return (
-    <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}} onClick={() => {console.log("clicked"); props.handleSelectBook(props.id)}}> 
+    <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}} onClick={() => {console.log("clicked"); props.changeSelectedBook(props.id)}}> 
       {/* Background colour changes when hovering, and toggles on click */}
       <Grid item container
         sx={{
