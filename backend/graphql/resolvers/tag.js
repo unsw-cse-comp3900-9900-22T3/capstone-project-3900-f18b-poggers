@@ -10,12 +10,5 @@ module.exports = {
         content: tag.content
       }
     });
-  },
-
-  getTagContent: async (args) => {
-    const content = await Tag.findById(args.id, 'content');
-    return {
-      content: content.content
-    }
   }
 };

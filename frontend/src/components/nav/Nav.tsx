@@ -127,7 +127,7 @@ export default function Nav() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar style={{ boxShadow: 'none' }} position="static">
           <Toolbar>
-            {loggedIn && <IconButton
+            <IconButton
               size="large"
               edge="start"
               color="inherit"
@@ -136,7 +136,7 @@ export default function Nav() {
               onClick={toggleSidebar(true)}
             >
               <MenuIcon />
-            </IconButton>}
+            </IconButton>
             <Typography
               variant="h6"
               noWrap

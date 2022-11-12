@@ -38,7 +38,7 @@ const Discovery = (props: Props) => {
       const tags: TagObj = {}
 
       tagArr.map((tag: Tag) => {
-        return tags[tag.content] = tag._id;
+        tags[tag.content] = tag._id;
       })
       setTagIds(tags);
     }

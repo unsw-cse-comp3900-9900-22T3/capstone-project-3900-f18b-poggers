@@ -2,19 +2,19 @@ import { Autocomplete, TextField } from '@mui/material'
 import React from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Filter } from '../../types/instacook-enums';
+import { Tag, TagObj } from '../../types/instacook-types';
 
 type Props = {
   filterType: Filter.Tags | Filter.Ingredients,
-  options: string[];
+  options: TagObj
 }
 
 const FilterSearchBox = (props: Props) => {
   // list of tag selections
   const [value, setValue] = React.useState<string[]>([]);
-
   const [inputValue, setInputValue] = React.useState('');
   const [searchParams, setSearchParams] = useSearchParams({});
-
+  const [optionLabels, setOptionLabels] = React.useState<string[]>([]);
   React.useEffect(() => {
     const setFiltersFromParams = () => {
       // load filters from tags
@@ -37,6 +37,7 @@ const FilterSearchBox = (props: Props) => {
         }
       }
     }
+    // setOptionLabels();
     setFiltersFromParams();
   }, [])
 
@@ -68,7 +69,8 @@ const FilterSearchBox = (props: Props) => {
   return (
     <Autocomplete
       multiple
-      options={props.options}
+      options={Object.values(props.options)}
+      getOptionLabel={(option) => (Object.keys(props.options).find(key => props.options[key] === option)) || ''}
       filterSelectedOptions
       limitTags={2}
       color="secondary"

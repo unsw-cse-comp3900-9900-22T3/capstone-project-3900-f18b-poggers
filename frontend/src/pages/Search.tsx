@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import RecipeCard from '../components/RecipeCard';
 import FilterSearchBox from '../components/search/FilterSearchBox';
 import { Filter } from '../types/instacook-enums';
-import { RecipeThumbnail, Tag } from '../types/instacook-types';
+import { RecipeThumbnail, Tag, TagObj } from '../types/instacook-types';
 
 type Props = {}
 
@@ -25,7 +25,8 @@ const Search = (_props: Props) => {
   const [recipes, setRecipes] = React.useState<RecipeThumbnail[]>([]);
   const [page, setPage] = React.useState<number>(1);
   const [displayedRecipes, setDisplayedRecipes] = React.useState<RecipeThumbnail[]>([]);
-  const [tagIdOptions, setTagIdOptions] = React.useState<string[]>([]);
+  const [tagOptions, setTagOptions] = React.useState<TagObj>({});
+
   const displayedRecipesNum = 8;
 
   React.useEffect(() => {
@@ -43,6 +44,7 @@ const Search = (_props: Props) => {
           query {
             getTags {
               _id
+              content
             }
           }
         `
@@ -61,11 +63,16 @@ const Search = (_props: Props) => {
         throw new Error(apiData.errors[0].message);
       }
 
-      // set tag options from api
-      const tags: Tag[] = apiData.data.getTags;
-      setTagIdOptions(tags.map(tag => tag._id));
+      // create custom tag object
+      const tagArr: Tag[] = apiData.data.getTags;
+      const tags: TagObj = {}
 
+      tagArr.map((tag: Tag) => {
+        tags[tag.content] = tag._id;
+      })
+      setTagOptions(tags);
     }
+
     loadTestData();
     loadTags();
   }, [])
@@ -94,10 +101,10 @@ const Search = (_props: Props) => {
       <Grid container sx={{ marginBottom: 2 }}>
         {/* Filter/Sort Dropdowns */}
         <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={5}>
-          <FilterSearchBox filterType={Filter.Tags} options={tagIdOptions} />
+          <FilterSearchBox filterType={Filter.Tags} options={tagOptions} />
         </Grid>
         <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={5}>
-          {/* <FilterSearchBox filterType="Ingredients" options={tagOptions} /> */}
+          <FilterSearchBox filterType={Filter.Ingredients} options={tagOptions} />
         </Grid>
         <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={2}>
           <Button color="secondary" fullWidth variant="outlined">Sort by</Button>
