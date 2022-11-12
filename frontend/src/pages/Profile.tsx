@@ -161,9 +161,6 @@ const Profile = (props: Props) => {
         } else {
           console.log(e);
         }
-
-          // go to login page if not authenticated
-          navigate('/login');
       }
     }
     setUserData();
