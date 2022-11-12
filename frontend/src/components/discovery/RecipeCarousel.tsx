@@ -1,6 +1,6 @@
 import { Divider, Typography } from '@mui/material'
 import React from 'react'
-import RecipeCard from './RecipeCard'
+import RecipeCard from '../RecipeCard'
 import Slider from "react-slick";
 import DiscoveryCardLoader from './DiscoveryCardLoader'
 import { RecipeThumbnail } from '../../types/instacook-types';
