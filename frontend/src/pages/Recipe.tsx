@@ -455,12 +455,17 @@ const Recipe = (props: Props) => {
                       },
                     }}
                   >
-                      {recipeBook.map((item, index) => (
+                      {recipeBook.length !== 0 ? (recipeBook.map((item, index) => (
                         // checkbox component indicating that the recipe is saved in the book
                         <MenuItem key={index}>
                           <CheckItem bookId={item._id} name={item.name} recipeId={`"${recipeId}"`}/>
                         </MenuItem>
-                      ))}
+                      ))) : (
+                        // go to recipe book page if none has been created
+                        <MenuItem onClick={() => navigate("/savedrecipe")}>
+                          Create Recipe Book
+                        </MenuItem>
+                      )}
                   </Menu>
 
                   <IconButton sx={likeStyles} onClick={handleLike}>

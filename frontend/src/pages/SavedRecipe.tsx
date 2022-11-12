@@ -229,7 +229,7 @@ const SavedRecipe = (props: Props) => {
     >
       <Grid container spacing={2} >
         {/* Saved Recipe Books column */}
-        <Grid item xs={12} md={4} sx={{borderRight: 1, paddingRight: 2, minHeight: 'calc(100vh - 64px)'}}>
+        <Grid item xs={12} md={4} sx={{borderRight: {md: 1}, paddingRight: 2, minHeight: 'calc(100vh - 64px)'}}>
 
           {/* Title */}
           <Box sx={{
