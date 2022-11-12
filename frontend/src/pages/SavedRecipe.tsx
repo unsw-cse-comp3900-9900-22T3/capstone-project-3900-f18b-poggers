@@ -38,7 +38,7 @@ const SavedRecipe = (props: Props) => {
     }
     setUserData();
     getRecipeBooks();
-  },[navigate]);
+  },[navigate, selectedBook]);
 
   const getRecipeBooks = async () => {
     try {
@@ -75,6 +75,7 @@ const SavedRecipe = (props: Props) => {
       console.log(newBooks);
 
       setRecipeBook([...newBooks.reverse()]);
+      selectedBook === "" && setSavedRecipe([]);
     } catch (error) {
       console.log("get recipe books failed: ", error);
     }
@@ -185,10 +186,8 @@ const SavedRecipe = (props: Props) => {
       }
       const newRecipeBook = recipeBook.filter((item: BookInfo) => item._id !== id);
       setRecipeBook(newRecipeBook);
-      if (id === selectedBook) {
-        setSelectedBook("")
-        setSavedRecipe([]);
-      }
+      id === selectedBook && setSelectedBook("");
+
     } catch(error) {
       console.log("remove recipe failed", error);
     }
