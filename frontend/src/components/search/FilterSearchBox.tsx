@@ -7,6 +7,7 @@ type Props = {
   options: TagObj,
   recipes: RecipeThumbnail[],
   setRecipes: React.Dispatch<React.SetStateAction<RecipeThumbnail[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const FilterSearchBox = (props: Props) => {
@@ -40,6 +41,10 @@ const FilterSearchBox = (props: Props) => {
   }, [searchParams.get('tags')])
 
   React.useEffect(() => {
+    const renderLoadEffect = () => {
+      props.setLoading(true);
+    }
+
     const updateSearchParams = () => {
       searchParams.set("tags", selectedValues.toString());
       setSearchParams(searchParams);
@@ -78,7 +83,7 @@ const FilterSearchBox = (props: Props) => {
 
       setNewRecipes([...apiData.data.getListRecipeByTitle]);
     }
-
+    renderLoadEffect();
     getRecipes();
     updateSearchParams();
   }, [selectedValues])
@@ -92,6 +97,8 @@ const FilterSearchBox = (props: Props) => {
         ));
 
         props.setRecipes([...filteredRecipes]);
+        props.setLoading(false);
+
         return;
       }
 
