@@ -1,7 +1,7 @@
 import { Container, Grid, Pagination } from '@mui/material';
 import React from 'react'
 import { useSearchParams } from 'react-router-dom';
-import DiscoveryCardLoader from '../components/discovery/DiscoveryCardLoader';
+import DiscoveryCardLoader from '../components/RecipeCardPlaceholder';
 import RecipeCard from '../components/RecipeCard';
 import FilterSearchBox from '../components/search/FilterSearchBox';
 import SortButton from '../components/search/SortButton';
