@@ -95,6 +95,7 @@ type RootQuery {
     isUserAuth: UserInfo!
     isRecipeLiked(recipeID: String!): Boolean!
     getListRecipeByTags(tags: [ID!]!): [RecipeThumbnail!]!
+    getListRecipeByTitle(keywords: String!): [RecipeThumbnail!]!
 }
 
 type RootMutation {
