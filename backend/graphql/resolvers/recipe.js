@@ -16,7 +16,6 @@ module.exports = {
       image: args.recipeInput.image,
       dateCreated: new Date(args.recipeInput.dateCreated),
       numberLike: 0,
-      like: [],
       tags: args.recipeInput.tags,
       contributor: req.userId,
     });
@@ -177,7 +176,7 @@ module.exports = {
     const recipe = await Recipe.findById(args.recipeID);
 
     if (recipe.like.includes(authUser.username)) {
-      recipe.like.pop(authUser.username);
+      recipe.like = recipe.like.filter((username) => username !== authUser.username);
       recipe.numberLike--;
     } else {
       recipe.like.push(authUser.username);

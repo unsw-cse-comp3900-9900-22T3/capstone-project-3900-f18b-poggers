@@ -5,13 +5,13 @@ type Props = {
   id: string,
   name: string,
   selectedBookId: string,
-  handleSelectBook: (id: string) => void,
+  changeSelectedBook: (id: string) => void,
   removeRecipeBook: (id: string) => void,
 }
 
 const RecipeBook = (props: Props) => {
   return (
-    <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}}> 
+    <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}} onClick={() => {console.log("clicked"); props.changeSelectedBook(props.id)}}> 
       {/* Background colour changes when hovering, and toggles on click */}
       <Grid item container
         sx={{
@@ -32,9 +32,9 @@ const RecipeBook = (props: Props) => {
         {/* Recipe book name */}
         <Grid 
           item 
-          xs={9} md={10} 
+          xs={10} md={10} 
           justifyContent="flex-start"
-          onClick={() => props.handleSelectBook(props.id)}
+          
         >
           <Typography>
             {props.name}
@@ -42,7 +42,7 @@ const RecipeBook = (props: Props) => {
         </Grid>
 
         {/* Clear button */}
-        <Grid item xs={3} md={2} pl={{ md:2}} justifyContent="flex-end">
+        <Grid item xs={2} md={2} pl={{ md:2}} justifyContent="flex-end">
           <ClearIcon onClick={() => props.removeRecipeBook(props.id)} style={{ color: 'red' }}/>
         </Grid>
       </Grid>

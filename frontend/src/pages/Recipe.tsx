@@ -1,5 +1,5 @@
-import React from 'react'
-import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material'
+import React, { useState, useEffect } from 'react';
+import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Container, CssBaseline, Grid, TextField, Typography, MenuItem, Menu } from '@mui/material'
 import Carousel from 'react-material-ui-carousel'
 import testimg from '../static/images/authbackground.jpeg'
 import SendIcon from '@mui/icons-material/Send';
@@ -7,32 +7,36 @@ import { useNavigate, useParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import Image from 'mui-image';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
-import { Comment } from '../types/instacook-types';
+import { Comment, BookInfo } from '../types/instacook-types';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import CheckItem from '../components/recipe/CheckItem';
 type Props = {}
 
 const Recipe = (props: Props) => {
   const navigate = useNavigate();
   const { recipeId } = useParams();
-  const [username, setUsername] = React.useState("");
-  const [description, setDescription] = React.useState<string>("");
-  const [recipeImage, setRecipeImage] = React.useState<string>("");
-  const [recipeName, setRecipeName] = React.useState<string>("");
-  const [contributorName, setContributorName] = React.useState<string>("");
-  const [ingredients, setIngredients] = React.useState([""]);
-  const [instructions, setInstructions] = React.useState([""]);
-  const [similarRecipes, setSimilarRecipes] = React.useState([1, 2, 3, 4, 5, 6, 7])
-  const [comments, setComments] = React.useState<Comment[]>([]);
-  const [commentField, setCommentField] = React.useState("");
-  const [numberLike, setNumberLike] = React.useState(0);
-  const [tags, setTags] = React.useState([""]);
-  const [recipeLiked, setRecipeLiked] = React.useState<boolean>(false)
-  const [loggedIn, setLoggedIn] = React.useState<boolean>(false)
-  React.useEffect(() => {
+  const [username, setUsername] = useState("");
+  const [description, setDescription] = useState<string>("");
+  const [recipeImage, setRecipeImage] = useState<string>("");
+  const [recipeName, setRecipeName] = useState<string>("");
+  const [contributorName, setContributorName] = useState<string>("");
+  const [ingredients, setIngredients] = useState([""]);
+  const [instructions, setInstructions] = useState([""]);
+  const [similarRecipes, setSimilarRecipes] = useState([1, 2, 3, 4, 5, 6, 7])
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentField, setCommentField] = useState("");
+  const [numberLike, setNumberLike] = useState(0);
+  const [tags, setTags] = useState([""]);
+  const [recipeLiked, setRecipeLiked] = useState<boolean>(false)
+  const [loggedIn, setLoggedIn] = useState<boolean>(false)
+  const [recipeBook, setRecipeBook] = useState<BookInfo[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  useEffect(() => {
     const fetchRecipes = async () => {
       try {
-
         const requestBody = {
           query: `
             query {
@@ -117,6 +121,46 @@ const Recipe = (props: Props) => {
 
     };
 
+    const getRecipeBooks = async () => {
+      try {
+        const requestBody = {
+          query: `
+            query {
+              getListOfRecipeBook {
+                  _id
+                  name
+              }
+            }
+          `
+        };
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(requestBody),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+  
+        const apiData = await res.json();
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+  
+        const books = apiData.data.getListOfRecipeBook;
+        const newBooks: BookInfo[] = books.map((item: BookInfo) => ({
+          _id: item._id,
+          name: item.name,
+        }))
+  
+        console.log(newBooks);
+  
+        setRecipeBook([...newBooks.reverse()]);
+      } catch (error) {
+        console.log("get recipe books failed: ", error);
+      }
+  
+    }
 
     const setUserData = async () => {
       try {
@@ -136,10 +180,28 @@ const Recipe = (props: Props) => {
         // navigate('/login');
       }
     }
-    setUserData()
+    setUserData();
     fetchRecipes();
+    getRecipeBooks();
   }, [navigate, recipeId]);
 
+  const open = Boolean(anchorEl);
+
+  /**
+   * Opens the drop down menu on click
+   * 
+   * @param event the mouse event
+   */
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  /**
+   * Closes the menu bar when clicking elsewhere
+   */
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const similarRecipesCarousel = similarRecipes.map((recipe, key) =>
     <Grid key={key} item sm={3}>
@@ -375,15 +437,55 @@ const Recipe = (props: Props) => {
             width: "50%",
             alignItems: "flex-end",
             flexDirection: "column"}}>
-            {loggedIn ?
-                <IconButton sx={likeStyles} onClick={handleLike}>
-                  <Grid container direction="row" alignItems="center" justifyItems="center">
-                    {recipeLiked ? <FavoriteIcon sx={{ fontSize: "30px", marginRight: 0.5}}/> : <FavoriteBorderIcon sx={{ fontSize: "30px", marginRight: 0.5}}/>}
-                    <Typography>
-                      {numberLike}
-                    </Typography>
-                  </Grid>
-                </IconButton>
+              {loggedIn ?
+                <Box>
+                  {/* a playlist button with dropdown menu */}
+                  <IconButton
+                    id="basic-button"
+                    aria-controls={open ? 'basic-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleClick}
+                    sx={{marginRight: 2, borderRadius: 2, padding: 0}}
+                  >
+                    <PlaylistAddIcon sx={{fontSize: "30px", color: "#28343c"}}/>
+                  </IconButton>
+
+                  {/* A menu by clicking on the playlist button */}
+                  <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    PaperProps={{
+                      style: {
+                        maxHeight: 250,
+                        width: '20ch',
+                      },
+                    }}
+                  >
+                      {recipeBook.length !== 0 ? (recipeBook.map((item, index) => (
+                        // checkbox component indicating that the recipe is saved in the book
+                        <MenuItem key={index}>
+                          <CheckItem bookId={item._id} name={item.name} recipeId={`"${recipeId}"`}/>
+                        </MenuItem>
+                      ))) : (
+                        // go to recipe book page if none has been created
+                        <MenuItem onClick={() => navigate("/savedrecipe")}>
+                          Create Recipe Book
+                        </MenuItem>
+                      )}
+                  </Menu>
+
+                  <IconButton sx={likeStyles} onClick={handleLike}>
+                    <Grid container direction="row" alignItems="center" justifyItems="center">
+                      {recipeLiked ? <FavoriteIcon sx={{ fontSize: "30px", marginRight: 0.5}}/> : <FavoriteBorderIcon sx={{ fontSize: "30px", marginRight: 0.5}}/>}
+                      <Typography>
+                        {numberLike}
+                      </Typography>
+                    </Grid>
+                  </IconButton>
+                </Box>
                 :
                 // <Box sx={likeStyles}>
                 <>
@@ -396,7 +498,7 @@ const Recipe = (props: Props) => {
                   </Grid>
                 </Box>
                 </>
-                // <Box>
+                  // <Box>
                 }
             </Box>
           </Box>

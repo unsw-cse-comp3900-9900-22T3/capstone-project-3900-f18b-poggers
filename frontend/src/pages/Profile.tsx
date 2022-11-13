@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 import GroupsIcon from '@mui/icons-material/Groups';
 import { red } from '@mui/material/colors';
+import { json } from 'stream/consumers';
 
 type Props = {}
 
@@ -20,8 +21,9 @@ const Profile = (props: Props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-
-    // get list of recipes from contributor
+    /**
+     * Get list of recipes from contributor  
+     */
     const fetchRecipes = async () => {
       try {
         const requestBody = {
@@ -74,7 +76,9 @@ const Profile = (props: Props) => {
 
     };
 
-    // check if the contributor is subscribed
+    /**
+     * Check if the contributor is subscribed
+     */
     const checkSubscribe = async () => {
       try {
         const requestBody = {
@@ -107,7 +111,9 @@ const Profile = (props: Props) => {
 
     }
 
-    // get number of followers and following
+    /**
+     * Get number of followers and following of the contributor
+     */
     const getFollowCount = async () => {
       try {
         const requestBody = {
@@ -143,8 +149,9 @@ const Profile = (props: Props) => {
 
     }
 
-    // check if the logged in user's token is valid
-    // and get logged in user's detail
+    /**
+     * Check if the user is authenticated, and get logged-in user detail
+     */
     const setUserData = async () => {
       console.log("setUserData in Feed.tsx called");
       try {
@@ -161,9 +168,6 @@ const Profile = (props: Props) => {
         } else {
           console.log(e);
         }
-
-        // go to login page if not authenticated
-        navigate('/login');
       }
     }
     setUserData();
@@ -172,7 +176,10 @@ const Profile = (props: Props) => {
     getFollowCount();
   }, [navigate, profileUsername]);
 
-  // subscribe/unsubscribe contributor
+  /**
+   * Subscribe to the contributor if it's subsubscribed,
+   * otherwise unsubscribe 
+   */
   const subscribe = async () => {
     try {
       // update the button text after subscribe/unsubscribe
@@ -220,6 +227,7 @@ const Profile = (props: Props) => {
         {/* Profile image */}
         <Grid
           item
+          container
           direction="column"
           justifyContent="center"
           alignItems="center"

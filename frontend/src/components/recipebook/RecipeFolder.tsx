@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 type Props = {
   id: string,
-  name: string,
+  title: string,
   contributor: string,
   like: number,
   removeSavedRecipe: (id: string) => void,
@@ -39,14 +39,14 @@ const RecipeFolder = (props: Props) => {
           container 
           direction="row" 
           alignItems="center"  
-          xs={8} md={4} mr={4}
+          xs={4} md={4}
           justifyContent="flex-start"
           onClick={() => navigate(`/recipe/${props.id}`)}
         >
           <Grid item md={2}>
             <MenuBookIcon sx={{ fontSize: "25px"}}/>
           </Grid>
-          <Grid item md={8}>
+          <Grid item md={10}>
             <Typography sx={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -54,7 +54,7 @@ const RecipeFolder = (props: Props) => {
               WebkitLineClamp: '3',
               WebkitBoxOrient: 'vertical',
             }}>
-              {props.name}
+              {props.title}
             </Typography>
           </Grid>
         </Grid>
@@ -65,11 +65,11 @@ const RecipeFolder = (props: Props) => {
           container 
           direction="row" 
           alignItems="center" 
-          xs={8} md={3} mr={1} 
+          xs={3} md={3}
           justifyContent="flex-start" 
           onClick={() => navigate(`/profile/${props.contributor}`)}
         >
-          <PersonIcon sx={{ fontSize: "25px", marginRight: 0.5}}/>
+          <PersonIcon sx={{ fontSize: "25px", paddingRight: 0.5}}/>
           <Typography>
             {props.contributor}
           </Typography>
@@ -81,10 +81,10 @@ const RecipeFolder = (props: Props) => {
           container 
           direction="row" 
           alignItems="center" 
-          xs={8} md={2} mr={1} 
+          xs={3} md={3}
           justifyContent="flex-start"
         >
-          <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5}}/> 
+          <FavoriteIcon sx={{ fontSize: "16px", paddingRight: 0.5}}/> 
           <Typography>
             {props.like}
           </Typography>

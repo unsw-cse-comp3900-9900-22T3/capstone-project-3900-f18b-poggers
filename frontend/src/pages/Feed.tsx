@@ -13,7 +13,9 @@ const Feed = (props: Props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // get recipes from all the contributors user has subscribed to
+    /**
+     * Get recipes from all contributors the user has subscribed to
+     */
     const fetchRecipes = async () => {
       try {
         const requestBody = {
@@ -25,6 +27,7 @@ const Feed = (props: Props) => {
                 title
                 content
                 numberLike
+                image
                 tags
               }
             }
@@ -51,6 +54,7 @@ const Feed = (props: Props) => {
           title: item.title,
           content: item.content,
           numberLike: item.numberLike,
+          image: item.image,
           tags: item.tags,
         }))
 
@@ -62,7 +66,9 @@ const Feed = (props: Props) => {
       }
     };
 
-    // check if the logged in user's token is valid
+    /**
+     * Check if the user is authenticated, and get logged-in user detail
+     */
     const setUserData = async () => {
       console.log("setUserData in Feed.tsx called");
       try {
