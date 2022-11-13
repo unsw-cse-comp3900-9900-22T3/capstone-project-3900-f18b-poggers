@@ -9,7 +9,6 @@ type Props = {
   options: TagObj,
   recipes: RecipeThumbnail[],
   setRecipes: React.Dispatch<React.SetStateAction<RecipeThumbnail[]>>,
-  // loadRecipes: () => void,
 }
 
 const FilterSearchBox = (props: Props) => {
@@ -126,7 +125,7 @@ const FilterSearchBox = (props: Props) => {
       options={Object.values(props.options)}
       getOptionLabel={(option) => (Object.keys(props.options).find(key => props.options[key] === option)) || ''}
       filterSelectedOptions
-      limitTags={2}
+      limitTags={10}
       color="secondary"
       value={selectedValues}
       onChange={(_e, newValue) => {

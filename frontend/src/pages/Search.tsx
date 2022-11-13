@@ -1,8 +1,9 @@
-import { Button, Container, Grid, Pagination } from '@mui/material';
+import { Container, Grid, Pagination } from '@mui/material';
 import React from 'react'
 import { useSearchParams } from 'react-router-dom';
 import RecipeCard from '../components/RecipeCard';
 import FilterSearchBox from '../components/search/FilterSearchBox';
+import SortButton from '../components/search/SortButton';
 import { Filter } from '../types/instacook-enums';
 import { RecipeThumbnail, Tag, TagObj } from '../types/instacook-types';
 
@@ -14,13 +15,13 @@ const Search = (_props: Props) => {
   const [page, setPage] = React.useState<number>(1);
   const [displayedRecipes, setDisplayedRecipes] = React.useState<RecipeThumbnail[]>([]);
   const [tagOptions, setTagOptions] = React.useState<TagObj>({});
+  const tagParams = React.useMemo(() => searchParams.get('tags'), [searchParams]);
+  const ingredientParams = React.useMemo(() => searchParams.get('ingredients'), [searchParams]);
   const displayedRecipesNum = 8;
 
 
   React.useEffect(() => {
     const loadRecipes = async () => {
-      const tagParams = searchParams.get('tags');
-      const ingredientParams = searchParams.get('ingredients');
 
       // if tag or ingredient params are not empty, do not reload recipes
       if (!['', null].includes(tagParams) || !['', null].includes(ingredientParams)) {
@@ -38,7 +39,6 @@ const Search = (_props: Props) => {
               content
               numberLike
               tags
-              image
             }
           }
         `
@@ -99,7 +99,7 @@ const Search = (_props: Props) => {
 
     loadRecipes();
     loadTags();
-  }, [searchParams.get('tags'), searchParams.get('ingredients')])
+  }, [tagParams, ingredientParams])
 
   // run every time the page number changes
   React.useEffect(() => {
@@ -114,7 +114,7 @@ const Search = (_props: Props) => {
       setSearchParams(searchParams);
     }
     loadDisplayedRecipes();
-  }, [page, recipes, setSearchParams])
+  }, [page, recipes, setSearchParams, searchParams])
 
 
   return (
@@ -124,14 +124,12 @@ const Search = (_props: Props) => {
       {/* Filter Container */}
       <Grid container sx={{ marginBottom: 2 }}>
         {/* Filter/Sort Dropdowns */}
-        <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={5}>
+        <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={10}>
           <FilterSearchBox filterType={Filter.Tags} options={tagOptions} setRecipes={setRecipes} recipes={recipes} />
         </Grid>
-        <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={5}>
-          {/* <FilterSearchBox filterType={Filter.Ingredients} options={tagOptions} /> */}
-        </Grid>
+
         <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={2}>
-          <Button color="secondary" fullWidth variant="outlined">Sort by</Button>
+          <SortButton recipes={recipes} setRecipes={setRecipes} />
         </Grid>
       </Grid>
 
