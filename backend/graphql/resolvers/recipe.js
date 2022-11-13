@@ -176,7 +176,7 @@ module.exports = {
     const recipe = await Recipe.findById(args.recipeID);
 
     if (recipe.like.includes(authUser.username)) {
-      recipe.like.pop(authUser.username);
+      recipe.like = recipe.like.filter((username) => username !== authUser.username);
       recipe.numberLike--;
     } else {
       recipe.like.push(authUser.username);
