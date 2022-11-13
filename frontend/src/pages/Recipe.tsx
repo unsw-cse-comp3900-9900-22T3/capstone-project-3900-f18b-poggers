@@ -185,11 +185,20 @@ const Recipe = (props: Props) => {
     getRecipeBooks();
   }, [navigate, recipeId]);
 
-  // drop menu handlers
   const open = Boolean(anchorEl);
+
+  /**
+   * Opens the drop down menu on click
+   * 
+   * @param event the mouse event
+   */
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  /**
+   * Closes the menu bar when clicking elsewhere
+   */
   const handleClose = () => {
     setAnchorEl(null);
   };

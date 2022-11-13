@@ -15,6 +15,9 @@ const ProfileRecipe = (props: Props) => {
   const location = useLocation();
 
   useEffect(() => {
+    /**
+     * Get the description of the recipe
+     */
     const getDescription = async () => {
       try {
         // if description array doesn't exist, display ingredients

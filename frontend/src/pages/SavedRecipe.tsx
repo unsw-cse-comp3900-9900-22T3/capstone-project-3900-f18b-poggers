@@ -17,8 +17,9 @@ const SavedRecipe = (props: Props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // check if the logged in user's token is valid
-    // and get logged in user's detail
+    /**
+     * Check if the user is authenticated, and get logged-in user detail
+     */
     const setUserData = async () => {
       console.log("setUserData in Feed.tsx called");
       try {
@@ -40,6 +41,9 @@ const SavedRecipe = (props: Props) => {
     getRecipeBooks();
   },[navigate, selectedBook]);
 
+  /**
+   * Get list of recipe books
+   */
   const getRecipeBooks = async () => {
     try {
       const requestBody = {
@@ -82,7 +86,11 @@ const SavedRecipe = (props: Props) => {
 
   }
 
-  // highlight currently selected recipe book
+  /**
+   * Toggle background colour when user clicks on the recipe book
+   * 
+   * @param id ID of the recipe book
+   */
   const changeSelectedBook = async (id: string) => {
     try {
       setSelectedBook(id);
@@ -128,7 +136,9 @@ const SavedRecipe = (props: Props) => {
       
   }
 
-  // add new recipe book into the list 
+  /**
+   * Add new recipe book into the list
+   */
   const addNewRecipeBook = async () => {
     const dateCreated = new Date();
     try {
@@ -160,7 +170,11 @@ const SavedRecipe = (props: Props) => {
     setNewBookName("");
   }
 
-  // remove recipe book from the list
+  /**
+   * Remove recipe book from the list by ID 
+   * 
+   * @param id ID of the recipe book 
+   */
   const removeRecipeBook = async (id: string) => {
     try {
       
@@ -193,8 +207,11 @@ const SavedRecipe = (props: Props) => {
     }
   }
   
-
-  // removed saved recipe from the book
+  /**
+   *  Remove recipe ID from the book that is saved into 
+   * 
+   * @param id ID of the recipe
+   */
   const removeSavedRecipe = async (id: string) => {
     try {
       const requestBody = {

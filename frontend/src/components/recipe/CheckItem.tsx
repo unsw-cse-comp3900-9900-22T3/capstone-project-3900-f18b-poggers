@@ -11,7 +11,9 @@ const CheckItem = (props: Props) => {
   const [isInBook, setIsInBook] = useState(false);
 
   useEffect(() => {
-    // check if the recipe is saved in the book
+    /**
+     * Check if the recipe is saved in any books
+     */
     const checkRecipeInBook = async () => {
       try {
         const requestBody = {
@@ -43,7 +45,9 @@ const CheckItem = (props: Props) => {
   })
 
 
-  // remove the recipe from the book
+  /**
+   *  Remove recipe ID from the book that is saved into 
+   */
   const removeRecipeIdFromBook = async () => {
     try {
       const requestBody = {
@@ -74,7 +78,9 @@ const CheckItem = (props: Props) => {
     }
   };
 
-  // add recipe into the book
+  /**
+   * Add recipe ID into the book
+   */
   const addRecipeIdToBook = async () => {
     try {
       const requestBody = {
