@@ -29,7 +29,7 @@ type Recipe{
   image: String!
   dateCreated: String!
   content: String!
-  contributor: User! 
+  contributor: User!
   like: [String!]!
   listComments: [Comment!]!
   listTags: [Tag!]!
@@ -93,16 +93,14 @@ type RootQuery {
   login(username: String!, password: String!): AuthData!
   getListRecipeByContributor(username: String!): [RecipeThumbnail!]!
   getNewsFeed: [RecipeThumbnail!]!
-  getRecipeById(recipeID: ID!): RecipeDetail!
+  getRecipeById(recipeID: String!): RecipeDetail!
   getUserInfo(username:String!):UserInfo!
   isFollowing(followUser:String!): Boolean!
   getTags: [Tag!]!
   isUserAuth: UserInfo!
-  isRecipeLiked(recipeID: ID!): Boolean!
+  isRecipeLiked(recipeID: String!): Boolean!
   getListRecipeByTags(tags: [ID!]!): [RecipeThumbnail!]!
-  getListOfRecipeBook: [RecipeBook!]!
-  getSavedRecipe(recipeBookID: ID!): [RecipeThumbnail!]!
-  checkRecipeInBook(recipeBookID: ID!, recipeID: ID!): Boolean!
+  getListRecipeByTitle(keywords: String!): [RecipeThumbnail!]!
 }
 
 

@@ -230,6 +230,33 @@ module.exports = {
     });
   },
 
+  getListRecipeByTitle: async (args) => {
+    const recipes = await Recipe.find(
+      { $text: { $search: args.keywords } },
+      { score: { $meta: "textScore" } }
+    ).sort({ score: { $meta: "textScore" } });
+    return recipes.map(async (recipe) => {
+      // query and sort list of tags
+      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
+        content: 1,
+      });
+      const tagNames = sortedListTag.map((tag) => {
+        return tag.content;
+      });
+
+      const contributor = await User.findById(recipe.contributor);
+      return {
+        _id: recipe._id,
+        contributorUsername: contributor.username,
+        image: recipe.image,
+        title: recipe.title,
+        content: recipe.content,
+        numberLike: recipe.numberLike,
+        tags: tagNames,
+      };
+    });
+  },
+
   isRecipeLiked: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");

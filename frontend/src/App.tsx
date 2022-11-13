@@ -14,6 +14,7 @@ import Recipe from './pages/Recipe';
 import CreateRecipe from './pages/CreateRecipe';
 import UpdateRecipe from './pages/UpdateRecipe';
 import Discovery from './pages/Discovery';
+import Search from './pages/Search';
 import SavedRecipe from './pages/SavedRecipe';
 
 
@@ -57,25 +58,24 @@ const theme = createTheme({
 
 const App = () => {
   return (
-    <>
-      <Router>
-        <ThemeProvider theme={theme}>
-          <Nav />
-          <Routes>
-            <Route path="/" element={<Discovery />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/feed" element={<Feed />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile/:profileUsername" element={<Profile />} />
-            <Route path="/createrecipe" element={<CreateRecipe />} />
-            <Route path="/updaterecipe/:recipeId" element={<UpdateRecipe />} />
-            <Route path="/recipe/:recipeId" element={<Recipe />} />
-            <Route path="/savedrecipe/" element={<SavedRecipe />} />
-            <Route path="*" element={<Login />} />
-          </Routes>
-        </ThemeProvider>
-      </Router>
-    </>
+    <Router>
+      <ThemeProvider theme={theme}>
+        <Nav />
+        <Routes>
+          <Route path="/" element={<Discovery />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/feed" element={<Feed />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile/:profileUsername" element={<Profile />} />
+          <Route path="/createrecipe" element={<CreateRecipe />} />
+          <Route path="/updaterecipe/:recipeId" element={<UpdateRecipe />} />
+          <Route path="/recipe/:recipeId" element={<Recipe />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/savedrecipe/" element={<SavedRecipe />} />
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </ThemeProvider>
+    </Router>
   );
 }
 

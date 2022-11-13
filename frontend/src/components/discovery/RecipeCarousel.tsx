@@ -1,6 +1,6 @@
 import { Divider, Typography } from '@mui/material'
 import React from 'react'
-import RecipeCard from './RecipeCard'
+import RecipeCard from '../RecipeCard'
 import Slider from "react-slick";
 import DiscoveryCardLoader from './DiscoveryCardLoader'
 import { RecipeThumbnail } from '../../types/instacook-types';
@@ -113,7 +113,7 @@ const RecipeCarousel = (props: Props) => {
       if (props.categoryTagId !== undefined) {
         // all api calls are done
         setLoading(false);
-        console.log(recipes);
+        console.log([...apiData.data.getListRecipeByTags]);
       }
 
     }
@@ -129,11 +129,10 @@ const RecipeCarousel = (props: Props) => {
           <DiscoveryCardLoader key={index} />
         ))}
 
-        {recipes.map((data, index) => (
-          !loading && <RecipeCard key={index} title={data.title} author={data.contributorUsername} img={JSON.parse(data.content)[3]} numberOfLikes={data.numberLike} recipeId={data._id} />
+        {recipes.map((recipe, idx) => (
+          !loading && <RecipeCard key={idx} title={recipe.title} author={recipe.contributorUsername} img={JSON.parse(recipe.content)[3]} numberOfLikes={recipe.numberLike} recipeId={recipe._id} />
         ))}
       </Slider>
-      <Divider />
     </div>
   )
 }

@@ -54,6 +54,7 @@ export type RecipeThumbnail = {
   content: string
   numberLike: number
   tags: string[]
+  image: string
 }
 
 export type RecipeDetail = {
@@ -86,6 +87,7 @@ export type BookInfo = {
   _id: string,
   name: string,
 }
+<<<<<<< HEAD
 
 export type SavedRecipeInfo = {
   _id: string,
@@ -93,3 +95,5 @@ export type SavedRecipeInfo = {
   contributorUsername: string,
   numberLike: number
 }
+=======
+>>>>>>> main
