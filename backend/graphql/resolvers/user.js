@@ -75,8 +75,8 @@ module.exports = {
     }
 
     if (authUser.listFollowing.includes(followUsername.username)) {
-      authUser.listFollowing.pop(followUsername.username);
-      followUsername.listFollower.pop(authUser.username);
+      authUser.listFollowing = authUser.listFollowing.filter( (username) => username !== followUsername.username);
+      followUsername.listFollower = followUsername.listFollower.filter( (username) => username !== authUser.username);
     } else {
       authUser.listFollowing.push(followUsername.username);
       followUsername.listFollower.push(authUser.username);
