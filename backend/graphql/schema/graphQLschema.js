@@ -99,6 +99,9 @@ type RootQuery {
   getTags: [Tag!]!
   isUserAuth: UserInfo!
   isRecipeLiked(recipeID: String!): Boolean!
+  getListOfRecipeBook: [RecipeBook!]!
+  getSavedRecipe(recipeBookID: ID!): [RecipeThumbnail!]!
+  checkRecipeInBook(recipeBookID: ID!, recipeID: ID!): Boolean!
   getListRecipeByTags(tags: [ID!]!): [RecipeThumbnail!]!
   getListRecipeByTitle(keywords: String!): [RecipeThumbnail!]!
 }
