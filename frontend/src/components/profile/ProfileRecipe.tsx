@@ -10,13 +10,14 @@ type Props = {
 }
 
 const ProfileRecipe = (props: Props) => {
-
-  const [imageURL, setImageURL] = useState("");
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    /**
+     * Get the description of the recipe
+     */
     const getDescription = async () => {
       try {
         // if description array doesn't exist, display ingredients
@@ -27,12 +28,6 @@ const ProfileRecipe = (props: Props) => {
         setDescription(props.post.content);
       }
     }
-
-    const getImageUrl = async () => {
-      setImageURL(props.post.image);
-    };
-
-    getImageUrl();
     getDescription();
 
   }, [props.post.content])
@@ -72,7 +67,7 @@ const ProfileRecipe = (props: Props) => {
           }}
           duration={0}
           alt="Recipe Thumbnail"
-          src={imageURL}
+          src={props.post.image}
         />
 
       </Grid>

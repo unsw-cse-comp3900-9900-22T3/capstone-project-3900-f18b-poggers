@@ -33,6 +33,12 @@ const userSchema = new Schema({
       required: false,
     },
   ],
+  listRecipeBooks: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "RecipeBook",
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

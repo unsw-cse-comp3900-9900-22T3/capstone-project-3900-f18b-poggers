@@ -84,6 +84,16 @@ export type TagObj = {
 }
 
 export type BookInfo = {
-  id: string,
+  _id: string,
   name: string,
 }
+<<<<<<< HEAD
+
+export type SavedRecipeInfo = {
+  _id: string,
+  title: string,
+  contributorUsername: string,
+  numberLike: number
+}
+=======
+>>>>>>> main
