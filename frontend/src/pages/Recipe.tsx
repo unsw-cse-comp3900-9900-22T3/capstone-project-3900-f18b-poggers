@@ -13,6 +13,8 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import CheckItem from '../components/recipe/CheckItem';
 import { red } from '@mui/material/colors';
+import RecipeCarousel from '../components/discovery/RecipeCarousel'
+import { Tag, TagObj } from '../types/instacook-types'
 type Props = {}
 
 const Recipe = (props: Props) => {
@@ -552,21 +554,9 @@ const Recipe = (props: Props) => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h5">
-            Similar Recipes
-          </Typography>
-          <Carousel
-            autoPlay={false}
-            animation={"slide"}
-          >
-            {
-              items.map((item, key) =>
-                <Grid key={key} container spacing={2} sx={{ padding: 3 }}>
-                  {item}
-                </Grid>
-              )
-            }
-          </Carousel>
+          {/* Recommended recipes */}
+
+          <RecipeCarousel heading={"Similar Recipes"} categoryTagId={""} />
         </Box>
         <Box
           component="form"
