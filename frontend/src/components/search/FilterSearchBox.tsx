@@ -6,7 +6,6 @@ import { RecipeThumbnail, TagObj } from '../../types/instacook-types';
 type Props = {
   options: TagObj,
   recipes: RecipeThumbnail[],
-  recipesCopy: RecipeThumbnail[],
   setRecipes: React.Dispatch<React.SetStateAction<RecipeThumbnail[]>>,
 }
 

@@ -20,7 +20,6 @@ const Search = (_props: Props) => {
   const queryParams = React.useMemo(() => searchParams.get('query'), [searchParams]);
   const displayedRecipesNum = 8;
 
-
   React.useEffect(() => {
     const loadRecipes = async () => {
 
@@ -128,7 +127,7 @@ const Search = (_props: Props) => {
       <Grid container sx={{ marginBottom: 2 }}>
         {/* Filter/Sort Dropdowns */}
         <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={10}>
-          <FilterSearchBox options={tagOptions} setRecipes={setRecipes} recipes={recipes} recipesCopy={recipesCopy} />
+          <FilterSearchBox options={tagOptions} setRecipes={setRecipes} recipes={recipes} />
         </Grid>
 
         <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={2}>

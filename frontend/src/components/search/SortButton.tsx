@@ -1,6 +1,6 @@
 import React from 'react'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Button, Paper, Typography } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
 import Popper from '@mui/material/Popper';
@@ -88,8 +88,6 @@ const SortButton = ({ recipes, setRecipes }: Props) => {
         setRecipes(recipes.sort((a, b) => a.title.localeCompare(b.title)));
       } else if (currentSortSelection === Sort.Contributor) {
         setRecipes(recipes.sort((a, b) => a.contributorUsername.localeCompare(b.contributorUsername)));
-      } else if (currentSortSelection === Sort.Relevance) {
-        // need to re fetch recipes from backend to get recipes sorted by relevance
       }
     }
     updateSearchParams();
@@ -107,11 +105,11 @@ const SortButton = ({ recipes, setRecipes }: Props) => {
         endIcon={<KeyboardArrowDownIcon />}
         sx={{ textTransform: 'none' }}
       >
-        <Typography variant="body2">
-          Sort by:
-          <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{currentSortSelection}</Typography>
-        </Typography>
 
+        <Box>
+          <Typography variant="body2" sx={{ textTransform: 'none' }}>Sort by:</Typography>
+          <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{currentSortSelection}</Typography>
+        </Box>
 
       </Button>
       <Popper
@@ -136,14 +134,6 @@ const SortButton = ({ recipes, setRecipes }: Props) => {
                   autoFocusItem={open}
                   onKeyDown={handleListKeyDown}
                 >
-                  {currentSortSelection !== Sort.Relevance &&
-                    <MenuItem
-                      sx={menuItemStyles}
-                      onClick={(e) => handleSelectSort(e, Sort.Relevance)}>
-                      Relevance
-                    </MenuItem>
-                  }
-
                   {currentSortSelection !== Sort.Title &&
                     <MenuItem
                       sx={menuItemStyles}
