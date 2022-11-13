@@ -54,6 +54,7 @@ export type RecipeThumbnail = {
   content: string
   numberLike: number
   tags: string[]
+  image: string
 }
 
 export type RecipeDetail = {

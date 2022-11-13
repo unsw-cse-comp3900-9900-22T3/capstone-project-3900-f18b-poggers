@@ -54,13 +54,13 @@ const Profile = (props: Props) => {
 
         const recipes = apiData.data.getListRecipeByContributor
         const newList: Recipe[] = recipes.map((item: Recipe) => ({
-            _id: item._id,
-            contributorUsername: item.contributorUsername,
-            title: item.title,
-            content: item.content,
-            numberLike: item.numberLike,
-            image: item.image,
-            tags: item.tags,
+          _id: item._id,
+          contributorUsername: item.contributorUsername,
+          title: item.title,
+          content: item.content,
+          numberLike: item.numberLike,
+          image: item.image,
+          tags: item.tags,
         }))
 
         console.log(newList);
@@ -83,8 +83,8 @@ const Profile = (props: Props) => {
               isFollowing(followUser: "${profileUsername}")
               }
           `
-          };
-  
+        };
+
         const res = await fetch('http://localhost:3000/graphql', {
           body: JSON.stringify(requestBody),
           method: "POST",
@@ -93,7 +93,7 @@ const Profile = (props: Props) => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
           }
         });
-  
+
         const apiData = await res.json();
         if (apiData.errors) {
           throw new Error(apiData.errors[0].message);
@@ -119,8 +119,8 @@ const Profile = (props: Props) => {
               }
             }
           `
-          };
-  
+        };
+
         const res = await fetch('http://localhost:3000/graphql', {
           body: JSON.stringify(requestBody),
           method: "POST",
@@ -151,7 +151,7 @@ const Profile = (props: Props) => {
         const { user } = await currentAuthenticatedUser();
 
         // if the user is viewing their own profile, lock the subscribe button
-        user === profileUsername 
+        user === profileUsername
           ? setButtonLock(true) : setButtonLock(false);
       } catch (e) {
         if (typeof e === "string") {
@@ -162,8 +162,8 @@ const Profile = (props: Props) => {
           console.log(e);
         }
 
-          // go to login page if not authenticated
-          navigate('/login');
+        // go to login page if not authenticated
+        navigate('/login');
       }
     }
     setUserData();
@@ -183,7 +183,7 @@ const Profile = (props: Props) => {
             follow(followUsername: "${profileUsername}")
             }
         `
-        };
+      };
 
       const res = await fetch('http://localhost:3000/graphql', {
         body: JSON.stringify(requestBody),
@@ -199,10 +199,10 @@ const Profile = (props: Props) => {
         throw new Error(apiData.errors[0].message);
       }
 
-      isSubscribed ? 
+      isSubscribed ?
         setFollowerCount(followerCount - 1) : setFollowerCount(followerCount + 1)
 
-      
+
     } catch (error) {
       console.log("subscribe button failed:", error);
     }
@@ -218,7 +218,7 @@ const Profile = (props: Props) => {
         alignItems="center"
       >
         {/* Profile image */}
-        <Grid 
+        <Grid
           item
           direction="column"
           justifyContent="center"
@@ -246,24 +246,24 @@ const Profile = (props: Props) => {
 
             {/* Subscribe button */}
             <Button
-                onClick={() => subscribe()}
-                variant="contained"
-                color="secondary"
-                size="small"
-                disabled={buttonLock}
-                sx={{
-                  marginLeft: isSubscribed ? 1.1 : 2.5
-                }}
-              >
-                {isSubscribed ? 
-                  <Typography>
-                    Unsubscribe
-                  </Typography>
-                : 
-                  <Typography>
-                    Subscribe
-                  </Typography>
-                }
+              onClick={() => subscribe()}
+              variant="contained"
+              color="secondary"
+              size="small"
+              disabled={buttonLock}
+              sx={{
+                marginLeft: isSubscribed ? 1.1 : 2.5
+              }}
+            >
+              {isSubscribed ?
+                <Typography>
+                  Unsubscribe
+                </Typography>
+                :
+                <Typography>
+                  Subscribe
+                </Typography>
+              }
             </Button>
           </Box>
         </Grid>
@@ -275,14 +275,14 @@ const Profile = (props: Props) => {
           </Typography>
 
           <Grid container direction="row" alignItems="center" pt={2}>
-            { isUserValid ? 
-              <> 
-                <GroupsIcon sx={{marginRight: 1}}/> 
+            {isUserValid ?
+              <>
+                <GroupsIcon sx={{ marginRight: 1 }} />
                 <Typography variant="subtitle1" pr={4}>
                   {followerCount} followers / {followingCount} following
                 </Typography>
               </>
-            :
+              :
               <Typography sx={{ color: "#FF0000" }} variant="h5" pr={4}>
                 User does not exist
               </Typography>

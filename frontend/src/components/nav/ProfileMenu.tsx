@@ -18,7 +18,7 @@ const ProfileMenu = (props: Props) => {
 
       // close menu, log out and redirect to /login
       props.handleMenuClose();
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       console.log('error signing out: ', error);
     }

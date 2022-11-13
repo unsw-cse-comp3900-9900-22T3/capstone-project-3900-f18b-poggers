@@ -29,7 +29,7 @@ type Recipe{
   image: String!
   dateCreated: String!
   content: String!
-  contributor: User! 
+  contributor: User!
   like: [String!]!
   listComments: [Comment!]!
   listTags: [Tag!]!
@@ -95,6 +95,7 @@ type RootQuery {
     isUserAuth: UserInfo!
     isRecipeLiked(recipeID: String!): Boolean!
     getListRecipeByTags(tags: [ID!]!): [RecipeThumbnail!]!
+    getListRecipeByTitle(keywords: String!): [RecipeThumbnail!]!
 }
 
 type RootMutation {

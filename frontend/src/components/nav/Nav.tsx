@@ -97,7 +97,6 @@ export default function Nav() {
 
   React.useEffect(() => {
     const setUserData = async () => {
-      console.log("setUserData in Nav.tsx called");
       try {
         const { user } = await currentAuthenticatedUser();
         setUsername(user);
@@ -128,7 +127,7 @@ export default function Nav() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar style={{ boxShadow: 'none' }} position="static">
           <Toolbar>
-            {loggedIn && <IconButton
+            <IconButton
               size="large"
               edge="start"
               color="inherit"
@@ -137,7 +136,7 @@ export default function Nav() {
               onClick={toggleSidebar(true)}
             >
               <MenuIcon />
-            </IconButton>}
+            </IconButton>
             <Typography
               variant="h6"
               noWrap
@@ -146,19 +145,22 @@ export default function Nav() {
             >
               Instacook
             </Typography>
-            {loggedIn && <Search>
+            <Search>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-                placeholder="Find Users"
+                placeholder="Find Recipes"
                 onKeyPress={(event) => {
-                  event.key === 'Enter' && navigate('/profile/' + searchbarValue)
+                  event.key === 'Enter' && navigate({
+                    pathname: '/search',
+                    search: '?query=' + searchbarValue,
+                  })
                 }}
                 onChange={(e) => { setSearchbarValue(e.target.value) }}
                 inputProps={{ 'aria-label': 'search' }}
               />
-            </Search>}
+            </Search>
             <Box sx={{ flexGrow: 1 }} />
             {loggedIn ?
               <>
