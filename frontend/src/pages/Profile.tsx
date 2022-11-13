@@ -54,22 +54,13 @@ const Profile = (props: Props) => {
 
         const recipes = apiData.data.getListRecipeByContributor
         const newList: Recipe[] = recipes.map((item: Recipe) => ({
-<<<<<<< HEAD
           _id: item._id,
           contributorUsername: item.contributorUsername,
           title: item.title,
           content: item.content,
           numberLike: item.numberLike,
+          image: item.image,
           tags: item.tags,
-=======
-            _id: item._id,
-            contributorUsername: item.contributorUsername,
-            title: item.title,
-            content: item.content,
-            numberLike: item.numberLike,
-            image: item.image,
-            tags: item.tags,
->>>>>>> recipe-backend
         }))
 
         console.log(newList);
@@ -128,8 +119,8 @@ const Profile = (props: Props) => {
               }
             }
           `
-          };
-  
+        };
+
         const res = await fetch('http://localhost:3000/graphql', {
           body: JSON.stringify(requestBody),
           method: "POST",
@@ -208,14 +199,10 @@ const Profile = (props: Props) => {
         throw new Error(apiData.errors[0].message);
       }
 
-<<<<<<< HEAD
-
-=======
-      isSubscribed ? 
+      isSubscribed ?
         setFollowerCount(followerCount - 1) : setFollowerCount(followerCount + 1)
 
-      
->>>>>>> recipe-backend
+
     } catch (error) {
       console.log("subscribe button failed:", error);
     }
@@ -231,7 +218,7 @@ const Profile = (props: Props) => {
         alignItems="center"
       >
         {/* Profile image */}
-        <Grid 
+        <Grid
           item
           direction="column"
           justifyContent="center"
@@ -257,54 +244,27 @@ const Profile = (props: Props) => {
               {profileUsername?.charAt(0)}
             </Avatar>
 
-<<<<<<< HEAD
-          {/* Subscribe button */}
-          <Box
-            textAlign='center'
-            mr={{ md: 4 }}
-            mt={1}
-          >
-            {isSubscribed ?
-              <Button
-=======
             {/* Subscribe button */}
             <Button
->>>>>>> recipe-backend
-                onClick={() => subscribe()}
-                variant="contained"
-                color="secondary"
-                size="small"
-                disabled={buttonLock}
-                sx={{
-                  marginLeft: isSubscribed ? 1.1 : 2.5
-                }}
-              >
-<<<<<<< HEAD
-                Unsubscribe
-              </Button>
-              :
-              <Button
-                onClick={() => subscribe()}
-                variant="contained"
-                color="secondary"
-                size="small"
-                disabled={buttonLock}
-              >
-                Subscribe
-              </Button>
-            }
-=======
-                {isSubscribed ? 
-                  <Typography>
-                    Unsubscribe
-                  </Typography>
-                : 
-                  <Typography>
-                    Subscribe
-                  </Typography>
-                }
+              onClick={() => subscribe()}
+              variant="contained"
+              color="secondary"
+              size="small"
+              disabled={buttonLock}
+              sx={{
+                marginLeft: isSubscribed ? 1.1 : 2.5
+              }}
+            >
+              {isSubscribed ?
+                <Typography>
+                  Unsubscribe
+                </Typography>
+                :
+                <Typography>
+                  Subscribe
+                </Typography>
+              }
             </Button>
->>>>>>> recipe-backend
           </Box>
         </Grid>
 
@@ -315,14 +275,14 @@ const Profile = (props: Props) => {
           </Typography>
 
           <Grid container direction="row" alignItems="center" pt={2}>
-            { isUserValid ? 
-              <> 
-                <GroupsIcon sx={{marginRight: 1}}/> 
+            {isUserValid ?
+              <>
+                <GroupsIcon sx={{ marginRight: 1 }} />
                 <Typography variant="subtitle1" pr={4}>
                   {followerCount} followers / {followingCount} following
                 </Typography>
               </>
-            :
+              :
               <Typography sx={{ color: "#FF0000" }} variant="h5" pr={4}>
                 User does not exist
               </Typography>

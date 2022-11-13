@@ -12,28 +12,31 @@ type Props = {}
 const Search = (_props: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [recipes, setRecipes] = React.useState<RecipeThumbnail[]>([]);
+  const [recipesCopy, setRecipesCopy] = React.useState<RecipeThumbnail[]>([]);
   const [page, setPage] = React.useState<number>(1);
   const [displayedRecipes, setDisplayedRecipes] = React.useState<RecipeThumbnail[]>([]);
   const [tagOptions, setTagOptions] = React.useState<TagObj>({});
   const tagParams = React.useMemo(() => searchParams.get('tags'), [searchParams]);
-  const ingredientParams = React.useMemo(() => searchParams.get('ingredients'), [searchParams]);
+  const queryParams = React.useMemo(() => searchParams.get('query'), [searchParams]);
   const displayedRecipesNum = 8;
 
 
   React.useEffect(() => {
     const loadRecipes = async () => {
 
-      // if tag or ingredient params are not empty, do not reload recipes
-      if (!['', null].includes(tagParams) || !['', null].includes(ingredientParams)) {
+      // if tag params are not empty (at least 1 tag has been selected), do not reload recipes
+      if (!['', null].includes(tagParams)) {
         console.log("STOPPED RELOAD")
         return;
       }
+
       console.log("Loading Recipes");
       const body = {
         query: `
           query {
-            getListRecipeByTags(tags: []) {
+            getListRecipeByTitle(keywords:"${queryParams}") {
               _id
+              image
               contributorUsername
               title
               content
@@ -53,12 +56,13 @@ const Search = (_props: Props) => {
       });
 
       const apiData = await res.json();
-
+      console.log(apiData);
       if (apiData.errors) {
         throw new Error(apiData.errors[0].message);
       }
 
-      setRecipes([...apiData.data.getListRecipeByTags]);
+      setRecipes([...apiData.data.getListRecipeByTitle]);
+      setRecipesCopy([...apiData.data.getListRecipeByTitle]);
     }
 
     const loadTags = async () => {
@@ -99,9 +103,8 @@ const Search = (_props: Props) => {
 
     loadRecipes();
     loadTags();
-  }, [tagParams, ingredientParams])
+  }, [tagParams, queryParams])
 
-  // run every time the page number changes
   React.useEffect(() => {
     const loadDisplayedRecipes = () => {
       // for 8 displayed recipes: 0-8, 8-16, 16-24, 24-32
@@ -125,7 +128,7 @@ const Search = (_props: Props) => {
       <Grid container sx={{ marginBottom: 2 }}>
         {/* Filter/Sort Dropdowns */}
         <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={10}>
-          <FilterSearchBox filterType={Filter.Tags} options={tagOptions} setRecipes={setRecipes} recipes={recipes} />
+          <FilterSearchBox options={tagOptions} setRecipes={setRecipes} recipes={recipes} recipesCopy={recipesCopy} />
         </Grid>
 
         <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={2}>
