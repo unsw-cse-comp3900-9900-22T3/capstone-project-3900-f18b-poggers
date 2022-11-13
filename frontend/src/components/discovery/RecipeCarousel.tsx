@@ -2,7 +2,7 @@ import { Divider, Typography } from '@mui/material'
 import React from 'react'
 import RecipeCard from '../RecipeCard'
 import Slider from "react-slick";
-import DiscoveryCardLoader from './DiscoveryCardLoader'
+import DiscoveryCardLoader from '../RecipeCardPlaceholder'
 import { RecipeThumbnail } from '../../types/instacook-types';
 
 type Props = {
@@ -89,6 +89,7 @@ const RecipeCarousel = (props: Props) => {
               content
               numberLike
               tags
+              image
             }
           }
         `
@@ -130,7 +131,7 @@ const RecipeCarousel = (props: Props) => {
         ))}
 
         {recipes.map((recipe, idx) => (
-          !loading && <RecipeCard key={idx} title={recipe.title} author={recipe.contributorUsername} img={JSON.parse(recipe.content)[3]} numberOfLikes={recipe.numberLike} recipeId={recipe._id} />
+          !loading && <RecipeCard key={idx} title={recipe.title} author={recipe.contributorUsername} img={recipe.image} numberOfLikes={recipe.numberLike} recipeId={recipe._id} />
         ))}
       </Slider>
     </div>

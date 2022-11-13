@@ -16,6 +16,7 @@ import MobileMenu from './MobileMenu';
 import ProfileMenu from './ProfileMenu';
 import TextLink from '../TextLink';
 import { currentAuthenticatedUser } from '../../util/currentAuthenticatedUser';
+import { red } from '@mui/material/colors';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -177,7 +178,9 @@ export default function Nav() {
                       onClick={handleProfileMenuOpen}
                       color="inherit"
                     >
-                      <Avatar alt={username} src={''} />
+                      <Avatar alt={username} sx={{ bgcolor: red[500] }}>
+                        {username.charAt(0).toUpperCase()}
+                      </Avatar>
                     </IconButton>
                   </Tooltip>
                 </Box>

@@ -12,6 +12,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import CheckItem from '../components/recipe/CheckItem';
+import { red } from '@mui/material/colors';
 type Props = {}
 
 const Recipe = (props: Props) => {
@@ -141,25 +142,25 @@ const Recipe = (props: Props) => {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         });
-  
+
         const apiData = await res.json();
         if (apiData.errors) {
           throw new Error(apiData.errors[0].message);
         }
-  
+
         const books = apiData.data.getListOfRecipeBook;
         const newBooks: BookInfo[] = books.map((item: BookInfo) => ({
           _id: item._id,
           name: item.name,
         }))
-  
+
         console.log(newBooks);
-  
+
         setRecipeBook([...newBooks.reverse()]);
       } catch (error) {
         console.log("get recipe books failed: ", error);
       }
-  
+
     }
 
     const setUserData = async () => {
@@ -189,7 +190,7 @@ const Recipe = (props: Props) => {
 
   /**
    * Opens the drop down menu on click
-   * 
+   *
    * @param event the mouse event
    */
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -402,12 +403,12 @@ const Recipe = (props: Props) => {
         >
           {description}
         </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           <Card
             variant="outlined"
           >
@@ -421,22 +422,23 @@ const Recipe = (props: Props) => {
               }}
             />
           </Card>
-          <Box sx={{display: "flex"}}>
-            <Box sx={{display: "flex", width: "50%"}}>
-            {tags.map((tag, key) =>
-              <Box sx={tagStyles} key={key}>
-              <Typography variant='body2'>
-                {tag}
-              </Typography>
-            </Box>
-            )}
+          <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", width: "50%" }}>
+              {tags.map((tag, key) =>
+                <Box sx={tagStyles} key={key}>
+                  <Typography variant='body2'>
+                    {tag}
+                  </Typography>
+                </Box>
+              )}
 
             </Box>
             <Box sx={{
-            display: "flex",
-            width: "50%",
-            alignItems: "flex-end",
-            flexDirection: "column"}}>
+              display: "flex",
+              width: "50%",
+              alignItems: "flex-end",
+              flexDirection: "column"
+            }}>
               {loggedIn ?
                 <Box>
                   {/* a playlist button with dropdown menu */}
@@ -446,9 +448,9 @@ const Recipe = (props: Props) => {
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
-                    sx={{marginRight: 2, borderRadius: 2, padding: 0}}
+                    sx={{ marginRight: 2, borderRadius: 2, padding: 0 }}
                   >
-                    <PlaylistAddIcon sx={{fontSize: "30px", color: "#28343c"}}/>
+                    <PlaylistAddIcon sx={{ fontSize: "30px", color: "#28343c" }} />
                   </IconButton>
 
                   {/* A menu by clicking on the playlist button */}
@@ -464,22 +466,22 @@ const Recipe = (props: Props) => {
                       },
                     }}
                   >
-                      {recipeBook.length !== 0 ? (recipeBook.map((item, index) => (
-                        // checkbox component indicating that the recipe is saved in the book
-                        <MenuItem key={index}>
-                          <CheckItem bookId={item._id} name={item.name} recipeId={`"${recipeId}"`}/>
-                        </MenuItem>
-                      ))) : (
-                        // go to recipe book page if none has been created
-                        <MenuItem onClick={() => navigate("/savedrecipe")}>
-                          Create Recipe Book
-                        </MenuItem>
-                      )}
+                    {recipeBook.length !== 0 ? (recipeBook.map((item, index) => (
+                      // checkbox component indicating that the recipe is saved in the book
+                      <MenuItem key={index}>
+                        <CheckItem bookId={item._id} name={item.name} recipeId={`"${recipeId}"`} />
+                      </MenuItem>
+                    ))) : (
+                      // go to recipe book page if none has been created
+                      <MenuItem onClick={() => navigate("/savedrecipe")}>
+                        Create Recipe Book
+                      </MenuItem>
+                    )}
                   </Menu>
 
                   <IconButton sx={likeStyles} onClick={handleLike}>
                     <Grid container direction="row" alignItems="center" justifyItems="center">
-                      {recipeLiked ? <FavoriteIcon sx={{ fontSize: "30px", marginRight: 0.5}}/> : <FavoriteBorderIcon sx={{ fontSize: "30px", marginRight: 0.5}}/>}
+                      {recipeLiked ? <FavoriteIcon sx={{ fontSize: "30px", marginRight: 0.5 }} /> : <FavoriteBorderIcon sx={{ fontSize: "30px", marginRight: 0.5 }} />}
                       <Typography>
                         {numberLike}
                       </Typography>
@@ -489,20 +491,20 @@ const Recipe = (props: Props) => {
                 :
                 // <Box sx={likeStyles}>
                 <>
-                <Box sx={likeStylesUnAuth}>
-                  <Grid container direction="row" alignItems="center">
-                    <FavoriteBorderIcon sx={{ fontSize: "30px", marginRight: 0.5}}/>
-                    <Typography>
-                      {numberLike}
-                    </Typography>
-                  </Grid>
-                </Box>
+                  <Box sx={likeStylesUnAuth}>
+                    <Grid container direction="row" alignItems="center">
+                      <FavoriteBorderIcon sx={{ fontSize: "30px", marginRight: 0.5 }} />
+                      <Typography>
+                        {numberLike}
+                      </Typography>
+                    </Grid>
+                  </Box>
                 </>
-                  // <Box>
-                }
+                // <Box>
+              }
             </Box>
           </Box>
-          <Grid container spacing={3} sx={{ padding: 3}}>
+          <Grid container spacing={3} sx={{ padding: 3 }}>
             <Grid item sm={3}>
               <Typography variant="h5">
                 Ingredients
@@ -519,7 +521,7 @@ const Recipe = (props: Props) => {
               <Typography variant="h5">
                 Cooking Instructions
               </Typography>
-            {/* </Box> */}
+              {/* </Box> */}
               <List>
                 {instructions.map((instruction, key) =>
                   <ListItem key={key}>
@@ -589,7 +591,9 @@ const Recipe = (props: Props) => {
             }}
           >
             <ListItemAvatar>
-              <Avatar sx={{ maring: "5" }} alt={username} src="" />
+              <Avatar sx={{ bgcolor: red[500] }} alt={username} >
+                {username.charAt(0).toUpperCase()}
+              </Avatar>
             </ListItemAvatar>
             <TextField
               value={commentField}
@@ -624,7 +628,9 @@ const Recipe = (props: Props) => {
               <div key={key}>
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
-                    <Avatar alt={comment.userName} src="" />
+                    <Avatar sx={{ bgcolor: red[500] }} alt={comment.userName} >
+                      {comment.userName && comment.userName.charAt(0).toUpperCase()}
+                    </Avatar>
                   </ListItemAvatar>
                   <ListItemText
                     primary={comment.userName}

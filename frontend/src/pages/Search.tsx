@@ -1,24 +1,26 @@
 import { Container, Grid, Pagination } from '@mui/material';
 import React from 'react'
 import { useSearchParams } from 'react-router-dom';
+import DiscoveryCardLoader from '../components/RecipeCardPlaceholder';
 import RecipeCard from '../components/RecipeCard';
 import FilterSearchBox from '../components/search/FilterSearchBox';
 import SortButton from '../components/search/SortButton';
-import { Filter } from '../types/instacook-enums';
 import { RecipeThumbnail, Tag, TagObj } from '../types/instacook-types';
 
 type Props = {}
 
+const displayedRecipesNum = 8;
+
+const placeholderArr = [0, 1, 2, 3, 4, 5, 6, 7]
 const Search = (_props: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [recipes, setRecipes] = React.useState<RecipeThumbnail[]>([]);
-  const [recipesCopy, setRecipesCopy] = React.useState<RecipeThumbnail[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
   const [page, setPage] = React.useState<number>(1);
   const [displayedRecipes, setDisplayedRecipes] = React.useState<RecipeThumbnail[]>([]);
   const [tagOptions, setTagOptions] = React.useState<TagObj>({});
   const tagParams = React.useMemo(() => searchParams.get('tags'), [searchParams]);
   const queryParams = React.useMemo(() => searchParams.get('query'), [searchParams]);
-  const displayedRecipesNum = 8;
 
   React.useEffect(() => {
     const loadRecipes = async () => {
@@ -61,7 +63,7 @@ const Search = (_props: Props) => {
       }
 
       setRecipes([...apiData.data.getListRecipeByTitle]);
-      setRecipesCopy([...apiData.data.getListRecipeByTitle]);
+      setLoading(false);
     }
 
     const loadTags = async () => {
@@ -131,7 +133,7 @@ const Search = (_props: Props) => {
       <Grid container sx={{ marginBottom: 2 }}>
         {/* Filter/Sort Dropdowns */}
         <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={10}>
-          <FilterSearchBox options={tagOptions} setRecipes={setRecipes} recipes={recipes} />
+          <FilterSearchBox options={tagOptions} setRecipes={setRecipes} recipes={recipes} setLoading={setLoading} />
         </Grid>
 
         <Grid item sx={{ paddingLeft: 0.5, paddingRight: 0.5 }} md={2}>
@@ -141,11 +143,19 @@ const Search = (_props: Props) => {
 
       {/* Recipe Search Result Container */}
       <Grid container>
-        {displayedRecipes.map((recipe, idx) => (
-          <Grid item md={3} sm={4} xs={6} sx={{ marginBottom: 2 }} key={idx}>
-            <RecipeCard title={recipe.title} author={recipe.contributorUsername} img={recipe.image} numberOfLikes={recipe.numberLike} recipeId={recipe._id} />
-          </Grid>
-        ))}
+        {loading ?
+          placeholderArr.map((index) => (
+            <Grid item md={3} sm={4} xs={6} sx={{ marginBottom: 2 }} key={index}>
+              <DiscoveryCardLoader />
+            </Grid>
+          ))
+          :
+          displayedRecipes.map((recipe, idx) => (
+            <Grid item md={3} sm={4} xs={6} sx={{ marginBottom: 2 }} key={idx}>
+              <RecipeCard title={recipe.title} author={recipe.contributorUsername} img={recipe.image} numberOfLikes={recipe.numberLike} recipeId={recipe._id} />
+            </Grid>
+          ))
+        }
       </Grid>
 
       {/* Pagination Container */}
