@@ -30,7 +30,7 @@ const RecipeCard = (props: Props) => {
             sx={{ bgcolor: red[500], cursor: 'pointer' }}
             aria-label="recipe"
           >
-            {props.author[0]}
+            {props.author.charAt(0).toUpperCase()}
           </Avatar>
         }
         title={<Typography noWrap>{props.title}</Typography>}

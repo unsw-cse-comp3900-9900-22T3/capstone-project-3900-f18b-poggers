@@ -22,7 +22,7 @@ const Profile = (props: Props) => {
 
   useEffect(() => {
     /**
-     * Get list of recipes from contributor  
+     * Get list of recipes from contributor
      */
     const fetchRecipes = async () => {
       try {
@@ -178,7 +178,7 @@ const Profile = (props: Props) => {
 
   /**
    * Subscribe to the contributor if it's subsubscribed,
-   * otherwise unsubscribe 
+   * otherwise unsubscribe
    */
   const subscribe = async () => {
     try {
@@ -249,7 +249,7 @@ const Profile = (props: Props) => {
               }}
               alt={"Profile Image"}
             >
-              {profileUsername?.charAt(0)}
+              {profileUsername && profileUsername.charAt(0).toUpperCase()}
             </Avatar>
 
             {/* Subscribe button */}
