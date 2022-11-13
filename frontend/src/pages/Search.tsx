@@ -99,9 +99,13 @@ const Search = (_props: Props) => {
       setTagOptions(tags);
     }
 
+    const resetPage = () => {
+      setPage(1);
+    }
 
     loadRecipes();
     loadTags();
+    resetPage();
   }, [tagParams, queryParams])
 
   React.useEffect(() => {
