@@ -13,6 +13,7 @@ module.exports = {
     const recipe = new Recipe({
       title: args.recipeInput.title,
       content: args.recipeInput.content,
+      image: args.recipeInput.image,
       dateCreated: new Date(args.recipeInput.dateCreated),
       numberLike: 0,
       like: [],
@@ -30,12 +31,17 @@ module.exports = {
       authUser.listRecipes.push(recipe);
       await authUser.save();
 
-      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({ content: 1 });
-      const tagNames = sortedListTag.map((tag) => { return tag.content });
+      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
+        content: 1,
+      });
+      const tagNames = sortedListTag.map((tag) => {
+        return tag.content;
+      });
 
       return {
         _id: recipe._id,
         title: recipe.title,
+        image: recipe.image,
         content: recipe.content,
         dateCreated: recipe.dateCreated.toISOString(),
         contributorUsername: authUser.username,
@@ -49,29 +55,35 @@ module.exports = {
     }
   },
 
-
   getRecipeById: async (args) => {
     const recipe = await Recipe.findById(args.recipeID);
     const contributor = await User.findById(recipe.contributor);
 
     // query and sort list of tags
-    const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({ content: 1 });
-    const tagNames = sortedListTag.map((tag) => { return tag.content });
+    const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
+      content: 1,
+    });
+    const tagNames = sortedListTag.map((tag) => {
+      return tag.content;
+    });
 
     // query and sort list of comments
-    const sortedListComment = await Comment.find({ _id: { $in: recipe.listComments } }).sort({ dateCreated: -1 });
+    const sortedListComment = await Comment.find({
+      _id: { $in: recipe.listComments },
+    }).sort({ dateCreated: -1 });
     const comments = sortedListComment.map((comment) => {
       return {
         userName: comment.userName,
         recipeID: comment.recipeID,
         content: comment.content,
         dateCreated: comment.dateCreated.toISOString(),
-      }
+      };
     });
 
     return {
       _id: recipe._id,
       title: recipe.title,
+      image: recipe.image,
       content: recipe.content,
       dateCreated: recipe.dateCreated.toISOString(),
       contributorUsername: contributor.username,
@@ -96,11 +108,16 @@ module.exports = {
 
     return (await sortedListRecipe).map(async (recipe) => {
       // query and sort list of tags
-      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({ content: 1 });
-      const tagNames = sortedListTag.map((tag) => { return tag.content });
+      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
+        content: 1,
+      });
+      const tagNames = sortedListTag.map((tag) => {
+        return tag.content;
+      });
       return {
         _id: recipe._id,
         contributorUsername: user.username,
+        image: recipe.image,
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.numberLike,
@@ -115,7 +132,9 @@ module.exports = {
     }
 
     const authUser = await User.findById(req.userId);
-    const follwingUsers = await User.find({ username: { $in: authUser.listFollowing } });
+    const follwingUsers = await User.find({
+      username: { $in: authUser.listFollowing },
+    });
 
     let listRecipeID = [];
     for (const followingUser of follwingUsers) {
@@ -124,17 +143,24 @@ module.exports = {
       }
     }
 
-    const sortedNewsFeed = await Recipe.find({ _id: { $in: listRecipeID } }).sort({ dateCreated: -1, numberLike: -1 });
+    const sortedNewsFeed = await Recipe.find({
+      _id: { $in: listRecipeID },
+    }).sort({ dateCreated: -1, numberLike: -1 });
     return sortedNewsFeed.map(async (recipe) => {
       // query and sort list of tags
-      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({ content: 1 });
-      const tagNames = sortedListTag.map((tag) => { return tag.content });
+      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
+        content: 1,
+      });
+      const tagNames = sortedListTag.map((tag) => {
+        return tag.content;
+      });
 
       const contributor = await User.findById(recipe.contributor);
       return {
         _id: recipe._id,
         contributorUsername: contributor.username,
         title: recipe.title,
+        image: recipe.image,
         content: recipe.content,
         numberLike: recipe.numberLike,
         tags: tagNames,
@@ -173,22 +199,30 @@ module.exports = {
     recipe.title = args.recipeInput.title;
     recipe.content = args.recipeInput.content;
     recipe.tags = args.recipeInput.tags;
+    recipe.image = args.recipeInput.image;
 
     await recipe.save();
     return true;
   },
 
   getListRecipeByTags: async (args) => {
-    const sortedListRecipe = await Recipe.find(args.tags.length === 0 ? {} : { tags: { $all: args.tags } }).sort({ numberLike: -1, dateCreated: -1 });
+    const sortedListRecipe = await Recipe.find({
+      tags: { $all: args.tags },
+    }).sort({ numberLike: -1, dateCreated: -1 });
     return sortedListRecipe.map(async (recipe) => {
       // query and sort list of tags
-      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({ content: 1 });
-      const tagNames = sortedListTag.map((tag) => { return tag.content });
+      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
+        content: 1,
+      });
+      const tagNames = sortedListTag.map((tag) => {
+        return tag.content;
+      });
 
       const contributor = await User.findById(recipe.contributor);
       return {
         _id: recipe._id,
         contributorUsername: contributor.username,
+        image: recipe.image,
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.numberLike,
@@ -197,6 +231,32 @@ module.exports = {
     });
   },
 
+  getListRecipeByTitle: async (args) => {
+    const recipes = await Recipe.find(
+      { $text: { $search: args.keywords } },
+      { score: { $meta: "textScore" } }
+    ).sort({ score: { $meta: "textScore" } });
+    return recipes.map(async (recipe) => {
+      // query and sort list of tags
+      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
+        content: 1,
+      });
+      const tagNames = sortedListTag.map((tag) => {
+        return tag.content;
+      });
+
+      const contributor = await User.findById(recipe.contributor);
+      return {
+        _id: recipe._id,
+        contributorUsername: contributor.username,
+        image: recipe.image,
+        title: recipe.title,
+        content: recipe.content,
+        numberLike: recipe.numberLike,
+        tags: tagNames,
+      };
+    });
+  },
 
   isRecipeLiked: async (args, req) => {
     if (!req.isAuth) {
@@ -206,9 +266,8 @@ module.exports = {
     const authUser = await User.findById(req.userId);
 
     if (recipe.like.includes(authUser.username)) {
-      return true
+      return true;
     }
     return false;
-  }
-
+  },
 };

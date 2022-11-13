@@ -88,7 +88,6 @@ const Feed = (props: Props) => {
 
   return (
     <Container
-      maxWidth="md"
       sx={{ backgroundColor: 'white', paddingBottom: 2, minHeight: 'calc(100vh - 64px)' }}
     >
       {/* A message if there are no recipes displayed */}
@@ -118,8 +117,8 @@ const Feed = (props: Props) => {
         justifyContent="center"
         alignItems="center"
         md={9}
-        ml={{ md: 15 }}
-        mr={{ md: 15 }}
+        ml={{ md: 18 }}
+        mr={{ md: 18 }}
       >
         {recipeList.map((item, index) => (
           <ProfileRecipe key={index} post={item} />

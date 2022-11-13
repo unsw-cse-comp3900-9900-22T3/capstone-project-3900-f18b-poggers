@@ -26,6 +26,7 @@ type AuthData {
 
 type Recipe{
   title: String!
+  image: String!
   dateCreated: String!
   content: String!
   contributor: User!
@@ -41,6 +42,7 @@ type Tag{
 
 type RecipeThumbnail{
   _id: ID!
+  image:String!
   contributorUsername: String!
   title: String!
   content: String!
@@ -50,6 +52,7 @@ type RecipeThumbnail{
 
 type RecipeDetail{
   _id: ID!
+  image:String!
   contributorUsername: String!
   title: String!
   content: String!
@@ -68,6 +71,7 @@ type Comment{
 
 input RecipeInput{
   title: String!
+  image: String!
   dateCreated : String!
   content: String!
   tags: [ID!]!
@@ -91,6 +95,7 @@ type RootQuery {
     isUserAuth: UserInfo!
     isRecipeLiked(recipeID: String!): Boolean!
     getListRecipeByTags(tags: [ID!]!): [RecipeThumbnail!]!
+    getListRecipeByTitle(keywords: String!): [RecipeThumbnail!]!
 }
 
 type RootMutation {
