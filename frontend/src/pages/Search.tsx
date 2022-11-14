@@ -11,7 +11,8 @@ type Props = {}
 
 const displayedRecipesNum = 8;
 
-const placeholderArr = [0, 1, 2, 3, 4, 5, 6, 7]
+const placeholderArr = [0, 1, 2, 3, 4, 5, 6, 7];
+
 const Search = (_props: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [recipes, setRecipes] = React.useState<RecipeThumbnail[]>([]);
@@ -101,6 +102,9 @@ const Search = (_props: Props) => {
       setLoading(false);
     }
 
+    /**
+     * Loads recipes and sets recipe list state
+     */
     const loadRecipes = async () => {
       // if tag params are not empty (at least 1 tag has been selected), do not reload recipes
       if (!['', null].includes(tagParams)) {
@@ -116,6 +120,9 @@ const Search = (_props: Props) => {
       loadRecipesByTitle();
     }
 
+    /**
+     * Loads tag filter options
+     */
     const loadTags = async () => {
       const body = {
         query: `
@@ -151,6 +158,9 @@ const Search = (_props: Props) => {
       setTagOptions(tags);
     }
 
+    /**
+     * Resets page number to 1
+     */
     const resetPage = () => {
       setPage(1);
     }
@@ -161,6 +171,9 @@ const Search = (_props: Props) => {
   }, [tagParams, queryParams])
 
   React.useEffect(() => {
+    /**
+     * Displays displayedRecipesNum number of recipes out of the list of recipes
+     */
     const loadDisplayedRecipes = () => {
       // for 8 displayed recipes: 0-8, 8-16, 16-24, 24-32
       // = (page-1) * (number of displayed recipes) to (page) * (number of displayed recipes)

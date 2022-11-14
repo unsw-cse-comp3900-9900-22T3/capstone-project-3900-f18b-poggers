@@ -8,6 +8,9 @@ const Discovery = (props: Props) => {
   const [tagIds, setTagIds] = React.useState<TagObj>({});
 
   React.useEffect(() => {
+    /**
+     * Loads tags and stores it in tagIds state
+     */
     const loadTags = async () => {
       const body = {
         query: `

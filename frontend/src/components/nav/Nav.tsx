@@ -55,7 +55,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Nav() {
+type Props = {}
+
+const Nav = (props: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [username, setUsername] = React.useState<string>("");
   const [sidebarOpen, setSidebarOpen] = React.useState<boolean>(false);
@@ -64,27 +66,53 @@ export default function Nav() {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
+  /**
+   * Opens profile menu
+   *
+   * @param event react mouse event
+   */
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
+  /**
+   * Closes mobile menu
+   */
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
 
+  /**
+   * Closes menu
+   */
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
 
+  /**
+   * Opens mobile menu
+   *
+   * @param event react mouse event
+   */
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  /**
+   * Toggles sidebar opening state to given state
+   *
+   * @param open open state to toggle to
+   * @returns function to toggle sidebar state
+   */
   const toggleSidebar = (open: boolean) =>
+    /**
+     * Toggles sidebar opening state to given state
+     *
+     * @param event react keyboard or mouse event
+     */
     (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === 'keydown' &&
+      if (event.type === 'keydown' &&
         ((event as React.KeyboardEvent).key === 'Tab' ||
           (event as React.KeyboardEvent).key === 'Shift')
       ) {
@@ -95,6 +123,9 @@ export default function Nav() {
     };
 
   React.useEffect(() => {
+    /**
+     * Loads username from logged in user and sets navbar logged in/out state
+     */
     const setUserData = async () => {
       try {
         const { user } = await currentAuthenticatedUser();
@@ -208,3 +239,5 @@ export default function Nav() {
     </>
   );
 }
+
+export default Nav;
