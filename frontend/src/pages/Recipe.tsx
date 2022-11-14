@@ -13,7 +13,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import CheckItem from '../components/recipe/CheckItem';
 import { red } from '@mui/material/colors';
-import RecipeCarousel from '../components/discovery/RecipeCarousel'
+import SimilarRecipeCarousel from '../components/recipe/SimilarRecipeCarousel'
 import { Tag, TagObj } from '../types/instacook-types'
 type Props = {}
 
@@ -556,8 +556,7 @@ const Recipe = (props: Props) => {
           }}
         >
           {/* Recommended recipes */}
-
-          <RecipeCarousel heading={"Similar Recipes"} categoryTagId={""} />
+          <SimilarRecipeCarousel heading={"Similar Recipes"} recipeId={`"${recipeId}"`} />
         </Box>
         <Box
           component="form"
