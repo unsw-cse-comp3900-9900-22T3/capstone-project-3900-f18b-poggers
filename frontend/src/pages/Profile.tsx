@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 import GroupsIcon from '@mui/icons-material/Groups';
 import { red } from '@mui/material/colors';
-import { json } from 'stream/consumers';
 
 type Props = {}
 

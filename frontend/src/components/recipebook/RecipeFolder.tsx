@@ -6,10 +6,19 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
+  // id of the recipe
   id: string,
+
+  // title of the recipe
   title: string,
+
+  // author of the recipe
   contributor: string,
+
+  // number of likes on the recipe
   like: number,
+
+  // remove recipe from the book 
   removeSavedRecipe: (id: string) => void,
 }
 

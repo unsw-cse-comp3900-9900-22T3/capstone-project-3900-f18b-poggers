@@ -6,6 +6,7 @@ import { Image } from 'mui-image'
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
 type Props = {
+  // Recipe object containing attributes of information about the meal
   post: Recipe,
 }
 
