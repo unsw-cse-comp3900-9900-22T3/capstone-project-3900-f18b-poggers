@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Container, CssBaseline, Grid, TextField, Typography, MenuItem, Menu } from '@mui/material'
-import Carousel from 'react-material-ui-carousel'
 import testimg from '../static/images/authbackground.jpeg'
 import SendIcon from '@mui/icons-material/Send';
 import { useNavigate, useParams } from 'react-router-dom';
