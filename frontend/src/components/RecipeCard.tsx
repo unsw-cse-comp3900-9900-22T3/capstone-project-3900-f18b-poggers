@@ -10,17 +10,25 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
+  // card heading text
   title: string,
+
+  // card contributor
   author: string,
-  authorImg?: string,
+
+  // card thumbnail
   img: string,
+
+  // id of recipe being displayed
   recipeId: string,
+
+  // number of likes on the recipe
   numberOfLikes: number
 }
 
 const RecipeCard = (props: Props) => {
-
   const navigate = useNavigate();
+
   return (
     <Card sx={{ maxWidth: 290, backgroundColor: '#eeeeee', marginLeft: 0.5, marginRight: 0.5 }}>
       <CardHeader

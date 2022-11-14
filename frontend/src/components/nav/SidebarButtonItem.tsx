@@ -2,6 +2,7 @@ import { List, ListItem, ListItemButton, ListItemText } from '@mui/material'
 import React from 'react'
 
 type Props = {
+  // item text
   text: string
 }
 

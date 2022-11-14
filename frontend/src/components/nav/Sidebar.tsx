@@ -7,7 +7,10 @@ import SidebarSubheading from './SidebarSubheading';
 import SidebarButtonItem from './SidebarButtonItem';
 
 type Props = {
+  // boolean that determines if user is logged in or not
   loggedIn: boolean,
+
+  // function to toggle sidebar open state
   toggleSidebar: (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => void
 }
 
