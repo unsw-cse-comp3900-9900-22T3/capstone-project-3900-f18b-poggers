@@ -6,12 +6,10 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { Avatar, Button, Drawer, Tooltip } from '@mui/material';
+import { Avatar, Button, Tooltip } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
 import MobileMenu from './MobileMenu';
 import ProfileMenu from './ProfileMenu';
 import TextLink from '../TextLink';
@@ -119,25 +117,9 @@ export default function Nav() {
 
   return (
     <>
-      <Drawer
-        open={sidebarOpen}
-        onClose={toggleSidebar(false)}
-      >
-        <Sidebar loggedIn={loggedIn} toggleSidebar={toggleSidebar} />
-      </Drawer>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar style={{ boxShadow: 'none' }} position="static">
           <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              sx={{ mr: 2 }}
-              onClick={toggleSidebar(true)}
-            >
-              <MenuIcon />
-            </IconButton>
             <Typography
               variant="h6"
               noWrap

@@ -23,30 +23,65 @@ const Search = (_props: Props) => {
   const queryParams = React.useMemo(() => searchParams.get('query'), [searchParams]);
 
   React.useEffect(() => {
-    const loadRecipes = async () => {
-
-      // if tag params are not empty (at least 1 tag has been selected), do not reload recipes
-      if (!['', null].includes(tagParams)) {
-        console.log("STOPPED RELOAD")
-        return;
-      }
-
-      console.log("Loading Recipes");
+    /**
+     * Loads recipes only by the user inputted tags
+     */
+    const loadRecipesByTags = async () => {
+      console.log(searchParams.getAll('tags')[0].split(','))
+      const tags = searchParams.getAll('tags')[0].split(',');
       const body = {
         query: `
           query {
-            getListRecipeByTitle(keywords:"${queryParams}") {
+            getListRecipeByTags(tags: [${tags.map((tag) => '"' + tag + '"')}]) {
               _id
-              image
               contributorUsername
               title
               content
               numberLike
               tags
+              image
             }
           }
         `
       }
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(body),
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const apiData = await res.json();
+      console.log(apiData);
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+
+      setRecipes([...apiData.data.getListRecipeByTags]);
+      setLoading(false);
+    }
+
+    /**
+     * Loads recipes only by the user inputted title
+     */
+    const loadRecipesByTitle = async () => {
+      const body = {
+        query: `
+            query {
+              getListRecipeByTitle(keywords:"${queryParams}") {
+                _id
+                image
+                contributorUsername
+                title
+                content
+                numberLike
+                tags
+              }
+            }
+          `
+      }
+
 
       const res = await fetch('http://localhost:3000/graphql', {
         body: JSON.stringify(body),
@@ -64,6 +99,21 @@ const Search = (_props: Props) => {
 
       setRecipes([...apiData.data.getListRecipeByTitle]);
       setLoading(false);
+    }
+
+    const loadRecipes = async () => {
+      // if tag params are not empty (at least 1 tag has been selected), do not reload recipes
+      if (!['', null].includes(tagParams)) {
+        console.log("STOPPED RELOAD")
+        // if query is empty but tags have been selected, then search by tag
+        if (queryParams === null || queryParams.length === 0) {
+          loadRecipesByTags();
+        }
+        return;
+      }
+
+      console.log("Loading Recipes", tagParams);
+      loadRecipesByTitle();
     }
 
     const loadTags = async () => {

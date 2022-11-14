@@ -34,10 +34,13 @@ const FilterSearchBox = (props: Props) => {
   React.useEffect(() => {
     // if tags and ingredients is null, then tags have been cleared
     // this is triggered when users re-enter the same search query
-    if (searchParams.get('tags') === null) {
+    const tagParams = searchParams.get('tags');
+    if (tagParams === null) {
       console.log("Clearing");
       setSelectedValues([]);
+      return;
     }
+
   }, [searchParams.get('tags')])
 
   React.useEffect(() => {
@@ -112,7 +115,7 @@ const FilterSearchBox = (props: Props) => {
       options={Object.values(props.options)}
       getOptionLabel={(option) => (Object.keys(props.options).find(key => props.options[key] === option)) || ''}
       filterSelectedOptions
-      limitTags={10}
+      limitTags={8}
       color="secondary"
       value={selectedValues}
       onChange={(_e, newValue) => {
