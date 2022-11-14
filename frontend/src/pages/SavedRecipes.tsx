@@ -9,7 +9,7 @@ import RecipeFolder from '../components/recipebook/RecipeFolder';
 
 type Props = {}
 
-const SavedRecipe = (props: Props) => {
+const SavedRecipes = (props: Props) => {
   const [newBookName, setNewBookName] = useState("");
   const [recipeBook, setRecipeBook] = useState<BookInfo[]>([]);
   const [savedRecipe, setSavedRecipe] = useState<SavedRecipeInfo[]>([])
@@ -350,4 +350,4 @@ const SavedRecipe = (props: Props) => {
   )
 }
 
-export default SavedRecipe
+export default SavedRecipes
