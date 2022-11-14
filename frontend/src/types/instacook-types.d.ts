@@ -9,37 +9,11 @@ export type Recipe = {
   image: string,
 }
 
-export type User = {
-  _id?: string
-  email?: string
-  username?: string
-  password?: string | null
-  listRecipe?: Recipe[]
-}
-
 export type UserInfo = {
   user: string
-  email?: string
+  email: string
   numberFollower?: int
   numberFollowing?: int
-}
-
-export type AuthData = {
-  userId?: string
-  username?: string
-  email?: string
-  token?: string
-  tokenExpiration?: int
-}
-
-export type Recipe = {
-  title?: string
-  dateCreated?: string
-  content?: string
-  contributor?: User
-  like?: string[]
-  listComments?: Comment[]
-  listTags?: Tag[]
 }
 
 export type Tag = {
@@ -57,21 +31,11 @@ export type RecipeThumbnail = {
   image: string
 }
 
-export type RecipeDetail = {
-  title?: string
-  content?: string
-  dateCreated?: string
-  contributorUsername?: string
-  numberLike?: int
-  listComments?: Comment[]
-  tags?: string[]
-}
-
 export type Comment = {
-  userName?: string
-  recipeID?: string
-  content?: string
-  dateCreated?: string
+  userName: string
+  recipeID: string
+  content: string
+  dateCreated: string
 }
 
 export type Tag = {

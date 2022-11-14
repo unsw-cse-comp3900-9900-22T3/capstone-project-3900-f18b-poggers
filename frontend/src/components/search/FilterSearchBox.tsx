@@ -4,9 +4,16 @@ import { useSearchParams } from 'react-router-dom'
 import { RecipeThumbnail, TagObj } from '../../types/instacook-types';
 
 type Props = {
+  // dropdown tag options
   options: TagObj,
+
+  // list of recipes
   recipes: RecipeThumbnail[],
+
+  // function to set recipe state
   setRecipes: React.Dispatch<React.SetStateAction<RecipeThumbnail[]>>,
+
+  // function to set loading state
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -18,6 +25,9 @@ const FilterSearchBox = (props: Props) => {
   const [searchParams, setSearchParams] = useSearchParams({});
 
   React.useEffect(() => {
+    /**
+     * Takes search params and sets filters from them
+     */
     const setFiltersFromParams = () => {
       // load filters from tags
       if (searchParams.get('tags') !== null) {
@@ -41,15 +51,24 @@ const FilterSearchBox = (props: Props) => {
   }, [searchParams.get('tags')])
 
   React.useEffect(() => {
+    /**
+     * Renders placeholder cards
+     */
     const renderLoadEffect = () => {
       props.setLoading(true);
     }
 
+    /**
+     * Updates search params with selected filter tags
+     */
     const updateSearchParams = () => {
       searchParams.set("tags", selectedValues.toString());
       setSearchParams(searchParams);
     }
 
+    /**
+     * Gets and renders recipes given a search query
+     */
     const getRecipes = async () => {
       const body = {
         query: `
@@ -89,6 +108,9 @@ const FilterSearchBox = (props: Props) => {
   }, [selectedValues])
 
   React.useEffect(() => {
+    /**
+     * Filters recipes based off selected tags
+     */
     const filterRecipes = () => {
       if (selectedValues.length !== 0) {
         const filteredRecipes: RecipeThumbnail[] = newRecipes.filter((existingRecipe) => (
