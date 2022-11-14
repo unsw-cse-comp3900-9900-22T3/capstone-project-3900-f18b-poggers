@@ -81,42 +81,46 @@ const RecipeCarousel = (props: Props) => {
 
   React.useEffect(() => {
     const getRecipes = async () => {
-      const body = {
-        query: `
-          query {
-            getListRecipeByTags(tags: ["${props.categoryTagId}"]) {
-              _id
-              contributorUsername
-              title
-              content
-              numberLike
-              tags
-              image
+      try {
+        const body = {
+          query: `
+            query {
+              getListRecipeByTags(tags: ["${props.categoryTagId}"]) {
+                _id
+                contributorUsername
+                title
+                content
+                numberLike
+                tags
+                image
+              }
             }
-          }
-        `
-      }
-
-      const res = await fetch('http://localhost:3000/graphql', {
-        body: JSON.stringify(body),
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
+          `
         }
-      });
 
-      const apiData = await res.json();
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(body),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
 
-      if (apiData.errors) {
-        throw new Error(apiData.errors[0].message);
-      }
+        const apiData = await res.json();
 
-      setRecipes([...apiData.data.getListRecipeByTags]);
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
 
-      if (props.categoryTagId !== undefined) {
-        // all api calls are done
-        setLoading(false);
-        console.log([...apiData.data.getListRecipeByTags]);
+        setRecipes([...apiData.data.getListRecipeByTags]);
+
+        if (props.categoryTagId !== undefined) {
+          // all api calls are done
+          setLoading(false);
+          console.log([...apiData.data.getListRecipeByTags]);
+        }
+      } catch (error) {
+        console.log("Get recipe carousel failed,", error);
       }
     }
     getRecipes();
