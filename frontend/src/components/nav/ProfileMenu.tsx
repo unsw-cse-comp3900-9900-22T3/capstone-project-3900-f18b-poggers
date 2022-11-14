@@ -51,7 +51,7 @@ const ProfileMenu = (props: Props) => {
       <Divider />
       <MenuItem onClick={() => { closeMenuNavigate('/profile/' + props.username) }}>Your Profile</MenuItem>
       <MenuItem onClick={() => { closeMenuNavigate('/feed') }}>Your Feed</MenuItem>
-      <MenuItem onClick={() => { closeMenuNavigate('/savedrecipe') }}>Your Recipe Books</MenuItem>
+      <MenuItem onClick={() => { closeMenuNavigate('/savedrecipes') }}>Your Recipe Books</MenuItem>
       <Divider />
       <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
     </Menu >
