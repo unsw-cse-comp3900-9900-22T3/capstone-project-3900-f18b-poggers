@@ -1,9 +1,14 @@
 import { Checkbox, FormControlLabel } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 type Props = {
+  // id of the recipe book
   bookId: string,
+
+  // id of the recipe
   recipeId: string,
+
+  // name of the recipe
   name: string,
 }
 

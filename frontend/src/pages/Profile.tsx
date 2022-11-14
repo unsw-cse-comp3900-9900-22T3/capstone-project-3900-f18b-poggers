@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 import GroupsIcon from '@mui/icons-material/Groups';
 import { red } from '@mui/material/colors';
-import { json } from 'stream/consumers';
 
 type Props = {}
 
@@ -30,13 +29,13 @@ const Profile = (props: Props) => {
           query: `
             query {
               getListRecipeByContributor(username: "${profileUsername}") {
-                  _id
-                  contributorUsername
-                  title
-                  content
-                  numberLike
-                  image
-                  tags
+                _id
+                contributorUsername
+                title
+                content
+                numberLike
+                image
+                tags
               }
             }
           `
@@ -85,7 +84,7 @@ const Profile = (props: Props) => {
           query: `
             query {
               isFollowing(followUser: "${profileUsername}")
-              }
+            }
           `
         };
 
@@ -188,7 +187,7 @@ const Profile = (props: Props) => {
         query: `
           mutation {
             follow(followUsername: "${profileUsername}")
-            }
+          }
         `
       };
 

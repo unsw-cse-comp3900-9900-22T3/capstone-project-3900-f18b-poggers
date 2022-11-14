@@ -1,5 +1,4 @@
 import { createTheme, ThemeProvider } from '@mui/material';
-import React from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -15,7 +14,7 @@ import CreateRecipe from './pages/CreateRecipe';
 import UpdateRecipe from './pages/UpdateRecipe';
 import Discovery from './pages/Discovery';
 import Search from './pages/Search';
-import SavedRecipe from './pages/SavedRecipe';
+import SavedRecipes from './pages/SavedRecipes';
 
 
 const theme = createTheme({
@@ -71,7 +70,7 @@ const App = () => {
           <Route path="/updaterecipe/:recipeId" element={<UpdateRecipe />} />
           <Route path="/recipe/:recipeId" element={<Recipe />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/savedrecipe" element={<SavedRecipe />} />
+          <Route path="/savedrecipes/" element={<SavedRecipes />} />
           <Route path="*" element={<Login />} />
         </Routes>
       </ThemeProvider>

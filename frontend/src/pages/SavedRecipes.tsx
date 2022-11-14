@@ -9,7 +9,7 @@ import RecipeFolder from '../components/recipebook/RecipeFolder';
 
 type Props = {}
 
-const SavedRecipe = (props: Props) => {
+const SavedRecipes = (props: Props) => {
   const [newBookName, setNewBookName] = useState("");
   const [recipeBook, setRecipeBook] = useState<BookInfo[]>([]);
   const [savedRecipe, setSavedRecipe] = useState<SavedRecipeInfo[]>([])
@@ -50,8 +50,8 @@ const SavedRecipe = (props: Props) => {
         query: `
           query {
             getListOfRecipeBook {
-                _id
-                name
+              _id
+              name
             }
           }
         `
@@ -98,10 +98,10 @@ const SavedRecipe = (props: Props) => {
         query: `
           query {
             getSavedRecipe(recipeBookID: "${id}") {
-                _id
-                title
-                contributorUsername
-                numberLike
+              _id
+              title
+              contributorUsername
+              numberLike
             }
           }
         `
@@ -144,9 +144,9 @@ const SavedRecipe = (props: Props) => {
     try {
       const requestBody = {
         query: `
-        mutation {
-          createRecipeBook(recipeBookName: "${newBookName}", dateCreated:"${dateCreated.toString()}")
-        }
+          mutation {
+            createRecipeBook(recipeBookName: "${newBookName}", dateCreated:"${dateCreated.toString()}")
+          }
         `
       };
       const res = await fetch('http://localhost:3000/graphql', {
@@ -180,9 +180,9 @@ const SavedRecipe = (props: Props) => {
       
       const requestBody = {
         query: `
-        mutation {
-          deleteRecipeBook(recipeBookID: "${id}")
-        }
+          mutation {
+            deleteRecipeBook(recipeBookID: "${id}")
+          }
         `
       };
       const res = await fetch('http://localhost:3000/graphql', {
@@ -216,9 +216,12 @@ const SavedRecipe = (props: Props) => {
     try {
       const requestBody = {
         query: `
-        mutation {
-          deleteRecipeIdInBook(recipeBookID: "${selectedBook}", recipeID: "${id}")
-        }
+          mutation {
+            deleteRecipeIdInBook(
+              recipeBookID: "${selectedBook}", 
+              recipeID: "${id}"
+            )
+          }
         `
       };
       const res = await fetch('http://localhost:3000/graphql', {
@@ -350,4 +353,4 @@ const SavedRecipe = (props: Props) => {
   )
 }
 
-export default SavedRecipe
+export default SavedRecipes

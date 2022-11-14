@@ -2,10 +2,19 @@ import {Typography, Grid, Box} from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 
 type Props = {
+  // id of the recipe book
   id: string,
+
+  // name of the recipe
   name: string,
+
+  // id the selected recipe book
   selectedBookId: string,
+
+  // toggle background colour of the recipe book
   changeSelectedBook: (id: string) => void,
+
+  // remove recipe book from the list
   removeRecipeBook: (id: string) => void,
 }
 

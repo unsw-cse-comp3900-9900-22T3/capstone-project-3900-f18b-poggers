@@ -13,6 +13,8 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import CheckItem from '../components/recipe/CheckItem';
 import { red } from '@mui/material/colors';
+import RecipeCarousel from '../components/discovery/RecipeCarousel'
+import { Tag, TagObj } from '../types/instacook-types'
 type Props = {}
 
 const Recipe = (props: Props) => {
@@ -42,21 +44,21 @@ const Recipe = (props: Props) => {
           query: `
             query {
               getRecipeById(recipeID: "${recipeId}") {
-                  title
+                title
+                content
+                dateCreated
+                contributorUsername
+                numberLike
+                image
+                listComments {
+                  userName
+                  recipeID
                   content
                   dateCreated
-                  contributorUsername
-                  numberLike
-                  image
-                  listComments {
-                      userName
-                      recipeID
-                      content
-                      dateCreated
-                  }
-                  tags
+                }
+                tags
               }
-          }
+            }
           `
         }
 
@@ -128,8 +130,8 @@ const Recipe = (props: Props) => {
           query: `
             query {
               getListOfRecipeBook {
-                  _id
-                  name
+                _id
+                name
               }
             }
           `
@@ -251,11 +253,12 @@ const Recipe = (props: Props) => {
     const requestBody = {
       query: `
         mutation {
-          createComment(recipeID: "${recipeId}",
-          content: "${JSON.parse(JSON.stringify(formData.get("comment")))}",
-          dateCreated: "${d.toString()}"
+          createComment(
+            recipeID: "${recipeId}",
+            content: "${JSON.parse(JSON.stringify(formData.get("comment")))}",
+            dateCreated: "${d.toString()}"
           )
-      }
+        }
       `
     }
     console.log(requestBody)
@@ -552,21 +555,9 @@ const Recipe = (props: Props) => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h5">
-            Similar Recipes
-          </Typography>
-          <Carousel
-            autoPlay={false}
-            animation={"slide"}
-          >
-            {
-              items.map((item, key) =>
-                <Grid key={key} container spacing={2} sx={{ padding: 3 }}>
-                  {item}
-                </Grid>
-              )
-            }
-          </Carousel>
+          {/* Recommended recipes */}
+
+          <RecipeCarousel heading={"Similar Recipes"} categoryTagId={""} />
         </Box>
         <Box
           component="form"

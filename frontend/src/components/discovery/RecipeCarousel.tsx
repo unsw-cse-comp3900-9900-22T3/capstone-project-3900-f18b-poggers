@@ -4,11 +4,44 @@ import RecipeCard from '../RecipeCard'
 import Slider from "react-slick";
 import DiscoveryCardLoader from '../RecipeCardPlaceholder'
 import { RecipeThumbnail } from '../../types/instacook-types';
+import { Category } from '@mui/icons-material';
 
 type Props = {
   heading: string,
   categoryTagId: string
 }
+
+
+  // recommended
+  const recommendedList: RecipeThumbnail[] = [
+    {
+      _id: "666",
+      contributorUsername: "Jackson",
+      title: "Recomended 1",
+      content: '["A","A"],["A","A"],["A","A"]',
+      numberLike: 60,
+      tags: ["Tag1", "Tag2", "Tag3"],
+      image: "https://m.media-amazon.com/images/I/81BZGx1Rz9L.jpg",
+    },
+    {
+      _id: "666",
+      contributorUsername: "Jackson",
+      title: "Recomended 1",
+      content: '["A","A"],["A","A"],["A","A"]',
+      numberLike: 60,
+      tags: ["Tag1", "Tag2", "Tag3"],
+      image: "https://m.media-amazon.com/images/I/81BZGx1Rz9L.jpg",
+    },
+    {
+      _id: "666",
+      contributorUsername: "Jackson",
+      title: "Recomended 1",
+      content: '["A","A"],["A","A"],["A","A"]',
+      numberLike: 60,
+      tags: ["Tag1", "Tag2", "Tag3"],
+      image: "https://m.media-amazon.com/images/I/81BZGx1Rz9L.jpg",
+    }
+  ]
 
 const sliderSettings = {
   dots: false,
@@ -79,43 +112,49 @@ const RecipeCarousel = (props: Props) => {
 
   React.useEffect(() => {
     const getRecipes = async () => {
-      const body = {
-        query: `
-          query {
-            getListRecipeByTags(tags: ["${props.categoryTagId}"]) {
-              _id
-              contributorUsername
-              title
-              content
-              numberLike
-              tags
-              image
+      if (props.categoryTagId !== "") {
+        const body = {
+          query: `
+            query {
+              getListRecipeByTags(tags: ["${props.categoryTagId}"]) {
+                _id
+                contributorUsername
+                title
+                content
+                numberLike
+                tags
+                image
+              }
             }
-          }
-        `
-      }
-
-      const res = await fetch('http://localhost:3000/graphql', {
-        body: JSON.stringify(body),
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
+          `
         }
-      });
-
-      const apiData = await res.json();
-
-      if (apiData.errors) {
-        throw new Error(apiData.errors[0].message);
+  
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(body),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+  
+        const apiData = await res.json();
+  
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+  
+        setRecipes([...apiData.data.getListRecipeByTags]);
+  
+        if (props.categoryTagId !== undefined) {
+          // all api calls are done
+          setLoading(false);
+          console.log([...apiData.data.getListRecipeByTags]);
+        }
+      } else {
+        console.log("activated");
+        setRecipes([...recommendedList]);
       }
 
-      setRecipes([...apiData.data.getListRecipeByTags]);
-
-      if (props.categoryTagId !== undefined) {
-        // all api calls are done
-        setLoading(false);
-        console.log([...apiData.data.getListRecipeByTags]);
-      }
 
     }
     getRecipes();
