@@ -71,7 +71,7 @@ const App = () => {
           <Route path="/updaterecipe/:recipeId" element={<UpdateRecipe />} />
           <Route path="/recipe/:recipeId" element={<Recipe />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/savedrecipe/" element={<SavedRecipe />} />
+          <Route path="/savedrecipe" element={<SavedRecipe />} />
           <Route path="*" element={<Login />} />
         </Routes>
       </ThemeProvider>
