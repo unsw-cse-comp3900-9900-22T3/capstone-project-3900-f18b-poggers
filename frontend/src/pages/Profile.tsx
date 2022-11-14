@@ -30,13 +30,13 @@ const Profile = (props: Props) => {
           query: `
             query {
               getListRecipeByContributor(username: "${profileUsername}") {
-                  _id
-                  contributorUsername
-                  title
-                  content
-                  numberLike
-                  image
-                  tags
+                _id
+                contributorUsername
+                title
+                content
+                numberLike
+                image
+                tags
               }
             }
           `
@@ -85,7 +85,7 @@ const Profile = (props: Props) => {
           query: `
             query {
               isFollowing(followUser: "${profileUsername}")
-              }
+            }
           `
         };
 
@@ -188,7 +188,7 @@ const Profile = (props: Props) => {
         query: `
           mutation {
             follow(followUsername: "${profileUsername}")
-            }
+          }
         `
       };
 

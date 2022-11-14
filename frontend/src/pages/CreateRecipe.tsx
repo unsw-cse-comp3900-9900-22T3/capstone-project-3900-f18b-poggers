@@ -36,10 +36,10 @@ const CreateRecipe = (props: Props) => {
           query: `
             query{
               getTags {
-                  _id
-                  content
+                _id
+                content
               }
-          }
+            }
           `
         }
 
@@ -82,25 +82,23 @@ const CreateRecipe = (props: Props) => {
     const requestBody = {
       query: `
         mutation {
-          createRecipe(recipeInput:
-              {
-                  title: "${recipeName}",
-                  image: "${imgData}",
-                  content: """[[${ingredientsData}], [${instructionsData}], [${(description)}]]""",
-                  dateCreated: "${d.toString()}",
-                  tags: [${tagsData}]
-
-              }
-          ) {
-              _id
-              title
-              content
-              dateCreated
-              contributorUsername
-              numberLike
-              tags
+          createRecipe(
+            recipeInput: {
+              title: "${recipeName}",
+              image: "${imgData}",
+              content: """[[${ingredientsData}], [${instructionsData}], [${(description)}]]""",
+              dateCreated: "${d.toString()}",
+              tags: [${tagsData}]  
+          }) {
+            _id
+            title
+            content
+            dateCreated
+            contributorUsername
+            numberLike
+            tags
           }
-      }
+        }
       `
     }
     console.log(requestBody)

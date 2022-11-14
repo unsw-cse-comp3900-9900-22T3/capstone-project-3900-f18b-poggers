@@ -106,7 +106,7 @@ const RecipeContents = (props: Props) => {
 
   return (
   <>
-      <Grid container spacing={5} sx={{ padding: 3 }}>
+    <Grid container spacing={5} sx={{ padding: 3 }}>
       <Grid item sm={3}>
         <Typography variant="h5">
           Ingredients

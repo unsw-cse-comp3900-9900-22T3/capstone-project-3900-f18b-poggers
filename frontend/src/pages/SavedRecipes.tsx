@@ -50,8 +50,8 @@ const SavedRecipes = (props: Props) => {
         query: `
           query {
             getListOfRecipeBook {
-                _id
-                name
+              _id
+              name
             }
           }
         `
@@ -98,10 +98,10 @@ const SavedRecipes = (props: Props) => {
         query: `
           query {
             getSavedRecipe(recipeBookID: "${id}") {
-                _id
-                title
-                contributorUsername
-                numberLike
+              _id
+              title
+              contributorUsername
+              numberLike
             }
           }
         `
@@ -144,9 +144,9 @@ const SavedRecipes = (props: Props) => {
     try {
       const requestBody = {
         query: `
-        mutation {
-          createRecipeBook(recipeBookName: "${newBookName}", dateCreated:"${dateCreated.toString()}")
-        }
+          mutation {
+            createRecipeBook(recipeBookName: "${newBookName}", dateCreated:"${dateCreated.toString()}")
+          }
         `
       };
       const res = await fetch('http://localhost:3000/graphql', {
@@ -180,9 +180,9 @@ const SavedRecipes = (props: Props) => {
       
       const requestBody = {
         query: `
-        mutation {
-          deleteRecipeBook(recipeBookID: "${id}")
-        }
+          mutation {
+            deleteRecipeBook(recipeBookID: "${id}")
+          }
         `
       };
       const res = await fetch('http://localhost:3000/graphql', {
@@ -216,9 +216,12 @@ const SavedRecipes = (props: Props) => {
     try {
       const requestBody = {
         query: `
-        mutation {
-          deleteRecipeIdInBook(recipeBookID: "${selectedBook}", recipeID: "${id}")
-        }
+          mutation {
+            deleteRecipeIdInBook(
+              recipeBookID: "${selectedBook}", 
+              recipeID: "${id}"
+            )
+          }
         `
       };
       const res = await fetch('http://localhost:3000/graphql', {

@@ -44,21 +44,21 @@ const Recipe = (props: Props) => {
           query: `
             query {
               getRecipeById(recipeID: "${recipeId}") {
-                  title
+                title
+                content
+                dateCreated
+                contributorUsername
+                numberLike
+                image
+                listComments {
+                  userName
+                  recipeID
                   content
                   dateCreated
-                  contributorUsername
-                  numberLike
-                  image
-                  listComments {
-                      userName
-                      recipeID
-                      content
-                      dateCreated
-                  }
-                  tags
+                }
+                tags
               }
-          }
+            }
           `
         }
 
@@ -130,8 +130,8 @@ const Recipe = (props: Props) => {
           query: `
             query {
               getListOfRecipeBook {
-                  _id
-                  name
+                _id
+                name
               }
             }
           `
@@ -253,11 +253,12 @@ const Recipe = (props: Props) => {
     const requestBody = {
       query: `
         mutation {
-          createComment(recipeID: "${recipeId}",
-          content: "${JSON.parse(JSON.stringify(formData.get("comment")))}",
-          dateCreated: "${d.toString()}"
+          createComment(
+            recipeID: "${recipeId}",
+            content: "${JSON.parse(JSON.stringify(formData.get("comment")))}",
+            dateCreated: "${d.toString()}"
           )
-      }
+        }
       `
     }
     console.log(requestBody)

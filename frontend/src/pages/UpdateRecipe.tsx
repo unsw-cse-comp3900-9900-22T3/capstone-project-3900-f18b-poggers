@@ -35,21 +35,21 @@ const UpdateRecipe = (props: Props) => {
           query: `
             query {
               getRecipeById(recipeID: "${recipeId}") {
-                  title
+                title
+                content
+                dateCreated
+                contributorUsername
+                numberLike
+                image
+                listComments {
+                  userName
+                  recipeID
                   content
                   dateCreated
-                  contributorUsername
-                  numberLike
-                  image
-                  listComments {
-                      userName
-                      recipeID
-                      content
-                      dateCreated
-                  }
-                  tags
+                }
+                tags
               }
-          }
+            }
           `
         }
 
@@ -94,10 +94,10 @@ const UpdateRecipe = (props: Props) => {
           query: `
             query{
               getTags {
-                  _id
-                  content
+                _id
+                content
               }
-          }
+            }
           `
         }
 
@@ -142,16 +142,15 @@ const UpdateRecipe = (props: Props) => {
         query: `
           mutation {
             updateRecipe(recipeID: "${recipeId}", recipeInput:
-                {
-                    title: "${recipeName}",
-                    image: "${imgData}",
-                    content: """[[${ingredientsData}], [${instructionsData}], [${JSON.stringify(description)}]]""",
-                    dateCreated: "${d.toString()}",
-                    tags: [${tagsData}]
-
-                }
+              {
+                title: "${recipeName}",
+                image: "${imgData}",
+                content: """[[${ingredientsData}], [${instructionsData}], [${JSON.stringify(description)}]]""",
+                dateCreated: "${d.toString()}",
+                tags: [${tagsData}]
+              }
             )
-        }
+          }
         `
       }
       console.log(requestBody)
