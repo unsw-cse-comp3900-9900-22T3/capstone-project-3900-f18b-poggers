@@ -70,7 +70,7 @@ const App = () => {
           <Route path="/updaterecipe/:recipeId" element={<UpdateRecipe />} />
           <Route path="/recipe/:recipeId" element={<Recipe />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/savedrecipe/" element={<SavedRecipes />} />
+          <Route path="/savedrecipes/" element={<SavedRecipes />} />
           <Route path="*" element={<Login />} />
         </Routes>
       </ThemeProvider>
