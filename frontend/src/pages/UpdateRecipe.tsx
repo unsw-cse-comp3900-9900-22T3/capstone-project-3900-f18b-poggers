@@ -20,9 +20,6 @@ const UpdateRecipe = (props: Props) => {
   const [instructions, setInstructions] = React.useState<string[]>([]);
   const [preview, setPreview] = React.useState<string>("");
   const [imgData, setImgData] = React.useState<any>('');
-  // const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
-  // const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
-
   const [tagOptions, setTagOptions] = React.useState<TagObj>({});
   const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
 
@@ -80,7 +77,6 @@ const UpdateRecipe = (props: Props) => {
           for (let x of (JSON.parse(apiData.data.getRecipeById.content)[0])) {
             tempIngredients.push(JSON.stringify(x));
           }
-          // setIngredientsData([...ingredientsData, ...tempIngredients]);
         }
         if (apiData.data.getRecipeById.content[1] != null) {
           setInstructions(JSON.parse(apiData.data.getRecipeById.content)[1]);
@@ -88,7 +84,6 @@ const UpdateRecipe = (props: Props) => {
           for (let x of (JSON.parse(apiData.data.getRecipeById.content)[1])) {
             tempInstructions.push(JSON.stringify(x));
           }
-          // setInstructionsData([...instructionsData, ...tempInstructions]);
         }
 
         let tagIds = [];
@@ -98,43 +93,6 @@ const UpdateRecipe = (props: Props) => {
         console.log(tagOptions)
         console.log(tagIds)
         setSelectedValues([...tagIds])
-        // console.log(selectedValues)
-
-
-        // setTags(apiData.data.getRecipeById.tags)
-        // console.log(apiData.data.getRecipeById.tags)
-        // const requestBody1 = {
-        //   query: `
-        //     query{
-        //       getTags {
-        //           _id
-        //           content
-        //       }
-        //   }
-        //   `
-        // }
-
-        // const res1 = await fetch('http://localhost:3000/graphql', {
-        //   body: JSON.stringify(requestBody1),
-        //   method: "POST",
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   }
-        // });
-        // const apiData1 = await res1.json();
-        // if (apiData1.errors) {
-        //   throw new Error(apiData1.errors[0].message);
-        // }
-        // setAllTags(apiData1.data.getTags);
-        // let tagIds = [];
-        // for (let tag of apiData1.data.getTags) {
-        //   if (apiData.data.getRecipeById.tags.includes(tag.content)) {
-        //     tagIds.push(tag._id)
-        //   }
-        // }
-        // setTags([...tags, ...tagIds])
-        // setTagsText(apiData.data.getRecipeById.tags)
-
       } catch (error) {
         console.log("error on fetching recipe", error);
       }
