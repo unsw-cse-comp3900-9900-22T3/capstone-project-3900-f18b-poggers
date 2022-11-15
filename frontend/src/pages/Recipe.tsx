@@ -65,6 +65,9 @@ const Recipe = (props: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
+    /**
+     * Queries the database and sets the relvant hooks.
+     */
     const fetchRecipes = async () => {
       try {
         const requestBody = {
@@ -152,6 +155,9 @@ const Recipe = (props: Props) => {
 
     };
 
+    /**
+     * Queries the database for a list of recipe books
+     */
     const getRecipeBooks = async () => {
       try {
         const requestBody = {
@@ -191,6 +197,9 @@ const Recipe = (props: Props) => {
 
     }
 
+    /**
+     * Retrieves relevant user data
+     */
     const setUserData = async () => {
       try {
         const { user } = await currentAuthenticatedUser();
@@ -229,6 +238,11 @@ const Recipe = (props: Props) => {
     setAnchorEl(null);
   };
 
+  /**
+   * Retrieves a user inputted comment and sends a fetch request for the comment to be inserted into the database
+   *
+   * @param event React event
+   */
   const handleSubmitComment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -272,6 +286,9 @@ const Recipe = (props: Props) => {
     setCommentField("");
   };
 
+  /**
+   * Handles the event of the user pressing the like button, if the recipe is already liked, it will be unliked and vice versa
+   */
   const handleLike = async () => {
     if (recipeLiked) {
       setRecipeLiked(false)
@@ -320,6 +337,7 @@ const Recipe = (props: Props) => {
     >
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
+        {/* Recipe Name */}
         <Box
           sx={{
             display: 'flex',
@@ -331,6 +349,7 @@ const Recipe = (props: Props) => {
             {recipeName}
           </Typography>
         </Box>
+        {/* Contributor Name */}
         <Box
           sx={{
             display: 'flex',
@@ -350,6 +369,7 @@ const Recipe = (props: Props) => {
             </IconButton>}
 
         </Box>
+        {/* Recipe Description */}
         <Box
           sx={{
             display: 'flex',
@@ -359,6 +379,7 @@ const Recipe = (props: Props) => {
         >
           {description}
         </Box>
+        {/* Recipe Image */}
         <Box
           sx={{
             display: 'flex',
@@ -435,7 +456,7 @@ const Recipe = (props: Props) => {
                       </MenuItem>
                     )}
                   </Menu>
-
+                  {/* Like button */}
                   <IconButton sx={likeStyles} onClick={handleLike}>
                     <Grid container direction="row" alignItems="center" justifyItems="center">
                       {recipeLiked ? <FavoriteIcon sx={{ fontSize: "30px", marginRight: 0.5 }} /> : <FavoriteBorderIcon sx={{ fontSize: "30px", marginRight: 0.5 }} />}
@@ -459,6 +480,7 @@ const Recipe = (props: Props) => {
               }
             </Box>
           </Box>
+          {/* Ingredients and Instructions */}
           <Grid container spacing={3} sx={{ padding: 3 }}>
             <Grid item sm={3}>
               <Typography variant="h5">

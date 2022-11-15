@@ -27,6 +27,9 @@ const CreateRecipe = (props: Props) => {
   const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
 
   React.useEffect(() => {
+    /**
+     * Retrieves relevant user data
+     */
     const setUserData = async () => {
       try {
         const { user } = await currentAuthenticatedUser();
@@ -48,7 +51,9 @@ const CreateRecipe = (props: Props) => {
     setUserData()
   }, [navigate])
 
-
+  /**
+   * Retrieves all existing tags from the database and sets relevant state hook(s)
+   */
   const loadTags = async () => {
     const body = {
       query: `
@@ -85,10 +90,20 @@ const CreateRecipe = (props: Props) => {
     console.log("cleared")
   }
 
+  /**
+   * Handles the addition of a tag to a recipe
+   *
+   * @param tags An array of strings containing selected tags
+   */
   const handleTagAdd = (tags: string[]) => {
     setSelectedValues([...tags])
   }
 
+  /**
+   * Handles the creation of a new tag if it does not already exist
+   *
+   * @param tag A string containing the tag name
+   */
   const handleTagCreation = async (tag: String) => {
     const requestBody = {
       query: `
@@ -116,6 +131,9 @@ const CreateRecipe = (props: Props) => {
     }
   }
 
+  /**
+   * Handles the creation of a recipe
+   */
   const handleCreateRecipe = async () => {
     const d = new Date();
     const tagsData = selectedValues.map(i => `"${i}"`);
@@ -130,7 +148,7 @@ const CreateRecipe = (props: Props) => {
               image: "${imgData}",
               content: """[[${ingredientsData}], [${instructionsData}], [${(description)}]]""",
               dateCreated: "${d.toString()}",
-              tags: [${tagsData}]  
+              tags: [${tagsData}]
           }) {
             _id
             title
@@ -163,36 +181,50 @@ const CreateRecipe = (props: Props) => {
 
   }
 
+  /**
+   * Handles the addition of an instruction to a recipe
+   *
+   * @param event React event
+   */
   const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
   };
 
+  /**
+   * Handles the addition of an ingredient to a recipe
+   *
+   * @param event React event
+   */
   const handleIngredient = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
   };
 
+  /**
+   * Handles the removal of an ingredient to a recipe
+   *
+   * @param event React event
+   */
   const handleRemoveIngredient = () => {
     const copy = [...ingredients];
-    // const copyData = [...ingredientsData];
     copy.pop();
-    // copyData.pop();
     setIngredients(copy);
-    // setIngredientsData(copyData);
 
   };
 
+
+  /**
+   * Handles the removal of an instruction to a recipe
+   *
+   * @param event React event
+   */
   const handleRemoveInstruction = () => {
     const copy = [...instructions];
-    // const copyData = [...instructionsData];
     copy.pop();
-    // copyData.pop();
     setInstructions(copy);
-    // setInstructionsData(copyData);
-
   };
 
   return (
@@ -207,6 +239,7 @@ const CreateRecipe = (props: Props) => {
       <Container component="main" sx={{ border: "0px solid", borderRadius: 0, padding: 2, backgroundColor: 'white' }}>
         <CssBaseline />
         <Box>
+          {/* Recipe Name */}
           <Box
             sx={{
               display: 'flex',
@@ -225,6 +258,7 @@ const CreateRecipe = (props: Props) => {
               }}
             />
           </Box>
+          {/* Contributor Name */}
           <Box
             sx={{
               display: 'flex',
@@ -235,8 +269,8 @@ const CreateRecipe = (props: Props) => {
             <Typography variant="caption">
               posted by {username}
             </Typography>
-
           </Box>
+          {/* Recipe Description */}
           <Box
             sx={{
               display: 'flex',
@@ -261,7 +295,7 @@ const CreateRecipe = (props: Props) => {
               flexDirection: 'column',
             }}
           >
-
+            {/* Recipe Image */}
             <Box>
               <IconButton color="primary" aria-label="upload picture" component="label">
                 <input hidden accept="image/*" type="file" onChange={(e) => {
@@ -303,6 +337,7 @@ const CreateRecipe = (props: Props) => {
               handleTagAdd={handleTagAdd}
             />
 
+            {/* Done button */}
             <Box
               paddingTop={0}
               sx={{

@@ -9,6 +9,11 @@ import { Recipe } from '../types/instacook-types';
 
 type Props = {}
 
+const bgStyles = {
+  minHeight: `calc(100vh - 64px)`,
+  backgroundColor: "#d3d3d3",
+}
+
 const UpdateRecipe = (props: Props) => {
   const { recipeId } = useParams();
   const navigate = useNavigate();
@@ -28,6 +33,9 @@ const UpdateRecipe = (props: Props) => {
   }, [])
 
   React.useEffect(() => {
+    /**
+     * Queries the database and sets the relevant state hooks.
+     */
     const fetchRecipes = async () => {
       try {
         const requestBody = {
@@ -98,11 +106,9 @@ const UpdateRecipe = (props: Props) => {
     fetchRecipes();
   }, [recipeId, tagOptions]);
 
-  const bgStyles = {
-    minHeight: `calc(100vh - 64px)`,
-    backgroundColor: "#d3d3d3",
-  }
-
+  /**
+   * Retrieves all existing tags from the database and sets relevant state hook(s)
+   */
   const loadTags = async () => {
     const body = {
       query: `
@@ -128,7 +134,7 @@ const UpdateRecipe = (props: Props) => {
       throw new Error(apiData.errors[0].message);
     }
 
-    // create custom tag object
+    // Create custom tag object
     const tagArr: Tag[] = apiData.data.getTags;
     const tags: TagObj = {}
 
@@ -139,10 +145,20 @@ const UpdateRecipe = (props: Props) => {
     console.log("cleared")
   }
 
+  /**
+   * Handles the addition of a tag to a recipe
+   *
+   * @param tags An array of strings containing selected tags
+   */
   const handleTagAdd = (tags: string[]) => {
     setSelectedValues([...tags])
   }
 
+  /**
+   * Handles the creation of a new tag if it does not already exist
+   *
+   * @param tag A string containing the tag name
+   */
   const handleTagCreation = async (tag: String) => {
     const requestBody = {
       query: `
@@ -170,6 +186,9 @@ const UpdateRecipe = (props: Props) => {
     }
   }
 
+  /**
+   * Handles the updating of a recipe
+   */
   const handleUpdate = async () => {
     if (recipe !== undefined) {
       const d = new Date();
@@ -213,38 +232,48 @@ const UpdateRecipe = (props: Props) => {
     }
   }
 
+  /**
+   * Handles the addition of an instruction to a recipe
+   *
+   * @param event React event
+   */
   const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    // setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
   };
 
+  /**
+   * Handles the addition of an ingredient to a recipe
+   *
+   * @param event React event
+   */
   const handleIngredient = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    // setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
   };
 
+  /**
+   * Handles the removal of an ingredient to a recipe
+   *
+   * @param event React event
+   */
   const handleRemoveIngredient = () => {
     const copy = [...ingredients];
-    // const copyData = [...ingredientsData];
     copy.pop();
-    // copyData.pop();
     setIngredients(copy);
-    // setIngredientsData(copyData);
-
   };
 
+  /**
+   * Handles the removal of an instruction to a recipe
+   *
+   * @param event React event
+   */
   const handleRemoveInstruction = () => {
     const copy = [...instructions];
-    // const copyData = [...instructionsData];
     copy.pop();
-    // copyData.pop();
     setInstructions(copy);
-    // setInstructionsData(copyData);
-
   };
 
   return (
