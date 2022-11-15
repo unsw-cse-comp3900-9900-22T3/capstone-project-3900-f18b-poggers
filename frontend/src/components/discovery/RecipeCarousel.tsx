@@ -1,16 +1,49 @@
-import { Divider, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import React from 'react'
 import RecipeCard from '../RecipeCard'
 import Slider from "react-slick";
 import DiscoveryCardLoader from '../RecipeCardPlaceholder'
 import { RecipeThumbnail } from '../../types/instacook-types';
-import { Category } from '@mui/icons-material';
 
 type Props = {
+  // carousel heading text
   heading: string,
+
+  // tag id of category
   categoryTagId: string
 }
 
+
+// recommended
+const recommendedList: RecipeThumbnail[] = [
+  {
+    _id: "666",
+    contributorUsername: "Jackson",
+    title: "Recomended 1",
+    content: '["A","A"],["A","A"],["A","A"]',
+    numberLike: 60,
+    tags: ["Tag1", "Tag2", "Tag3"],
+    image: "https://m.media-amazon.com/images/I/81BZGx1Rz9L.jpg",
+  },
+  {
+    _id: "666",
+    contributorUsername: "Jackson",
+    title: "Recomended 1",
+    content: '["A","A"],["A","A"],["A","A"]',
+    numberLike: 60,
+    tags: ["Tag1", "Tag2", "Tag3"],
+    image: "https://m.media-amazon.com/images/I/81BZGx1Rz9L.jpg",
+  },
+  {
+    _id: "666",
+    contributorUsername: "Jackson",
+    title: "Recomended 1",
+    content: '["A","A"],["A","A"],["A","A"]',
+    numberLike: 60,
+    tags: ["Tag1", "Tag2", "Tag3"],
+    image: "https://m.media-amazon.com/images/I/81BZGx1Rz9L.jpg",
+  }
+]
 
 const sliderSettings = {
   dots: false,
@@ -80,6 +113,9 @@ const RecipeCarousel = (props: Props) => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
+    /**
+     * Gets list of recipes given a tag and display them
+     */
     const getRecipes = async () => {
       try {
         const body = {

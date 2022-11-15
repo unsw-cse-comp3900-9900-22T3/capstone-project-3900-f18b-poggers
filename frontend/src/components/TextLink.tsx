@@ -3,7 +3,10 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
 type Props = {
+  // text to display
   text: string,
+
+  // route to redirect to
   route: string,
 }
 

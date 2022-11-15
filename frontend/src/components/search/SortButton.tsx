@@ -11,13 +11,16 @@ import { useSearchParams } from 'react-router-dom';
 import { RecipeThumbnail } from '../../types/instacook-types';
 
 type Props = {
+  // list of recipes
   recipes: RecipeThumbnail[],
+
+  // function to set recipe state
   setRecipes: React.Dispatch<React.SetStateAction<RecipeThumbnail[]>>
 }
 
 const SortButton = ({ recipes, setRecipes }: Props) => {
   const [open, setOpen] = React.useState(false);
-  const [currentSortSelection, setCurrentSortSelection] = React.useState<string>(Sort.Relevance);
+  const [currentSortSelection, setCurrentSortSelection] = React.useState<Sort>(Sort.Relevance);
   const [searchParams, setSearchParams] = useSearchParams({});
   const sortParams = React.useMemo(() => searchParams.get('sort'), [searchParams]);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
@@ -27,6 +30,11 @@ const SortButton = ({ recipes, setRecipes }: Props) => {
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open);
 
+  /**
+   * Closes dropdown menu
+   *
+   * @param event react event
+   */
   const handleClose = (event: Event | React.SyntheticEvent) => {
     if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
       return;
@@ -34,11 +42,22 @@ const SortButton = ({ recipes, setRecipes }: Props) => {
     setOpen(false);
   };
 
-  const handleSelectSort = (event: Event | React.SyntheticEvent, selection: string) => {
+  /**
+   * Selects a given sorting option
+   *
+   * @param event react event
+   * @param selection sort option to select
+   */
+  const handleSelectSort = (event: Event | React.SyntheticEvent, selection: Sort) => {
     handleClose(event);
     setCurrentSortSelection(selection);
   }
 
+  /**
+   * Closes menu if tab or esc is pressed
+   *
+   * @param event react keyboard event
+   */
   const handleListKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Tab') {
       event.preventDefault();
@@ -49,6 +68,9 @@ const SortButton = ({ recipes, setRecipes }: Props) => {
   };
 
   React.useEffect(() => {
+    /**
+     * Sets selected sort options from search parameters
+     */
     const setSelectionFromParams = () => {
       if (['', null].includes(sortParams)) {
         // sort has not been selected yet
@@ -76,11 +98,17 @@ const SortButton = ({ recipes, setRecipes }: Props) => {
   }, [open]);
 
   React.useEffect(() => {
+    /**
+     * Updates search params based off sort selection
+     */
     const updateSearchParams = () => {
       searchParams.set("sort", currentSortSelection.toLowerCase());
       setSearchParams(searchParams);
     }
 
+    /**
+     * Sorts recipes based off current sort option
+     */
     const handleSortRecipes = () => {
       if (currentSortSelection === Sort.Likes) {
         setRecipes(recipes.sort((a, b) => b.numberLike - a.numberLike));

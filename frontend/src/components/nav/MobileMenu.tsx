@@ -5,10 +5,19 @@ import { Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
+  // function to close menu
   handleMenuClose: () => void,
+
+  // username of user
   username: string,
+
+  // function to open profile menu
   handleProfileMenuOpen: (event: React.MouseEvent<HTMLElement>) => void,
+
+  // function to set mobile menu anchor element
   setMobileMoreAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>,
+
+  // mobile menu anchor element
   mobileMoreAnchorEl: HTMLElement | null
 }
 
@@ -16,15 +25,26 @@ const MobileMenu = (props: Props) => {
   const navigate = useNavigate();
   const isMobileMenuOpen = Boolean(props.mobileMoreAnchorEl);
 
+  /**
+   * Closes mobile menu
+   */
   const handleMobileMenuClose = () => {
     props.setMobileMoreAnchorEl(null);
   };
 
+  /**
+   * Closes menu and navigates to link
+   *
+   * @param link route to navigate to
+   */
   const closeMenuNavigate = (link: string) => {
     props.handleMenuClose();
     navigate(link);
   }
 
+  /**
+   * Signs user out
+   */
   const handleSignOut = async () => {
     try {
       localStorage.removeItem('token');
