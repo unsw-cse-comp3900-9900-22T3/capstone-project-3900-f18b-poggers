@@ -36,13 +36,13 @@ const CheckItem = (props: Props) => {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         });
-  
+
         const apiData = await res.json();
         if (apiData.errors) {
           throw new Error(apiData.errors[0].message);
         }
         setIsInBook(apiData.data.checkRecipeInBook);
-      } catch(error) {
+      } catch (error) {
         console.log("remove recipe failed", error);
       }
     }
@@ -51,7 +51,7 @@ const CheckItem = (props: Props) => {
 
 
   /**
-   *  Remove recipe ID from the book that is saved into 
+   *  Remove recipe ID from the book that is saved into
    */
   const removeRecipeIdFromBook = async () => {
     try {
@@ -78,7 +78,7 @@ const CheckItem = (props: Props) => {
       }
 
       setIsInBook(false);
-    } catch(error) {
+    } catch (error) {
       console.log("remove recipe failed", error);
     }
   };
@@ -111,17 +111,17 @@ const CheckItem = (props: Props) => {
       }
 
       setIsInBook(true);
-    } catch(error) {
+    } catch (error) {
       console.log("add to recipe failed", error);
     }
 
   };
 
   return (
-    <FormControlLabel 
-      onClick={()=> isInBook ? removeRecipeIdFromBook() : addRecipeIdToBook()}
-      control={<Checkbox checked={isInBook} />} 
-      label={props.name} 
+    <FormControlLabel
+      onClick={() => isInBook ? removeRecipeIdFromBook() : addRecipeIdToBook()}
+      control={<Checkbox checked={isInBook} />}
+      label={props.name}
     />
   )
 }

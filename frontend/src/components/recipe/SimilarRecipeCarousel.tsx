@@ -99,7 +99,7 @@ const SimilarRecipeCarousel = (props: Props) => {
             }
           `
         }
-  
+
         const res = await fetch('http://localhost:3000/graphql', {
           body: JSON.stringify(body),
           method: "POST",
@@ -107,15 +107,15 @@ const SimilarRecipeCarousel = (props: Props) => {
             'Content-Type': 'application/json',
           }
         });
-  
+
         const apiData = await res.json();
-  
+
         if (apiData.errors) {
           throw new Error(apiData.errors[0].message);
         }
-  
+
         setRecipes([...apiData.data.getListReccommendRecipe]);
-  
+
         if (props.recipeId !== undefined) {
           // all api calls are done
           setLoading(false);
@@ -123,7 +123,7 @@ const SimilarRecipeCarousel = (props: Props) => {
       } catch (error) {
         console.log("get recommended list failed", error);
       }
-      
+
     }
     getRecipes();
   }, [props.recipeId])

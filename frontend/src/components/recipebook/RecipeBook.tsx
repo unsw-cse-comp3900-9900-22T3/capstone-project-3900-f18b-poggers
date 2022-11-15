@@ -1,4 +1,4 @@
-import {Typography, Grid, Box} from '@mui/material';
+import { Typography, Grid, Box } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
 
 const RecipeBook = (props: Props) => {
   return (
-    <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}} onClick={() => {props.changeSelectedBook(props.id)}}> 
+    <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F" }} onClick={() => { props.changeSelectedBook(props.id) }}>
       {/* Background colour changes when hovering, and toggles on click */}
       <Grid item container
         sx={{
@@ -33,17 +33,17 @@ const RecipeBook = (props: Props) => {
             backgroundColor: "#EDFAFC"
           }
         }}
-        
+
         alignItems="center"
         direction="row"
       >
 
         {/* Recipe book name */}
-        <Grid 
-          item 
-          xs={10} md={10} 
+        <Grid
+          item
+          xs={10} md={10}
           justifyContent="flex-start"
-          
+
         >
           <Typography>
             {props.name}
@@ -51,8 +51,8 @@ const RecipeBook = (props: Props) => {
         </Grid>
 
         {/* Clear button */}
-        <Grid item xs={2} md={2} pl={{ md:2}} justifyContent="flex-end">
-          <ClearIcon onClick={() => props.removeRecipeBook(props.id)} style={{ color: 'red' }}/>
+        <Grid item xs={2} md={2} pl={{ md: 2 }} justifyContent="flex-end">
+          <ClearIcon onClick={() => props.removeRecipeBook(props.id)} style={{ color: 'red' }} />
         </Grid>
       </Grid>
     </Box>

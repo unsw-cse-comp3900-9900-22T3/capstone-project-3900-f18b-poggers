@@ -13,7 +13,7 @@ const SavedRecipes = (props: Props) => {
   const [newBookName, setNewBookName] = useState("");
   const [recipeBook, setRecipeBook] = useState<BookInfo[]>([]);
   const [savedRecipe, setSavedRecipe] = useState<SavedRecipeInfo[]>([])
-  const [selectedBook, setSelectedBook] = useState(""); 
+  const [selectedBook, setSelectedBook] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,13 +32,13 @@ const SavedRecipes = (props: Props) => {
           console.log(e);
         }
 
-          // go to login page if not authenticated
-          navigate('/login');
+        // go to login page if not authenticated
+        navigate('/login');
       }
     }
     setUserData();
     getRecipeBooks();
-  },[navigate, selectedBook]);
+  }, [navigate, selectedBook]);
 
   /**
    * Get list of recipe books
@@ -85,7 +85,7 @@ const SavedRecipes = (props: Props) => {
 
   /**
    * Toggle background colour when user clicks on the recipe book
-   * 
+   *
    * @param id ID of the recipe book
    */
   const changeSelectedBook = async (id: string) => {
@@ -129,8 +129,8 @@ const SavedRecipes = (props: Props) => {
 
     } catch (error) {
       console.log("get saved recipe failed:", error);
-    } 
-      
+    }
+
   }
 
   /**
@@ -161,20 +161,20 @@ const SavedRecipes = (props: Props) => {
       }
 
       getRecipeBooks();
-    } catch(error) {
+    } catch (error) {
       console.log("add recipe failed", error);
     }
     setNewBookName("");
   }
 
   /**
-   * Remove recipe book from the list by ID 
-   * 
-   * @param id ID of the recipe book 
+   * Remove recipe book from the list by ID
+   *
+   * @param id ID of the recipe book
    */
   const removeRecipeBook = async (id: string) => {
     try {
-      
+
       const requestBody = {
         query: `
           mutation {
@@ -199,14 +199,14 @@ const SavedRecipes = (props: Props) => {
       setRecipeBook(newRecipeBook);
       id === selectedBook && setSelectedBook("");
 
-    } catch(error) {
+    } catch (error) {
       console.log("remove recipe failed", error);
     }
   }
-  
+
   /**
-   *  Remove recipe ID from the book that is saved into 
-   * 
+   *  Remove recipe ID from the book that is saved into
+   *
    * @param id ID of the recipe
    */
   const removeSavedRecipe = async (id: string) => {
@@ -215,7 +215,7 @@ const SavedRecipes = (props: Props) => {
         query: `
           mutation {
             deleteRecipeIdInBook(
-              recipeBookID: "${selectedBook}", 
+              recipeBookID: "${selectedBook}",
               recipeID: "${id}"
             )
           }
@@ -236,7 +236,7 @@ const SavedRecipes = (props: Props) => {
       }
       const newRecipeList = savedRecipe.filter((item: SavedRecipeInfo) => item._id !== id);
       setSavedRecipe(newRecipeList);
-    } catch(error) {
+    } catch (error) {
       console.log("remove recipe failed", error);
     }
   }
@@ -246,7 +246,7 @@ const SavedRecipes = (props: Props) => {
     >
       <Grid container spacing={2} >
         {/* Saved Recipe Books column */}
-        <Grid item xs={12} md={4} sx={{borderRight: {md: 1}, paddingRight: 2, minHeight: 'calc(100vh - 64px)'}}>
+        <Grid item xs={12} md={4} sx={{ borderRight: { md: 1 }, paddingRight: 2, minHeight: 'calc(100vh - 64px)' }}>
 
           {/* Title */}
           <Box sx={{
@@ -270,17 +270,17 @@ const SavedRecipes = (props: Props) => {
           >
             {recipeBook.map((item, index) => (
               // Component to display list of recipe books
-              <RecipeBook 
-                key={index} 
-                id={item._id} 
-                name={item.name} 
-                selectedBookId={selectedBook} 
+              <RecipeBook
+                key={index}
+                id={item._id}
+                name={item.name}
+                selectedBookId={selectedBook}
                 changeSelectedBook={changeSelectedBook}
                 removeRecipeBook={removeRecipeBook}
               />
             ))}
 
-            {/* Text input to create new recipe book */}  
+            {/* Text input to create new recipe book */}
             <Box
               sx={{
                 display: 'flex',
@@ -295,7 +295,7 @@ const SavedRecipes = (props: Props) => {
                 name="bookName"
                 label="Enter New Book Name"
                 variant="standard"
-                sx={{marginTop: 4}}
+                sx={{ marginTop: 4 }}
                 onChange={(e) => { setNewBookName(e.target.value) }}
                 InputProps={{
                   endAdornment:
@@ -334,7 +334,7 @@ const SavedRecipes = (props: Props) => {
           >
             {savedRecipe.map((item, index) => (
               // Component to display list of saved recipes
-              <RecipeFolder 
+              <RecipeFolder
                 id={item._id}
                 title={item.title}
                 contributor={item.contributorUsername}

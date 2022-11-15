@@ -77,23 +77,23 @@ const ProfileRecipe = (props: Props) => {
       {/* Recipe title and description */}
       <Grid item md={7} xs={12} pl={2} pr={2}>
         <Grid item>
-          <Typography 
-            noWrap variant="h4" 
+          <Typography
+            noWrap variant="h4"
             ml={0.25}
-            mt={{xs: 1, md: 0}}
+            mt={{ xs: 1, md: 0 }}
           >
             {props.post.title}
           </Typography>
 
-          <Typography 
+          <Typography
             pl={0.5}
-            variant="caption" 
+            variant="caption"
             sx={{ cursor: "pointer" }}
             onClick={() => location.pathname === '/feed' && navigate(`/profile/${props.post.contributorUsername}`)}
           >
             Posted by {props.post.contributorUsername}
-          </Typography> 
-            
+          </Typography>
+
 
           <Typography sx={{
             overflow: 'hidden',
@@ -113,28 +113,28 @@ const ProfileRecipe = (props: Props) => {
           container
           direction="row"
           alignItems="flex-end"
-          mb={{xs: 2, md: 0}}
+          mb={{ xs: 2, md: 0 }}
         >
 
-          
+
           <Box sx={tagStyles}>
             <Grid container direction="row" alignItems="center">
-                <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5}}/> 
-                <Typography>
-                  {props.post.numberLike}
-                </Typography>
-              
+              <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5 }} />
+              <Typography>
+                {props.post.numberLike}
+              </Typography>
+
             </Grid>
           </Box>
-          {props.post.tags.slice(0,4).map((item, index) => {
-              return (
-                <Box key={index} sx={tagStyles}>
-                    <Typography>
-                      {item}
-                    </Typography>
-                </Box>
-              )
-            })
+          {props.post.tags.slice(0, 4).map((item, index) => {
+            return (
+              <Box key={index} sx={tagStyles}>
+                <Typography>
+                  {item}
+                </Typography>
+              </Box>
+            )
+          })
           }
 
           {/* If there are too many tags to display */}
@@ -147,12 +147,9 @@ const ProfileRecipe = (props: Props) => {
               </Box>
             </Tooltip>
           )}
-            
         </Grid>
       </Grid>
     </Grid>
-
-
   )
 }
 
