@@ -118,6 +118,7 @@ type RootMutation {
   addRecipeToBook(recipeBookID: ID!, recipeID: ID!): Boolean!
   deleteRecipeBook(recipeBookID: ID!): Boolean!
   deleteRecipeIdInBook(recipeBookID: ID!, recipeID: ID!): Boolean!
+  createTag(tagName: String!): Boolean!
 }
 
 
