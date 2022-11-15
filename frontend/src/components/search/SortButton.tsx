@@ -20,7 +20,7 @@ type Props = {
 
 const SortButton = ({ recipes, setRecipes }: Props) => {
   const [open, setOpen] = React.useState(false);
-  const [currentSortSelection, setCurrentSortSelection] = React.useState<Sort>(Sort.Relevance);
+  const [currentSortSelection, setCurrentSortSelection] = React.useState<Sort>(Sort.Likes);
   const [searchParams, setSearchParams] = useSearchParams({});
   const sortParams = React.useMemo(() => searchParams.get('sort'), [searchParams]);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
@@ -72,9 +72,10 @@ const SortButton = ({ recipes, setRecipes }: Props) => {
      * Sets selected sort options from search parameters
      */
     const setSelectionFromParams = () => {
-      if (['', null].includes(sortParams)) {
-        // sort has not been selected yet
-        setCurrentSortSelection(Sort.Relevance);
+      const sortOptions: string[] = [Sort.Contributor.toLowerCase(), Sort.Likes.toLowerCase(), Sort.Title.toLowerCase()];
+      if (['', null].includes(sortParams) || !sortParams || !sortOptions.includes(sortParams)) {
+        // sort has not been selected yet or is not a valid option
+        setCurrentSortSelection(Sort.Likes);
         return;
       }
 
@@ -85,7 +86,7 @@ const SortButton = ({ recipes, setRecipes }: Props) => {
       } else if (sortParams === Sort.Title.toLowerCase()) {
         setCurrentSortSelection(Sort.Title);
       }
-      // relevance is selected by default
+
     }
     setSelectionFromParams();
   }, [sortParams]);
