@@ -1,10 +1,9 @@
-import { Typography, Grid, Box, ListItem, List, Tooltip } from '@mui/material';
+import { Typography, Grid, Box, Tooltip } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import { Recipe } from '../../types/instacook-types';
 import { Image } from 'mui-image'
 import FavoriteIcon from '@mui/icons-material/Favorite';
-// import { FixedSizeList, ListChildComponentProps } from 'react-window';
 
 type Props = {
   // Recipe object containing attributes of information about the meal
@@ -118,34 +117,36 @@ const ProfileRecipe = (props: Props) => {
         >
 
           
-           <Box sx={tagStyles}>
-              <Grid container direction="row" alignItems="center">
-                  <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5}}/> 
-                  <Typography>
-                    {props.post.numberLike}
-                  </Typography>
-                
-              </Grid>
-            </Box>
-            {props.post.tags.slice(0,4).map((item, index) => {
-                return (
-                  <Box key={index} sx={tagStyles}>
-                      <Typography>
-                        {item}
-                      </Typography>
-                  </Box>
-                )
-              })
-            }
-            {props.post.tags.length >= 5 && (
-              <Tooltip title={props.post.tags.slice(4).join(', ')}>
-                <Box sx={tagStyles}>
-                  <Typography>
-                    ...
-                  </Typography>
+          <Box sx={tagStyles}>
+            <Grid container direction="row" alignItems="center">
+                <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5}}/> 
+                <Typography>
+                  {props.post.numberLike}
+                </Typography>
+              
+            </Grid>
+          </Box>
+          {props.post.tags.slice(0,4).map((item, index) => {
+              return (
+                <Box key={index} sx={tagStyles}>
+                    <Typography>
+                      {item}
+                    </Typography>
                 </Box>
-              </Tooltip>
-            )}
+              )
+            })
+          }
+
+          {/* If there are too many tags to display */}
+          {props.post.tags.length > 5 && (
+            <Tooltip title={props.post.tags.slice(4).join(', ')}>
+              <Box sx={tagStyles}>
+                <Typography>
+                  ...
+                </Typography>
+              </Box>
+            </Tooltip>
+          )}
             
         </Grid>
       </Grid>
