@@ -1,11 +1,10 @@
 import React from 'react'
 
-import { Divider, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import RecipeCard from '../RecipeCard'
 import Slider from "react-slick";
 import DiscoveryCardLoader from '../RecipeCardPlaceholder'
 import { RecipeThumbnail } from '../../types/instacook-types';
-import { Category } from '@mui/icons-material';
 
 type Props = {
   // title of the carousel

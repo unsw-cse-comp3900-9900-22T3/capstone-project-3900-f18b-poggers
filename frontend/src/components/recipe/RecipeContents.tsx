@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Divider, Modal, IconButton, ListItemText, List, ListItem, Box, Grid, TextField, Typography, TablePaginationClasses } from '@mui/material'
+import { Button, Divider, Modal, IconButton, ListItemText, List, ListItem, Box, Grid, TextField, Typography } from '@mui/material'
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { Tag } from '../../types/instacook-types';
@@ -24,7 +24,6 @@ const RecipeContents = (props: Props) => {
   const [ingredientText, setIngredientText] = React.useState<string>("");
   const [instructionText, setInstructionText] = React.useState<string>("");
   const [modalTags, setmodalTags] = React.useState<string[]>([]);
-  const [displayTags, setDisplayTags] = React.useState<string[]>([]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 

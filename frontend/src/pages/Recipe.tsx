@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Container, CssBaseline, Grid, TextField, Typography, MenuItem, Menu } from '@mui/material'
-import testimg from '../static/images/authbackground.jpeg'
+import { IconButton, Avatar, Divider, ListItemAvatar, ListItemText, List, ListItem, Card, Box, Container, CssBaseline, Grid, TextField, Typography, MenuItem, Menu } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send';
 import { useNavigate, useParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
@@ -13,7 +12,6 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import CheckItem from '../components/recipe/CheckItem';
 import { red } from '@mui/material/colors';
 import SimilarRecipeCarousel from '../components/recipe/SimilarRecipeCarousel'
-import { Tag, TagObj } from '../types/instacook-types'
 type Props = {}
 
 const Recipe = (props: Props) => {
