@@ -8,6 +8,11 @@ import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
 import { Tag, TagObj } from '../types/instacook-types';
 type Props = {}
 
+const bgStyles = {
+  minHeight: `calc(100vh - 64px)`,
+  backgroundColor: "#d3d3d3",
+}
+
 const CreateRecipe = (props: Props) => {
 
   const navigate = useNavigate();
@@ -17,8 +22,6 @@ const CreateRecipe = (props: Props) => {
   const [ingredients, setIngredients] = React.useState<string[]>([]);
   const [instructions, setInstructions] = React.useState<string[]>([]);
   const [preview, setPreview] = React.useState<string>("");
-  // const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
-  // const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
   const [imgData, setImgData] = React.useState<any>('');
   const [tagOptions, setTagOptions] = React.useState<TagObj>({});
   const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
@@ -29,7 +32,6 @@ const CreateRecipe = (props: Props) => {
         const { user } = await currentAuthenticatedUser();
         console.log(user)
         setUsername(user);
-
         loadTags();
 
       } catch (e) {
@@ -48,10 +50,6 @@ const CreateRecipe = (props: Props) => {
     setUserData()
   }, [navigate])
 
-  const bgStyles = {
-    minHeight: `calc(100vh - 64px)`,
-    backgroundColor: "#d3d3d3",
-  }
 
   const loadTags = async () => {
     const body = {
