@@ -176,7 +176,9 @@ module.exports = {
     const recipe = await Recipe.findById(args.recipeID);
 
     if (recipe.like.includes(authUser.username)) {
-      recipe.like = recipe.like.filter((username) => username !== authUser.username);
+      recipe.like = recipe.like.filter(
+        (username) => username !== authUser.username
+      );
       recipe.numberLike--;
     } else {
       recipe.like.push(authUser.username);
@@ -238,6 +240,42 @@ module.exports = {
     const recipes = await Recipe.find(
       { $text: { $search: args.keywords } },
     ).sort({ numberLike: -1, dateCreated: -1 });
+    return recipes.map(async (recipe) => {
+      // query and sort list of tags
+      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
+        content: 1,
+      });
+      const tagNames = sortedListTag.map((tag) => {
+        return tag.content;
+      });
+
+      const contributor = await User.findById(recipe.contributor);
+      return {
+        _id: recipe._id,
+        contributorUsername: contributor.username,
+        image: recipe.image,
+        title: recipe.title,
+        content: recipe.content,
+        numberLike: recipe.numberLike,
+        tags: tagNames,
+      };
+    });
+  },
+
+  getListReccommendRecipe: async (args) => {
+    const recipeById = await Recipe.findById(args.recipeID);
+
+    stringReplace = ['[', ']', '"'];
+    content = recipeById.content.replaceAll(',', '');
+
+    for (let index = 0; index < stringReplace.length; index++) {
+      content = content.replaceAll(stringReplace[index], ' ');
+    }
+
+    const recipes = await Recipe.find(
+      { $text: { $search: content } },
+      { score: { $meta: "textScore" } }
+    ).sort({ score: { $meta: "textScore" } });
     return recipes.map(async (recipe) => {
       // query and sort list of tags
       const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({

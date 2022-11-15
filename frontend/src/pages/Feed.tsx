@@ -58,7 +58,6 @@ const Feed = (props: Props) => {
           tags: item.tags,
         }))
 
-        console.log(newList);
         setRecipeList([...newList]);
       } catch (error) {
         console.log("Error on fetching recipe", error);
@@ -70,10 +69,8 @@ const Feed = (props: Props) => {
      * Check if the user is authenticated, and get logged-in user detail
      */
     const setUserData = async () => {
-      console.log("setUserData in Feed.tsx called");
       try {
         const { user } = await currentAuthenticatedUser();
-        console.log(user)
         setUsername(user);
       } catch (e) {
         if (typeof e === "string") {
@@ -84,8 +81,8 @@ const Feed = (props: Props) => {
           console.log(e);
         }
 
-          // go to login page if not authenticated
-          navigate('/login');
+        // go to login page if not authenticated
+        navigate('/login');
       }
     }
     setUserData();
@@ -97,7 +94,7 @@ const Feed = (props: Props) => {
       sx={{ backgroundColor: 'white', paddingBottom: 2, minHeight: 'calc(100vh - 64px)' }}
     >
       {/* A message if there are no recipes displayed */}
-      {recipeList.length === 0 ? 
+      {recipeList.length === 0 ?
         <Grid item pt={6}>
           <Typography variant="h2" align='center' mb={5}>
             No posts yet.
@@ -107,7 +104,7 @@ const Feed = (props: Props) => {
             Head to the <Link href='/'>discovery page</Link> to get started.
           </Typography>
         </Grid>
-        : 
+        :
         <Grid item pt={6}>
           <Typography variant="h2" align='center' mb={5}>
             Hello, {username}.

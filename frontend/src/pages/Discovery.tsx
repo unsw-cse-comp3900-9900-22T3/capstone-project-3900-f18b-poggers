@@ -8,6 +8,9 @@ const Discovery = (props: Props) => {
   const [tagIds, setTagIds] = React.useState<TagObj>({});
 
   React.useEffect(() => {
+    /**
+     * Loads tags and stores it in tagIds state
+     */
     const loadTags = async () => {
       const body = {
         query: `
@@ -47,9 +50,12 @@ const Discovery = (props: Props) => {
 
   return (
     <>
-      <RecipeCarousel heading={"Most Popular Beef Recipes"} categoryTagId={tagIds['Beef']} />
-      <RecipeCarousel heading={"Most Popular Chicken Recipes"} categoryTagId={tagIds['Chicken']} />
-      <RecipeCarousel heading={"Most Popular Dessert Recipes"} categoryTagId={tagIds['Dessert']} />
+      <RecipeCarousel heading={"Best Breakfast Recipes"} categoryTagId={tagIds['Breakfast']} />
+      <RecipeCarousel heading={"Best Lunch Recipes"} categoryTagId={tagIds['Lunch']} />
+      <RecipeCarousel heading={"Best Dinner Recipes"} categoryTagId={tagIds['Dinner']} />
+      <RecipeCarousel heading={"Best Beef Recipes"} categoryTagId={tagIds['Beef']} />
+      <RecipeCarousel heading={"Best Chicken Recipes"} categoryTagId={tagIds['Chicken']} />
+      <RecipeCarousel heading={"Best Gluten Free Recipes"} categoryTagId={tagIds['Gluten Free']} />
     </>
   )
 }

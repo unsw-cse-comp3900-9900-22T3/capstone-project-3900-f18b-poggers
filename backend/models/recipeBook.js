@@ -20,7 +20,7 @@ const recipeBookSchema = new Schema({
   contributor: {
     type: Schema.Types.ObjectId,
     ref: "User",
-  },  
+  },
 });
 
 module.exports = mongoose.model("RecipeBook", recipeBookSchema);

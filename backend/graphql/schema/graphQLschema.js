@@ -104,6 +104,7 @@ type RootQuery {
   checkRecipeInBook(recipeBookID: ID!, recipeID: ID!): Boolean!
   getListRecipeByTags(tags: [ID!]!): [RecipeThumbnail!]!
   getListRecipeByTitle(keywords: String!): [RecipeThumbnail!]!
+  getListReccommendRecipe(recipeID: String!):[RecipeThumbnail!]!
 }
 
 

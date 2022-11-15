@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IconButton, Avatar, Divider, ListItemAvatar, CardContent, CardActionArea, ListItemText, List, ListItem, CardMedia, Card, Box, Container, CssBaseline, Grid, TextField, Typography, MenuItem, Menu } from '@mui/material'
-import Carousel from 'react-material-ui-carousel'
-import testimg from '../static/images/authbackground.jpeg'
+import { IconButton, Avatar, Divider, ListItemAvatar, ListItemText, List, ListItem, Card, Box, Container, CssBaseline, Grid, TextField, Typography, MenuItem, Menu } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send';
 import { useNavigate, useParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
@@ -13,6 +11,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import CheckItem from '../components/recipe/CheckItem';
 import { red } from '@mui/material/colors';
+import SimilarRecipeCarousel from '../components/recipe/SimilarRecipeCarousel'
 type Props = {}
 
 const Recipe = (props: Props) => {
@@ -25,7 +24,6 @@ const Recipe = (props: Props) => {
   const [contributorName, setContributorName] = useState<string>("");
   const [ingredients, setIngredients] = useState([""]);
   const [instructions, setInstructions] = useState([""]);
-  const [similarRecipes, setSimilarRecipes] = useState([1, 2, 3, 4, 5, 6, 7])
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentField, setCommentField] = useState("");
   const [numberLike, setNumberLike] = useState(0);
@@ -42,21 +40,21 @@ const Recipe = (props: Props) => {
           query: `
             query {
               getRecipeById(recipeID: "${recipeId}") {
-                  title
+                title
+                content
+                dateCreated
+                contributorUsername
+                numberLike
+                image
+                listComments {
+                  userName
+                  recipeID
                   content
                   dateCreated
-                  contributorUsername
-                  numberLike
-                  image
-                  listComments {
-                      userName
-                      recipeID
-                      content
-                      dateCreated
-                  }
-                  tags
+                }
+                tags
               }
-          }
+            }
           `
         }
 
@@ -68,12 +66,11 @@ const Recipe = (props: Props) => {
           }
         });
 
-        console.log("TRIGGERRREDD");
         const apiData = await res.json();
         if (apiData.errors) {
           throw new Error(apiData.errors[0].message);
         }
-        console.log(apiData);
+
         setRecipeName(apiData.data.getRecipeById.title)
         setDescription(JSON.parse(apiData.data.getRecipeById.content)[2])
         setContributorName(apiData.data.getRecipeById.contributorUsername)
@@ -81,9 +78,11 @@ const Recipe = (props: Props) => {
         setNumberLike(apiData.data.getRecipeById.numberLike)
         setComments(apiData.data.getRecipeById.listComments)
         setTags(apiData.data.getRecipeById.tags)
+
         if (apiData.data.getRecipeById.content[0] != null) {
           setIngredients(JSON.parse(apiData.data.getRecipeById.content)[0]);
         }
+
         if (apiData.data.getRecipeById.content[1] != null) {
           setInstructions(JSON.parse(apiData.data.getRecipeById.content)[1]);
         }
@@ -128,8 +127,8 @@ const Recipe = (props: Props) => {
           query: `
             query {
               getListOfRecipeBook {
-                  _id
-                  name
+                _id
+                name
               }
             }
           `
@@ -154,8 +153,6 @@ const Recipe = (props: Props) => {
           name: item.name,
         }))
 
-        console.log(newBooks);
-
         setRecipeBook([...newBooks.reverse()]);
       } catch (error) {
         console.log("get recipe books failed: ", error);
@@ -176,9 +173,6 @@ const Recipe = (props: Props) => {
         } else {
           console.log(e);
         }
-
-        // go to login page if not authenticated
-        // navigate('/login');
       }
     }
     setUserData();
@@ -204,42 +198,9 @@ const Recipe = (props: Props) => {
     setAnchorEl(null);
   };
 
-  const similarRecipesCarousel = similarRecipes.map((recipe, key) =>
-    <Grid key={key} item sm={3}>
-      <Card sx={{ maxWidth: 345 }}>
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            height="140"
-            image={testimg}
-            alt="similar recipe"
-          />
-          <CardContent>
-            <Typography variant="h5">
-              Similar Recipe {recipe}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    </Grid>
-  );
-
-  // REMOVE THIS
-  let items = []
-  let carouselTab: any[] = []
-  for (let i = 0; i < similarRecipesCarousel.length; i++) {
-    carouselTab.push(similarRecipesCarousel[i]);
-    if (carouselTab.length % 4 === 0) {
-      items.push(carouselTab);
-      carouselTab = [];
-    }
-  }
-  items.push(carouselTab);
-
   const handleSubmitComment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("comment"))
     const d = new Date();
     const data: Comment = {
       userName: username,
@@ -251,14 +212,14 @@ const Recipe = (props: Props) => {
     const requestBody = {
       query: `
         mutation {
-          createComment(recipeID: "${recipeId}",
-          content: "${JSON.parse(JSON.stringify(formData.get("comment")))}",
-          dateCreated: "${d.toString()}"
+          createComment(
+            recipeID: "${recipeId}",
+            content: "${JSON.parse(JSON.stringify(formData.get("comment")))}",
+            dateCreated: "${d.toString()}"
           )
-      }
+        }
       `
     }
-    console.log(requestBody)
     try {
       const res = await fetch('http://localhost:3000/graphql', {
         body: JSON.stringify(requestBody),
@@ -295,7 +256,6 @@ const Recipe = (props: Props) => {
         }
       `
     }
-    console.log(requestBody)
     try {
       const res = await fetch('http://localhost:3000/graphql', {
         body: JSON.stringify(requestBody),
@@ -345,10 +305,6 @@ const Recipe = (props: Props) => {
     color: '#28343c',
     margin: 0.5,
     minWidth: "60px",
-    // '&:hover': {
-    //   backgroundColor: '#28343c',
-    //   color: '#fff',
-    // },
   }
 
   return (
@@ -489,7 +445,6 @@ const Recipe = (props: Props) => {
                   </IconButton>
                 </Box>
                 :
-                // <Box sx={likeStyles}>
                 <>
                   <Box sx={likeStylesUnAuth}>
                     <Grid container direction="row" alignItems="center">
@@ -500,7 +455,6 @@ const Recipe = (props: Props) => {
                     </Grid>
                   </Box>
                 </>
-                // <Box>
               }
             </Box>
           </Box>
@@ -552,21 +506,8 @@ const Recipe = (props: Props) => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h5">
-            Similar Recipes
-          </Typography>
-          <Carousel
-            autoPlay={false}
-            animation={"slide"}
-          >
-            {
-              items.map((item, key) =>
-                <Grid key={key} container spacing={2} sx={{ padding: 3 }}>
-                  {item}
-                </Grid>
-              )
-            }
-          </Carousel>
+          {/* Recommended recipes */}
+          <SimilarRecipeCarousel heading={"Similar Recipes"} recipeId={`"${recipeId}"`} />
         </Box>
         <Box
           component="form"
