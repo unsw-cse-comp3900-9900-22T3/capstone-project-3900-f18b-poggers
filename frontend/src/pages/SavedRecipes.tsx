@@ -21,7 +21,6 @@ const SavedRecipes = (props: Props) => {
      * Check if the user is authenticated, and get logged-in user detail
      */
     const setUserData = async () => {
-      console.log("setUserData in Feed.tsx called");
       try {
         await currentAuthenticatedUser();
       } catch (e) {
@@ -75,8 +74,6 @@ const SavedRecipes = (props: Props) => {
         _id: item._id,
         name: item.name,
       }))
-
-      console.log(newBooks);
 
       setRecipeBook([...newBooks.reverse()]);
       selectedBook === "" && setSavedRecipe([]);

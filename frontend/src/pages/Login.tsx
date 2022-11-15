@@ -61,7 +61,6 @@ const Login = (props: Props) => {
       // successful login
       // store jwt in localStorage (NOT SECURE)
       localStorage.setItem('token', apiData.data.login.token);
-      console.log(localStorage.getItem('token'));
 
       navigate('/feed')
     } catch (e) {
@@ -115,7 +114,6 @@ const Login = (props: Props) => {
 
   React.useEffect(() => {
     const checkIfLoggedIn = async () => {
-      console.log("checkIfLoggedIn in Login.tsx called");
       try {
         await currentAuthenticatedUser();
         // redirect if already logged in

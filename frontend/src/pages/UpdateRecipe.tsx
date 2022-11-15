@@ -61,13 +61,12 @@ const UpdateRecipe = (props: Props) => {
           }
         });
 
-        console.log("TRIGGERRREDD");
         const apiData = await res.json();
         setRecipe(apiData.data.getRecipeById);
         if (apiData.errors) {
           throw new Error(apiData.errors[0].message);
         }
-        console.log(apiData);
+
         setRecipeName(apiData.data.getRecipeById.title)
         setDescription(JSON.parse(apiData.data.getRecipeById.content)[2])
         setContributorName(apiData.data.getRecipeById.contributorUsername)
@@ -89,7 +88,7 @@ const UpdateRecipe = (props: Props) => {
           setInstructionsData([...instructionsData, ...tempInstructions]);
         }
         setTags(apiData.data.getRecipeById.tags)
-        console.log(apiData.data.getRecipeById.tags)
+
         const requestBody1 = {
           query: `
             query{
@@ -153,7 +152,7 @@ const UpdateRecipe = (props: Props) => {
           }
         `
       }
-      console.log(requestBody)
+
       try {
         const res = await fetch('http://localhost:3000/graphql', {
           body: JSON.stringify(requestBody),
@@ -201,13 +200,11 @@ const UpdateRecipe = (props: Props) => {
     let index = copy.indexOf(newTag)
     let indexTagsText = copyTagsText.indexOf(newTagText)
     if (index > -1) {
-      console.log("removed tag")
       copy.splice(index, 1)
       copyTagsText.splice(indexTagsText, 1)
       setTags(copy)
       setTagsText(copyTagsText)
     } else {
-      console.log("added tag")
       setTags([...tags, newTag])
       setTagsText([...tagsText, newTagText])
     }

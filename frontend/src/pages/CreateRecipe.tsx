@@ -29,7 +29,6 @@ const CreateRecipe = (props: Props) => {
     const setUserData = async () => {
       try {
         const { user } = await currentAuthenticatedUser();
-        console.log(user)
         setUsername(user);
 
         const requestBody = {
@@ -101,7 +100,6 @@ const CreateRecipe = (props: Props) => {
         }
       `
     }
-    console.log(requestBody)
     try {
       const res = await fetch('http://localhost:3000/graphql', {
         body: JSON.stringify(requestBody),
@@ -125,7 +123,6 @@ const CreateRecipe = (props: Props) => {
   const handleInstruction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("instruction"))
     setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
   };
@@ -133,7 +130,6 @@ const CreateRecipe = (props: Props) => {
   const handleIngredient = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("ingredient"))
     setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
   };
@@ -150,13 +146,11 @@ const CreateRecipe = (props: Props) => {
     let index = copy.indexOf(newTag)
     let indexTagsText = copyTagsText.indexOf(newTagText)
     if (index > -1) {
-      console.log("removed tag")
       copy.splice(index,1)
       copyTagsText.splice(indexTagsText, 1)
       setTags(copy)
       setTagsText(copyTagsText)
     } else {
-      console.log("added tag")
       setTags([...tags, newTag])
       setTagsText([...tagsText, newTagText])
     }
@@ -253,19 +247,13 @@ const CreateRecipe = (props: Props) => {
               <IconButton color="primary" aria-label="upload picture" component="label">
                 <input hidden accept="image/*" type="file" onChange={(e) => {
                   e.preventDefault();
-                  console.log(e.target.value);
                   if (e.target.files != null) {
                     setPreview(e.target.files[0].name);
-                    console.log(e.target.files[0]);
-                    // setImgData(URL.createObjectURL(e.target.files[0]));
                     const reader = new FileReader();
                     reader.addEventListener("load", () => {
-                      console.log("below")
-                      console.log(reader.result);
                       setImgData(reader.result);
                     });
                     reader.readAsDataURL(e.target.files[0]);
-                    // console.log(reader.result)
                   }
                 }} />
                 <AddPhotoAlternateIcon fontSize='large' sx={{}} />

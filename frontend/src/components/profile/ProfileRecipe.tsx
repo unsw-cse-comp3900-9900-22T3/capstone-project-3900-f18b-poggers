@@ -1,4 +1,4 @@
-import { Typography, Grid, Box } from '@mui/material';
+import { Typography, Grid, Box, Tooltip } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import { Recipe } from '../../types/instacook-types';
@@ -39,6 +39,7 @@ const ProfileRecipe = (props: Props) => {
     borderRadius: 2,
     color: '#FFF',
     margin: 0.5,
+    display: 'inline',
   }
 
   return (
@@ -115,26 +116,38 @@ const ProfileRecipe = (props: Props) => {
           mb={{xs: 2, md: 0}}
         >
 
+          
           <Box sx={tagStyles}>
             <Grid container direction="row" alignItems="center">
-              <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5}}/> 
-              <Typography>
-                {props.post.numberLike}
-              </Typography>
+                <FavoriteIcon sx={{ fontSize: "16px", marginRight: 0.5}}/> 
+                <Typography>
+                  {props.post.numberLike}
+                </Typography>
+              
             </Grid>
           </Box>
-
-          {
-            props.post.tags.map((item, index) => {
+          {props.post.tags.slice(0,4).map((item, index) => {
               return (
                 <Box key={index} sx={tagStyles}>
-                  <Typography>
-                    {item}
-                  </Typography>
+                    <Typography>
+                      {item}
+                    </Typography>
                 </Box>
               )
             })
           }
+
+          {/* If there are too many tags to display */}
+          {props.post.tags.length > 4 && (
+            <Tooltip title={props.post.tags.slice(4).join(', ')}>
+              <Box sx={tagStyles}>
+                <Typography>
+                  ...
+                </Typography>
+              </Box>
+            </Tooltip>
+          )}
+            
         </Grid>
       </Grid>
     </Grid>
