@@ -173,9 +173,6 @@ const Recipe = (props: Props) => {
         } else {
           console.log(e);
         }
-
-        // go to login page if not authenticated
-        // navigate('/login');
       }
     }
     setUserData();
@@ -308,10 +305,6 @@ const Recipe = (props: Props) => {
     color: '#28343c',
     margin: 0.5,
     minWidth: "60px",
-    // '&:hover': {
-    //   backgroundColor: '#28343c',
-    //   color: '#fff',
-    // },
   }
 
   return (
