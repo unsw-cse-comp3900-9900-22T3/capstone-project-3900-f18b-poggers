@@ -231,10 +231,13 @@ module.exports = {
   },
 
   getListRecipeByTitle: async (args) => {
-    const recipes = await Recipe.find(
+    /* const recipes = await Recipe.find(
       { $text: { $search: args.keywords } },
       { score: { $meta: "textScore" } }
-    ).sort({ score: { $meta: "textScore" } });
+    ).sort({ score: { $meta: "textScore" } }); */
+    const recipes = await Recipe.find(
+      { $text: { $search: args.keywords } },
+    ).sort({ numberLike: -1, dateCreated: -1 });
     return recipes.map(async (recipe) => {
       // query and sort list of tags
       const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
