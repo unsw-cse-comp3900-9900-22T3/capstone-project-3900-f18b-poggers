@@ -1,10 +1,14 @@
 import { Divider, Menu, MenuItem } from '@mui/material'
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
 type Props = {
+  // function to close menu
   handleMenuClose: () => void,
+
+  // username of user
   username: string,
+
+  // element to anchor menu to
   anchorEl: HTMLElement | null,
 }
 
@@ -12,6 +16,9 @@ const ProfileMenu = (props: Props) => {
   const isMenuOpen = Boolean(props.anchorEl);
   const navigate = useNavigate();
 
+  /**
+   * Signs user out
+   */
   const handleSignOut = async () => {
     try {
       localStorage.removeItem('token');
@@ -24,6 +31,11 @@ const ProfileMenu = (props: Props) => {
     }
   }
 
+  /**
+   * Closes menu and redirects to given link/route
+   *
+   * @param link route to redirect to
+   */
   const closeMenuNavigate = (link: string) => {
     props.handleMenuClose();
     navigate(link);
@@ -51,10 +63,7 @@ const ProfileMenu = (props: Props) => {
       <Divider />
       <MenuItem onClick={() => { closeMenuNavigate('/profile/' + props.username) }}>Your Profile</MenuItem>
       <MenuItem onClick={() => { closeMenuNavigate('/feed') }}>Your Feed</MenuItem>
-      <MenuItem onClick={() => { closeMenuNavigate('/savedrecipe/') }}>Your Recipe Book</MenuItem>
-      <Divider />
-      <MenuItem onClick={() => { closeMenuNavigate('/profile/' + props.username) }}>Account Settings</MenuItem>
-      <MenuItem onClick={() => { closeMenuNavigate('/profile/' + props.username) }}>Preferences</MenuItem>
+      <MenuItem onClick={() => { closeMenuNavigate('/savedrecipes') }}>Your Recipe Books</MenuItem>
       <Divider />
       <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
     </Menu >

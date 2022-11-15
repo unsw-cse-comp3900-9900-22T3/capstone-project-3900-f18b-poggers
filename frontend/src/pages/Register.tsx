@@ -18,11 +18,23 @@ const Register = (props: Props) => {
   const [email, setEmail] = React.useState("");
   const navigate = useNavigate();
 
+  /**
+   * Sets error message in state to be displayed
+   *
+   * @param message error message to be displayed
+   */
   const displayError = (message: string) => {
     setShowErrorMessage(true);
     setErrorMessage(message);
   }
 
+  /**
+   * Registers new user and redirects to login page given form data
+   *
+   * @param username user inputted username
+   * @param password user inputted password
+   * @param email user inputted email
+   */
   const signUp = async (username: string, password: string, email: string) => {
     try {
       const body = {
@@ -51,11 +63,6 @@ const Register = (props: Props) => {
       if (apiData.errors) {
         throw new Error(apiData.errors[0].message);
       }
-
-      console.log("successful signup");
-      console.log(apiData);
-
-
     } catch (e) {
       console.log('error signing up:', e);
       if (typeof e === "string") {
@@ -67,8 +74,12 @@ const Register = (props: Props) => {
     }
   }
 
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  /**
+   * Validates form data and attempts to sign user up
+   *
+   * @param event react event
+   */
+  const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
@@ -76,13 +87,12 @@ const Register = (props: Props) => {
     const password = formData.get('password');
     const confirmPassword = formData.get('confirm-password');
 
-    console.log("Form Data: " + email + ' ' + username + ' ' + password + ' ' + confirmPassword)
-
     if (email.length === 0) {
       displayError("The email field cannot be empty.");
       return;
     }
 
+    // eslint-disable-next-line
     const emailRegex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 
     if (!emailRegex.test(email)) {
@@ -123,18 +133,12 @@ const Register = (props: Props) => {
     // remove error msg
     setShowErrorMessage(false);
 
-    // open confirmation modal
-    // setOpen(true);
-
     // navigate to login page
     navigate('/login');
   };
 
-
-
   React.useEffect(() => {
     const checkIfLoggedIn = async () => {
-      console.log("checkIfLoggedIn in Login.tsx called");
       try {
         await currentAuthenticatedUser();
 
@@ -148,99 +152,96 @@ const Register = (props: Props) => {
   }, [navigate])
 
   return (
-    <>
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        style={bgStyles}
-      >
-        <Container component="main" maxWidth="sm" sx={{ border: "1px solid", borderRadius: 2, padding: 2, backgroundColor: 'white' }}>
-          <CssBaseline />
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Typography component="h1" variant="h5">
+    <Grid
+      container
+      spacing={0}
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      style={bgStyles}
+    >
+      <Container component="main" maxWidth="sm" sx={{ border: "1px solid", borderRadius: 2, padding: 2, backgroundColor: 'white' }}>
+        <CssBaseline />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography component="h1" variant="h5">
+            Register
+          </Typography>
+          <Typography color="error" variant="body1" sx={{ marginTop: 1, display: `${showErrorMessage ? "block" : "none"}` }}>
+            {errorMessage}
+          </Typography>
+
+          <Box component="form" onSubmit={handleSignUp} noValidate>
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              onChange={(e) => setEmail(e.target.value)}
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+            />
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="password"
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirm-password"
+              label="Confirm Password"
+              type="password"
+              id="confirm-password"
+              autoComplete="password"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              color="secondary"
+            >
               Register
-            </Typography>
-            <Typography color="error" variant="body1" sx={{ marginTop: 1, display: `${showErrorMessage ? "block" : "none"}` }}>
-              {errorMessage}
-            </Typography>
-
-            <Box component="form" onSubmit={handleSubmit} noValidate>
-
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                onChange={(e) => setEmail(e.target.value)}
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                name="username"
-                autoComplete="username"
-              // onChange={(e) => setUsername(e.target.value)}
-              />
-
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="password"
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="confirm-password"
-                label="Confirm Password"
-                type="password"
-                id="confirm-password"
-                autoComplete="password"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                color="secondary"
-              >
-                Register
-              </Button>
-              <Grid container>
-                <Grid item>
-                  <Typography sx={{ display: "inline", mr: 1 }} variant="subtitle1">
-                    Already registered?
-                  </Typography>
-                  <Link to="/login">
-                    {"Log In"}
-                  </Link>
-                </Grid>
+            </Button>
+            <Grid container>
+              <Grid item>
+                <Typography sx={{ display: "inline", mr: 1 }} variant="subtitle1">
+                  Already registered?
+                </Typography>
+                <Link to="/login">
+                  {"Log In"}
+                </Link>
               </Grid>
-            </Box>
+            </Grid>
           </Box>
-        </Container>
-      </Grid>
-    </>
+        </Box>
+      </Container>
+    </Grid>
   )
 }
 

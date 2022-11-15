@@ -6,12 +6,10 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { Avatar, Button, Drawer, Tooltip } from '@mui/material';
+import { Avatar, Button, Tooltip } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
 import MobileMenu from './MobileMenu';
 import ProfileMenu from './ProfileMenu';
 import TextLink from '../TextLink';
@@ -57,46 +55,53 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Nav() {
+type Props = {}
+
+const Nav = (props: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [username, setUsername] = React.useState<string>("");
-  const [sidebarOpen, setSidebarOpen] = React.useState<boolean>(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [searchbarValue, setSearchbarValue] = React.useState("");
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
+  /**
+   * Opens profile menu
+   *
+   * @param event react mouse event
+   */
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
+  /**
+   * Closes mobile menu
+   */
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
 
+  /**
+   * Closes menu
+   */
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
 
+  /**
+   * Opens mobile menu
+   *
+   * @param event react mouse event
+   */
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const toggleSidebar = (open: boolean) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
-
-      setSidebarOpen(open);
-    };
-
   React.useEffect(() => {
+    /**
+     * Loads username from logged in user and sets navbar logged in/out state
+     */
     const setUserData = async () => {
       try {
         const { user } = await currentAuthenticatedUser();
@@ -119,25 +124,9 @@ export default function Nav() {
 
   return (
     <>
-      <Drawer
-        open={sidebarOpen}
-        onClose={toggleSidebar(false)}
-      >
-        <Sidebar loggedIn={loggedIn} toggleSidebar={toggleSidebar} />
-      </Drawer>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar style={{ boxShadow: 'none' }} position="static">
           <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              sx={{ mr: 2 }}
-              onClick={toggleSidebar(true)}
-            >
-              <MenuIcon />
-            </IconButton>
             <Typography
               variant="h6"
               noWrap
@@ -226,3 +215,5 @@ export default function Nav() {
     </>
   );
 }
+
+export default Nav;

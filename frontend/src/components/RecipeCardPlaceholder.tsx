@@ -1,8 +1,6 @@
-import React from "react"
 import ContentLoader from "react-content-loader"
 
-type Props = {
-}
+type Props = {}
 
 const DiscoveryCardLoader = (props: Props) => (
   <ContentLoader

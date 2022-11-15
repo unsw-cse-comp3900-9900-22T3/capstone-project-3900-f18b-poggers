@@ -34,21 +34,21 @@ const UpdateRecipe = (props: Props) => {
           query: `
             query {
               getRecipeById(recipeID: "${recipeId}") {
-                  title
+                title
+                content
+                dateCreated
+                contributorUsername
+                numberLike
+                image
+                listComments {
+                  userName
+                  recipeID
                   content
                   dateCreated
-                  contributorUsername
-                  numberLike
-                  image
-                  listComments {
-                      userName
-                      recipeID
-                      content
-                      dateCreated
-                  }
-                  tags
+                }
+                tags
               }
-          }
+            }
           `
         }
 
@@ -59,14 +59,12 @@ const UpdateRecipe = (props: Props) => {
             'Content-Type': 'application/json'
           }
         });
-
-
         const apiData = await res.json();
         setRecipe(apiData.data.getRecipeById);
         if (apiData.errors) {
           throw new Error(apiData.errors[0].message);
         }
-        console.log(apiData);
+
         setRecipeName(apiData.data.getRecipeById.title)
         setDescription(JSON.parse(apiData.data.getRecipeById.content)[2])
         setContributorName(apiData.data.getRecipeById.contributorUsername)
@@ -182,19 +180,18 @@ const UpdateRecipe = (props: Props) => {
         query: `
           mutation {
             updateRecipe(recipeID: "${recipeId}", recipeInput:
-                {
-                    title: "${recipeName}",
-                    image: "${imgData}",
-                    content: """[[${ingredientsData}], [${instructionsData}], [${JSON.stringify(description)}]]""",
-                    dateCreated: "${d.toString()}",
-                    tags: [${tagsData}]
-
-                }
+              {
+                title: "${recipeName}",
+                image: "${imgData}",
+                content: """[[${ingredientsData}], [${instructionsData}], [${JSON.stringify(description)}]]""",
+                dateCreated: "${d.toString()}",
+                tags: [${tagsData}]
+              }
             )
-        }
+          }
         `
       }
-      console.log(requestBody)
+
       try {
         const res = await fetch('http://localhost:3000/graphql', {
           body: JSON.stringify(requestBody),

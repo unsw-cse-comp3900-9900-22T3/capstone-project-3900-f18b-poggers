@@ -1,5 +1,5 @@
 import React from 'react'
-import { IconButton, ListItemText, List, ListItem, Box, Grid, TextField, Typography } from '@mui/material'
+import { Button, Divider, Modal, IconButton, ListItemText, List, ListItem, Box, Grid, TextField, Typography } from '@mui/material'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
@@ -55,7 +55,6 @@ const RecipeContents = (props: Props) => {
     props.handleInstruction(e)
     setInstructionText('');
   }
-
   return (
     <>
       <Grid container spacing={5} sx={{ padding: 3 }}>
