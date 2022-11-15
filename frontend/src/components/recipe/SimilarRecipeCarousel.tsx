@@ -19,8 +19,8 @@ const sliderSettings = {
   dots: false,
   infinite: false,
   speed: 500,
-  slidesToShow: 6,
-  slidesToScroll: 6,
+  slidesToShow: 4,
+  slidesToScroll: 4,
   vertical: false,
 
   // mui default breakpoints
@@ -33,22 +33,22 @@ const sliderSettings = {
     {
       breakpoint: 1536,
       settings: {
-        slidesToShow: 5,
-        slidesToScroll: 5
-      },
-    },
-    {
-      breakpoint: 1200,
-      settings: {
         slidesToShow: 4,
         slidesToScroll: 4
       },
     },
     {
-      breakpoint: 900,
+      breakpoint: 1200,
       settings: {
         slidesToShow: 3,
         slidesToScroll: 3
+      },
+    },
+    {
+      breakpoint: 900,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2
       },
     },
     {
@@ -76,37 +76,6 @@ const carouselStyles = {
   borderBottom: '1px solid #eeeeee'
 }
 
-// recommended placeholder
-const recommendedList: RecipeThumbnail[] = [
-  {
-    _id: "666",
-    contributorUsername: "Jackson",
-    title: "Recomended 1",
-    content: '["A","A"],["A","A"],["A","A"]',
-    numberLike: 60,
-    tags: ["Tag1", "Tag2", "Tag3"],
-    image: "https://m.media-amazon.com/images/I/81BZGx1Rz9L.jpg",
-  },
-  {
-    _id: "666",
-    contributorUsername: "Jackson",
-    title: "Recomended 1",
-    content: '["A","A"],["A","A"],["A","A"]',
-    numberLike: 60,
-    tags: ["Tag1", "Tag2", "Tag3"],
-    image: "https://m.media-amazon.com/images/I/81BZGx1Rz9L.jpg",
-  },
-  {
-    _id: "666",
-    contributorUsername: "Jackson",
-    title: "Recomended 1",
-    content: '["A","A"],["A","A"],["A","A"]',
-    numberLike: 60,
-    tags: ["Tag1", "Tag2", "Tag3"],
-    image: "https://m.media-amazon.com/images/I/81BZGx1Rz9L.jpg",
-  }
-]
-
 const placeholderArr = [0, 1, 2, 3, 4, 5];
 
 const SimilarRecipeCarousel = (props: Props) => {
@@ -115,43 +84,47 @@ const SimilarRecipeCarousel = (props: Props) => {
 
   React.useEffect(() => {
     const getRecipes = async () => {
-      const body = {
-        query: `
-          query {
-            getListRecipeByTags(tags: ["${props.recipeId}"]) {
-              _id
-              contributorUsername
-              title
-              content
-              numberLike
-              tags
-              image
+      try {
+        const body = {
+          query: `
+            query {
+              getListReccommendRecipe(recipeID: ${props.recipeId}) {
+                _id
+                contributorUsername
+                title
+                content
+                numberLike
+                tags
+                image
+              }
             }
-          }
-        `
-      }
-
-      const res = await fetch('http://localhost:3000/graphql', {
-        body: JSON.stringify(body),
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
+          `
         }
-      });
-
-      const apiData = await res.json();
-
-      if (apiData.errors) {
-        throw new Error(apiData.errors[0].message);
+  
+        const res = await fetch('http://localhost:3000/graphql', {
+          body: JSON.stringify(body),
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+  
+        const apiData = await res.json();
+  
+        if (apiData.errors) {
+          throw new Error(apiData.errors[0].message);
+        }
+  
+        setRecipes([...apiData.data.getListReccommendRecipe]);
+  
+        if (props.recipeId !== undefined) {
+          // all api calls are done
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log("get recommended list failed", error);
       }
-
-      setRecipes([...apiData.data.getListRecipeByTags]);
-
-      if (props.recipeId !== undefined) {
-        // all api calls are done
-        setLoading(false);
-        console.log([...apiData.data.getListRecipeByTags]);
-      }
+      
     }
     getRecipes();
   }, [props.recipeId])

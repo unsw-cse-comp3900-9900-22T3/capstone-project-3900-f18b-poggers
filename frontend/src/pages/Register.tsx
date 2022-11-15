@@ -63,11 +63,6 @@ const Register = (props: Props) => {
       if (apiData.errors) {
         throw new Error(apiData.errors[0].message);
       }
-
-      console.log("successful signup");
-      console.log(apiData);
-
-
     } catch (e) {
       console.log('error signing up:', e);
       if (typeof e === "string") {
@@ -91,8 +86,6 @@ const Register = (props: Props) => {
     const username = formData.get('username');
     const password = formData.get('password');
     const confirmPassword = formData.get('confirm-password');
-
-    console.log("Form Data: " + email + ' ' + username + ' ' + password + ' ' + confirmPassword)
 
     if (email.length === 0) {
       displayError("The email field cannot be empty.");
@@ -146,7 +139,6 @@ const Register = (props: Props) => {
 
   React.useEffect(() => {
     const checkIfLoggedIn = async () => {
-      console.log("checkIfLoggedIn in Login.tsx called");
       try {
         await currentAuthenticatedUser();
 

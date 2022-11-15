@@ -26,7 +26,6 @@ const Recipe = (props: Props) => {
   const [contributorName, setContributorName] = useState<string>("");
   const [ingredients, setIngredients] = useState([""]);
   const [instructions, setInstructions] = useState([""]);
-  const [similarRecipes, setSimilarRecipes] = useState([1, 2, 3, 4, 5, 6, 7])
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentField, setCommentField] = useState("");
   const [numberLike, setNumberLike] = useState(0);
@@ -69,12 +68,11 @@ const Recipe = (props: Props) => {
           }
         });
 
-        console.log("TRIGGERRREDD");
         const apiData = await res.json();
         if (apiData.errors) {
           throw new Error(apiData.errors[0].message);
         }
-        console.log(apiData);
+
         setRecipeName(apiData.data.getRecipeById.title)
         setDescription(JSON.parse(apiData.data.getRecipeById.content)[2])
         setContributorName(apiData.data.getRecipeById.contributorUsername)
@@ -82,9 +80,11 @@ const Recipe = (props: Props) => {
         setNumberLike(apiData.data.getRecipeById.numberLike)
         setComments(apiData.data.getRecipeById.listComments)
         setTags(apiData.data.getRecipeById.tags)
+
         if (apiData.data.getRecipeById.content[0] != null) {
           setIngredients(JSON.parse(apiData.data.getRecipeById.content)[0]);
         }
+
         if (apiData.data.getRecipeById.content[1] != null) {
           setInstructions(JSON.parse(apiData.data.getRecipeById.content)[1]);
         }
@@ -155,8 +155,6 @@ const Recipe = (props: Props) => {
           name: item.name,
         }))
 
-        console.log(newBooks);
-
         setRecipeBook([...newBooks.reverse()]);
       } catch (error) {
         console.log("get recipe books failed: ", error);
@@ -205,42 +203,9 @@ const Recipe = (props: Props) => {
     setAnchorEl(null);
   };
 
-  const similarRecipesCarousel = similarRecipes.map((recipe, key) =>
-    <Grid key={key} item sm={3}>
-      <Card sx={{ maxWidth: 345 }}>
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            height="140"
-            image={testimg}
-            alt="similar recipe"
-          />
-          <CardContent>
-            <Typography variant="h5">
-              Similar Recipe {recipe}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    </Grid>
-  );
-
-  // REMOVE THIS
-  let items = []
-  let carouselTab: any[] = []
-  for (let i = 0; i < similarRecipesCarousel.length; i++) {
-    carouselTab.push(similarRecipesCarousel[i]);
-    if (carouselTab.length % 4 === 0) {
-      items.push(carouselTab);
-      carouselTab = [];
-    }
-  }
-  items.push(carouselTab);
-
   const handleSubmitComment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData.get("comment"))
     const d = new Date();
     const data: Comment = {
       userName: username,
@@ -260,7 +225,6 @@ const Recipe = (props: Props) => {
         }
       `
     }
-    console.log(requestBody)
     try {
       const res = await fetch('http://localhost:3000/graphql', {
         body: JSON.stringify(requestBody),
@@ -297,7 +261,6 @@ const Recipe = (props: Props) => {
         }
       `
     }
-    console.log(requestBody)
     try {
       const res = await fetch('http://localhost:3000/graphql', {
         body: JSON.stringify(requestBody),

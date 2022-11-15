@@ -138,7 +138,7 @@ const ProfileRecipe = (props: Props) => {
           }
 
           {/* If there are too many tags to display */}
-          {props.post.tags.length > 5 && (
+          {props.post.tags.length > 4 && (
             <Tooltip title={props.post.tags.slice(4).join(', ')}>
               <Box sx={tagStyles}>
                 <Typography>

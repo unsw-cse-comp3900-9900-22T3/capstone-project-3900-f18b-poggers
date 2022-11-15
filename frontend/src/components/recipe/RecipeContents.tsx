@@ -49,8 +49,6 @@ const RecipeContents = (props: Props) => {
   const handleTagClick = (tag : Tag) => {
     if (tag._id) {
       props.handleTag(tag._id)
-      console.log(tag)
-      console.log(modalTags)
     }
   }
 

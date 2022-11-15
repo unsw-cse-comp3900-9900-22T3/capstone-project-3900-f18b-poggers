@@ -62,7 +62,7 @@ const CheckItem = (props: Props) => {
           }
         `
       };
-      console.log(requestBody);
+
       const res = await fetch('http://localhost:3000/graphql', {
         body: JSON.stringify(requestBody),
         method: "POST",
@@ -76,7 +76,7 @@ const CheckItem = (props: Props) => {
       if (apiData.errors) {
         throw new Error(apiData.errors[0].message);
       }
-      console.log("remove successfully")
+
       setIsInBook(false);
     } catch(error) {
       console.log("remove recipe failed", error);
@@ -95,7 +95,7 @@ const CheckItem = (props: Props) => {
           }
         `
       };
-      console.log(requestBody);
+
       const res = await fetch('http://localhost:3000/graphql', {
         body: JSON.stringify(requestBody),
         method: "POST",
@@ -109,7 +109,7 @@ const CheckItem = (props: Props) => {
       if (apiData.errors) {
         throw new Error(apiData.errors[0].message);
       }
-      console.log("add successfully")
+
       setIsInBook(true);
     } catch(error) {
       console.log("add to recipe failed", error);

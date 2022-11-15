@@ -58,7 +58,6 @@ const Feed = (props: Props) => {
           tags: item.tags,
         }))
 
-        console.log(newList);
         setRecipeList([...newList]);
       } catch (error) {
         console.log("Error on fetching recipe", error);
@@ -70,10 +69,8 @@ const Feed = (props: Props) => {
      * Check if the user is authenticated, and get logged-in user detail
      */
     const setUserData = async () => {
-      console.log("setUserData in Feed.tsx called");
       try {
         const { user } = await currentAuthenticatedUser();
-        console.log(user)
         setUsername(user);
       } catch (e) {
         if (typeof e === "string") {

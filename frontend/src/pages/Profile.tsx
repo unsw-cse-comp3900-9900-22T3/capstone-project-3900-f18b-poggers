@@ -64,7 +64,6 @@ const Profile = (props: Props) => {
           tags: item.tags,
         }))
 
-        console.log(newList);
         setRecipeList([...newList]);
         setIsUserValid(true);
       } catch (error) {
@@ -152,7 +151,6 @@ const Profile = (props: Props) => {
      * Check if the user is authenticated, and get logged-in user detail
      */
     const setUserData = async () => {
-      console.log("setUserData in Feed.tsx called");
       try {
         const { user } = await currentAuthenticatedUser();
 

@@ -153,7 +153,6 @@ const RecipeCarousel = (props: Props) => {
         if (props.categoryTagId !== undefined) {
           // all api calls are done
           setLoading(false);
-          console.log([...apiData.data.getListRecipeByTags]);
         }
       } catch (error) {
         console.log("Get recipe carousel failed,", error);

@@ -20,7 +20,7 @@ type Props = {
 
 const RecipeBook = (props: Props) => {
   return (
-    <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}} onClick={() => {console.log("clicked"); props.changeSelectedBook(props.id)}}> 
+    <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#4F4F4F"}} onClick={() => {props.changeSelectedBook(props.id)}}> 
       {/* Background colour changes when hovering, and toggles on click */}
       <Grid item container
         sx={{
