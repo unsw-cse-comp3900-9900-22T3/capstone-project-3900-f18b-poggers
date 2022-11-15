@@ -197,7 +197,6 @@ const Register = (props: Props) => {
               label="Username"
               name="username"
               autoComplete="username"
-            // onChange={(e) => setUsername(e.target.value)}
             />
 
             <TextField
