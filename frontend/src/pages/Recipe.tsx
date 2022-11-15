@@ -445,7 +445,6 @@ const Recipe = (props: Props) => {
                   </IconButton>
                 </Box>
                 :
-                // <Box sx={likeStyles}>
                 <>
                   <Box sx={likeStylesUnAuth}>
                     <Grid container direction="row" alignItems="center">
@@ -456,7 +455,6 @@ const Recipe = (props: Props) => {
                     </Grid>
                   </Box>
                 </>
-                // <Box>
               }
             </Box>
           </Box>
