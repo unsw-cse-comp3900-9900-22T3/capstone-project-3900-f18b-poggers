@@ -262,15 +262,15 @@ module.exports = {
   getListReccommendRecipe: async (args) => {
     const recipeById = await Recipe.findById(args.recipeID);
 
-    stringReplace = ['[',']','"'];
-    content =  recipeById.content.replaceAll(',','');
+    stringReplace = ['[', ']', '"'];
+    content = recipeById.content.replaceAll(',', '');
 
     for (let index = 0; index < stringReplace.length; index++) {
-      content =  content.replaceAll(stringReplace[index],' ');
+      content = content.replaceAll(stringReplace[index], ' ');
     }
 
     const recipes = await Recipe.find(
-      { $text: { $search: content} },
+      { $text: { $search: content } },
       { score: { $meta: "textScore" } }
     ).sort({ score: { $meta: "textScore" } });
     return recipes.map(async (recipe) => {

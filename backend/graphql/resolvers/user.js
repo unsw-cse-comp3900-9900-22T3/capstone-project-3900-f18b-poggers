@@ -75,8 +75,8 @@ module.exports = {
     }
 
     if (authUser.listFollowing.includes(followUsername.username)) {
-      authUser.listFollowing = authUser.listFollowing.filter( (username) => username !== followUsername.username);
-      followUsername.listFollower = followUsername.listFollower.filter( (username) => username !== authUser.username);
+      authUser.listFollowing = authUser.listFollowing.filter((username) => username !== followUsername.username);
+      followUsername.listFollower = followUsername.listFollower.filter((username) => username !== authUser.username);
     } else {
       authUser.listFollowing.push(followUsername.username);
       followUsername.listFollower.push(authUser.username);
@@ -117,7 +117,7 @@ module.exports = {
     };
   },
 
-  isUserAuth: async (args,req) => {
+  isUserAuth: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");
     }
@@ -129,5 +129,5 @@ module.exports = {
       numberFollower: user.listFollower.length,
     };
   },
-  
+
 };
