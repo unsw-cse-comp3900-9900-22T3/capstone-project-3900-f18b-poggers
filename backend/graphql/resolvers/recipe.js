@@ -276,6 +276,7 @@ module.exports = {
       { $text: { $search: content } },
       { score: { $meta: "textScore" } }
     ).sort({ score: { $meta: "textScore" } });
+    recipes = recipes.filter(recipe => recipe._id.toString() !== args.recipeID);
     return recipes.map(async (recipe) => {
       // query and sort list of tags
       const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
