@@ -423,7 +423,8 @@ const Recipe = (props: Props) => {
             />
           </Card>
           <Box sx={{ display: "flex" }}>
-            <Box sx={{ display: "flex", width: "50%" }}>
+
+            <Box sx={{ minWidth:'70%', display: "flex", flexWrap: 'wrap'}}>
               {tags.map((tag, key) =>
                 <Box sx={tagStyles} key={key}>
                   <Typography variant='body2'>
@@ -431,11 +432,11 @@ const Recipe = (props: Props) => {
                   </Typography>
                 </Box>
               )}
-
             </Box>
+
             <Box sx={{
               display: "flex",
-              width: "50%",
+              width: "30%",
               alignItems: "flex-end",
               flexDirection: "column"
             }}>

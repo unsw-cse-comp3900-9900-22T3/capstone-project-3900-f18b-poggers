@@ -5,7 +5,7 @@ import RecipeContents from '../components/recipe/RecipeContents';
 import { useNavigate } from 'react-router-dom';
 import Image from 'mui-image';
 import { currentAuthenticatedUser } from '../util/currentAuthenticatedUser';
-import { Tag } from '../types/instacook-types';
+import { Tag, TagObj } from '../types/instacook-types';
 type Props = {}
 
 const CreateRecipe = (props: Props) => {
@@ -17,13 +17,11 @@ const CreateRecipe = (props: Props) => {
   const [ingredients, setIngredients] = React.useState<string[]>([]);
   const [instructions, setInstructions] = React.useState<string[]>([]);
   const [preview, setPreview] = React.useState<string>("");
-  const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
-  const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
+  // const [ingredientsData, setIngredientsData] = React.useState<string[]>([]);
+  // const [instructionsData, setInstructionsData] = React.useState<string[]>([]);
   const [imgData, setImgData] = React.useState<any>('');
-
-  const [tags, setTags] = React.useState<string[]>([]);
-  const [tagsText, setTagsText] = React.useState<string[]>([]);
-  const [allTags, setAllTags] = React.useState<Tag[]>([]);
+  const [tagOptions, setTagOptions] = React.useState<TagObj>({});
+  const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     const setUserData = async () => {
@@ -32,29 +30,8 @@ const CreateRecipe = (props: Props) => {
         console.log(user)
         setUsername(user);
 
-        const requestBody = {
-          query: `
-            query{
-              getTags {
-                  _id
-                  content
-              }
-          }
-          `
-        }
+        loadTags();
 
-        const res = await fetch('http://localhost:3000/graphql', {
-          body: JSON.stringify(requestBody),
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-        const apiData = await res.json();
-        if (apiData.errors) {
-          throw new Error(apiData.errors[0].message);
-        }
-        setAllTags(apiData.data.getTags);
       } catch (e) {
         if (typeof e === "string") {
           console.log(e);
@@ -76,9 +53,78 @@ const CreateRecipe = (props: Props) => {
     backgroundColor: "#d3d3d3",
   }
 
+  const loadTags = async () => {
+    const body = {
+      query: `
+        query {
+          getTags {
+            _id
+            content
+          }
+        }
+      `
+    }
+
+    const res = await fetch('http://localhost:3000/graphql', {
+      body: JSON.stringify(body),
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const apiData = await res.json();
+
+    if (apiData.errors) {
+      throw new Error(apiData.errors[0].message);
+    }
+
+    // create custom tag object
+    const tagArr: Tag[] = apiData.data.getTags;
+    const tags: TagObj = {}
+
+    tagArr.map((tag: Tag) => (
+      tags[tag.content] = tag._id
+    ))
+    setTagOptions(tags);
+    console.log("cleared")
+  }
+
+  const handleTagAdd = (tags: string[]) => {
+    setSelectedValues([...tags])
+  }
+
+  const handleTagCreation = async (tag: String) => {
+    const requestBody = {
+      query: `
+      mutation {
+        createTag(tagName: "${tag}")
+      }
+      `
+    }
+    try {
+      const res = await fetch('http://localhost:3000/graphql', {
+        body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const apiData = await res.json();
+      if (apiData.errors) {
+        throw new Error(apiData.errors[0].message);
+      }
+      loadTags();
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const handleCreateRecipe = async () => {
     const d = new Date();
-    const tagsData = tags.map(i => `"${i}"`);
+    const tagsData = selectedValues.map(i => `"${i}"`);
+    const ingredientsData = ingredients.map(i => `"${i}"`);
+    const instructionsData = instructions.map(i => `"${i}"`);
     const requestBody = {
       query: `
         mutation {
@@ -128,7 +174,7 @@ const CreateRecipe = (props: Props) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     console.log(formData.get("instruction"))
-    setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
+    // setInstructionsData([...instructionsData, JSON.stringify(formData.get("instruction"))]);
     setInstructions([...instructions, JSON.parse(JSON.stringify(formData.get("instruction")))]);
   };
 
@@ -136,51 +182,27 @@ const CreateRecipe = (props: Props) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     console.log(formData.get("ingredient"))
-    setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
+    // setIngredientsData([...ingredientsData, JSON.stringify(formData.get("ingredient"))]);
     setIngredients([...ingredients, JSON.parse(JSON.stringify(formData.get("ingredient")))]);
-  };
-
-  const handleTag = (newTag : string) => {
-    let newTagText = "";
-    for (let tag of allTags) {
-      if (tag._id === newTag  && tag.content) {
-        newTagText = tag.content
-      }
-    }
-    const copy = [...tags];
-    const copyTagsText = [...tagsText]
-    let index = copy.indexOf(newTag)
-    let indexTagsText = copyTagsText.indexOf(newTagText)
-    if (index > -1) {
-      console.log("removed tag")
-      copy.splice(index,1)
-      copyTagsText.splice(indexTagsText, 1)
-      setTags(copy)
-      setTagsText(copyTagsText)
-    } else {
-      console.log("added tag")
-      setTags([...tags, newTag])
-      setTagsText([...tagsText, newTagText])
-    }
   };
 
   const handleRemoveIngredient = () => {
     const copy = [...ingredients];
-    const copyData = [...ingredientsData];
+    // const copyData = [...ingredientsData];
     copy.pop();
-    copyData.pop();
+    // copyData.pop();
     setIngredients(copy);
-    setIngredientsData(copyData);
+    // setIngredientsData(copyData);
 
   };
 
   const handleRemoveInstruction = () => {
     const copy = [...instructions];
-    const copyData = [...instructionsData];
+    // const copyData = [...instructionsData];
     copy.pop();
-    copyData.pop();
+    // copyData.pop();
     setInstructions(copy);
-    setInstructionsData(copyData);
+    // setInstructionsData(copyData);
 
   };
 
@@ -288,13 +310,14 @@ const CreateRecipe = (props: Props) => {
             <RecipeContents
               ingredients={ingredients}
               instructions={instructions}
-              tags={tagsText}
-              allTags={allTags}
               handleInstruction={handleInstruction}
               handleIngredient={handleIngredient}
               handleRemoveIngredient={handleRemoveIngredient}
               handleRemoveInstruction={handleRemoveInstruction}
-              handleTag={handleTag}
+              handleTagCreation={handleTagCreation}
+              tagOptions={tagOptions}
+              selectedValues={selectedValues}
+              handleTagAdd={handleTagAdd}
             />
 
             <Box
