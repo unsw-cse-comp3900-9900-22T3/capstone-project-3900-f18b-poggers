@@ -14,6 +14,37 @@ import { red } from '@mui/material/colors';
 import SimilarRecipeCarousel from '../components/recipe/SimilarRecipeCarousel'
 type Props = {}
 
+const tagStyles = {
+  display: "flex",
+  backgroundColor: '#28343c',
+  paddingRight: 1,
+  paddingLeft: 1,
+  borderRadius: 2,
+  color: '#FFF',
+  margin: 0.5,
+  justifyItems: "center",
+  alignItems: "center",
+}
+
+const likeStyles = {
+  backgroundColor: '#FFF',
+  padding: 0,
+  borderRadius: 2,
+  color: '#28343c',
+  margin: 0.5,
+  minWidth: "50px",
+  justifyItems: "center",
+}
+
+const likeStylesUnAuth = {
+  backgroundColor: '#FFF',
+  padding: 0,
+  borderRadius: 2,
+  color: '#28343c',
+  margin: 0.5,
+  minWidth: "60px",
+}
+
 const Recipe = (props: Props) => {
   const navigate = useNavigate();
   const { recipeId } = useParams();
@@ -276,37 +307,6 @@ const Recipe = (props: Props) => {
 
   }
 
-  const tagStyles = {
-    display: "flex",
-    backgroundColor: '#28343c',
-    paddingRight: 1,
-    paddingLeft: 1,
-    borderRadius: 2,
-    color: '#FFF',
-    margin: 0.5,
-    justifyItems: "center",
-    alignItems: "center",
-  }
-
-  const likeStyles = {
-    backgroundColor: '#FFF',
-    padding: 0,
-    borderRadius: 2,
-    color: '#28343c',
-    margin: 0.5,
-    minWidth: "50px",
-    justifyItems: "center",
-  }
-
-  const likeStylesUnAuth = {
-    backgroundColor: '#FFF',
-    padding: 0,
-    borderRadius: 2,
-    color: '#28343c',
-    margin: 0.5,
-    minWidth: "60px",
-  }
-
   return (
     <Grid
       container
@@ -379,7 +379,8 @@ const Recipe = (props: Props) => {
             />
           </Card>
           <Box sx={{ display: "flex" }}>
-            <Box sx={{ display: "flex", width: "50%" }}>
+
+            <Box sx={{ minWidth: '70%', display: "flex", flexWrap: 'wrap' }}>
               {tags.map((tag, key) =>
                 <Box sx={tagStyles} key={key}>
                   <Typography variant='body2'>
@@ -387,11 +388,11 @@ const Recipe = (props: Props) => {
                   </Typography>
                 </Box>
               )}
-
             </Box>
+
             <Box sx={{
               display: "flex",
-              width: "50%",
+              width: "30%",
               alignItems: "flex-end",
               flexDirection: "column"
             }}>
