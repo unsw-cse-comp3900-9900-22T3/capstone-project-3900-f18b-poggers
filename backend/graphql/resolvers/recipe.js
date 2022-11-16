@@ -192,10 +192,6 @@ module.exports = {
   },
 
   getListRecipeByTitle: async (args) => {
-    /* const recipes = await Recipe.find(
-      { $text: { $search: args.keywords } },
-      { score: { $meta: "textScore" } }
-    ).sort({ score: { $meta: "textScore" } }); */
     const recipes = await Recipe.find(
       { $text: { $search: args.keywords } },
     ).sort({ numberLike: -1, dateCreated: -1 });
@@ -215,11 +211,11 @@ module.exports = {
       content = content.replaceAll(stringReplace[index], ' ');
     }
 
-    const recipes = await Recipe.find(
+    let recipes = await Recipe.find(
       { $text: { $search: content } },
       { score: { $meta: "textScore" } }
     ).sort({ score: { $meta: "textScore" } });
-    recipes = recipes.filter(recipe => recipe._id.toString() !== args.recipeID);
+    recipes = recipes.filter((recipe) => recipe._id.toString() !== args.recipeID);
     return recipes.map(async (recipe) => {
       const contributor = await User.findById(recipe.contributor);
       return await toRecipeThumbnail(recipe, contributor.username);
