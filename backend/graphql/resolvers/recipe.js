@@ -4,15 +4,58 @@ const Tag = require("../../models/tag.js");
 const Comment = require("../../models/comment.js");
 
 // helper functions
-const getTagNames = async (tags) => {
-  const sortedListTag = await Tag.find({ _id: { $in: tags } }).sort({
-  content: 1,
+const getTagNames = async (listTagID) => {
+  const sortedListTag = await Tag.find({ _id: { $in: listTagID } }).sort({
+    content: 1,
   });
   const tagNames = sortedListTag.map((tag) => {
     return tag.content;
   });
   return tagNames;
 }
+
+const getComments = async (listCommentID) => {
+  const sortedListComment = await Comment.find({
+    _id: { $in: listCommentID }
+  }).sort({ dateCreated: -1 });
+  const comments = sortedListComment.map((comment) => {
+    return {
+      userName: comment.userName,
+      recipeID: comment.recipeID,
+      content: comment.content,
+      dateCreated: comment.dateCreated.toISOString(),
+    };
+  });
+  return comments;
+}
+
+const toRecipeDetail = async (recipe, username) => {
+  return {
+    _id: recipe._id,
+    image: recipe.image,
+    contributorUsername: username,
+    title: recipe.title,
+    content: recipe.content,
+    numberLike: recipe.numberLike,
+    tags: await getTagNames(recipe.tags),
+    dateCreated: recipe.dateCreated.toISOString(),
+    listComments: await getComments(recipe.listComments),
+  };
+}
+
+const toRecipeThumbnail = async (recipe, username) => {
+  return {
+    _id: recipe._id,
+    image: recipe.image,
+    contributorUsername: username,
+    title: recipe.title,
+    content: recipe.content,
+    numberLike: recipe.numberLike,
+    tags: await getTagNames(recipe.tags),
+  };
+}
+
+
 
 module.exports = {
   createRecipe: async (args, req) => {
@@ -41,17 +84,7 @@ module.exports = {
       authUser.listRecipes.push(recipe);
       await authUser.save();
 
-      return {
-        _id: recipe._id,
-        title: recipe.title,
-        image: recipe.image,
-        content: recipe.content,
-        dateCreated: recipe.dateCreated.toISOString(),
-        contributorUsername: authUser.username,
-        numberLike: 0,
-        listComments: [],
-        tags: await getTagNames(recipe.tags),
-      };
+      return await toRecipeDetail(recipe, authUser.username);
     } catch (err) {
       console.log(err);
       throw err;
@@ -62,30 +95,7 @@ module.exports = {
     const recipe = await Recipe.findById(args.recipeID);
     const contributor = await User.findById(recipe.contributor);
 
-    // query and sort list of comments
-    const sortedListComment = await Comment.find({
-      _id: { $in: recipe.listComments },
-    }).sort({ dateCreated: -1 });
-    const comments = sortedListComment.map((comment) => {
-      return {
-        userName: comment.userName,
-        recipeID: comment.recipeID,
-        content: comment.content,
-        dateCreated: comment.dateCreated.toISOString(),
-      };
-    });
-
-    return {
-      _id: recipe._id,
-      title: recipe.title,
-      image: recipe.image,
-      content: recipe.content,
-      dateCreated: recipe.dateCreated.toISOString(),
-      contributorUsername: contributor.username,
-      numberLike: recipe.numberLike,
-      listComments: comments,
-      tags: await getTagNames(recipe.tags),
-    };
+    return await toRecipeDetail(recipe, contributor.username);
   },
 
   getListRecipeByContributor: async (args) => {
@@ -102,15 +112,7 @@ module.exports = {
     }).sort({ dateCreated: -1, numberLike: -1 });
 
     return (await sortedListRecipe).map(async (recipe) => {
-      return {
-        _id: recipe._id,
-        contributorUsername: user.username,
-        image: recipe.image,
-        title: recipe.title,
-        content: recipe.content,
-        numberLike: recipe.numberLike,
-        tags: await getTagNames(recipe.tags),
-      };
+      return await toRecipeThumbnail(recipe, user.username);
     });
   },
 
@@ -136,15 +138,7 @@ module.exports = {
     }).sort({ dateCreated: -1, numberLike: -1 });
     return sortedNewsFeed.map(async (recipe) => {
       const contributor = await User.findById(recipe.contributor);
-      return {
-        _id: recipe._id,
-        contributorUsername: contributor.username,
-        title: recipe.title,
-        image: recipe.image,
-        content: recipe.content,
-        numberLike: recipe.numberLike,
-        tags: await getTagNames(recipe.tags),
-      };
+      return await toRecipeThumbnail(recipe, contributor.username);
     });
   },
 
@@ -193,15 +187,7 @@ module.exports = {
     }).sort({ numberLike: -1, dateCreated: -1 });
     return sortedListRecipe.map(async (recipe) => {
       const contributor = await User.findById(recipe.contributor);
-      return {
-        _id: recipe._id,
-        contributorUsername: contributor.username,
-        image: recipe.image,
-        title: recipe.title,
-        content: recipe.content,
-        numberLike: recipe.numberLike,
-        tags: await getTagNames(recipe.tags),
-      };
+      return await toRecipeThumbnail(recipe, contributor.username);
     });
   },
 
@@ -215,15 +201,7 @@ module.exports = {
     ).sort({ numberLike: -1, dateCreated: -1 });
     return recipes.map(async (recipe) => {
       const contributor = await User.findById(recipe.contributor);
-      return {
-        _id: recipe._id,
-        contributorUsername: contributor.username,
-        image: recipe.image,
-        title: recipe.title,
-        content: recipe.content,
-        numberLike: recipe.numberLike,
-        tags: await getTagNames(recipe.tags),
-      };
+      return await toRecipeThumbnail(recipe, contributor.username);
     });
   },
 
@@ -244,15 +222,7 @@ module.exports = {
     recipes = recipes.filter(recipe => recipe._id.toString() !== args.recipeID);
     return recipes.map(async (recipe) => {
       const contributor = await User.findById(recipe.contributor);
-      return {
-        _id: recipe._id,
-        contributorUsername: contributor.username,
-        image: recipe.image,
-        title: recipe.title,
-        content: recipe.content,
-        numberLike: recipe.numberLike,
-        tags: await getTagNames(recipe.tags),
-      };
+      return await toRecipeThumbnail(recipe, contributor.username);
     });
   },
 
