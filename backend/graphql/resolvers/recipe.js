@@ -55,8 +55,6 @@ const toRecipeThumbnail = async (recipe, username) => {
   };
 }
 
-
-
 module.exports = {
   createRecipe: async (args, req) => {
     if (!req.isAuth) {
@@ -91,6 +89,22 @@ module.exports = {
     }
   },
 
+  updateRecipe: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
+    }
+
+    const recipe = await Recipe.findById(args.recipeID);
+    recipe.dateCreated = new Date(args.recipeInput.dateCreated);
+    recipe.title = args.recipeInput.title;
+    recipe.content = args.recipeInput.content;
+    recipe.tags = args.recipeInput.tags;
+    recipe.image = args.recipeInput.image;
+
+    await recipe.save();
+    return true;
+  },
+
   getRecipeById: async (args) => {
     const recipe = await Recipe.findById(args.recipeID);
     const contributor = await User.findById(recipe.contributor);
@@ -113,6 +127,26 @@ module.exports = {
 
     return (await sortedListRecipe).map(async (recipe) => {
       return await toRecipeThumbnail(recipe, user.username);
+    });
+  },
+
+  getListRecipeByTags: async (args) => {
+    const sortedListRecipe = await Recipe.find({
+      tags: { $all: args.tags },
+    }).sort({ numberLike: -1, dateCreated: -1 });
+    return sortedListRecipe.map(async (recipe) => {
+      const contributor = await User.findById(recipe.contributor);
+      return await toRecipeThumbnail(recipe, contributor.username);
+    });
+  },
+
+  getListRecipeByTitle: async (args) => {
+    const recipes = await Recipe.find(
+      { $text: { $search: args.keywords } },
+    ).sort({ numberLike: -1, dateCreated: -1 });
+    return recipes.map(async (recipe) => {
+      const contributor = await User.findById(recipe.contributor);
+      return await toRecipeThumbnail(recipe, contributor.username);
     });
   },
 
@@ -142,6 +176,27 @@ module.exports = {
     });
   },
 
+  getListReccommendRecipe: async (args) => {
+    const recipeById = await Recipe.findById(args.recipeID);
+
+    stringReplace = ['[', ']', '"'];
+    content = recipeById.content.replaceAll(',', '');
+
+    for (let index = 0; index < stringReplace.length; index++) {
+      content = content.replaceAll(stringReplace[index], ' ');
+    }
+
+    let recipes = await Recipe.find(
+      { $text: { $search: content } },
+      { score: { $meta: "textScore" } }
+    ).sort({ score: { $meta: "textScore" } });
+    recipes = recipes.filter((recipe) => recipe._id.toString() !== args.recipeID);
+    return recipes.map(async (recipe) => {
+      const contributor = await User.findById(recipe.contributor);
+      return await toRecipeThumbnail(recipe, contributor.username);
+    });
+  },
+
   likeRecipe: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");
@@ -163,63 +218,6 @@ module.exports = {
     await recipe.save();
 
     return true;
-  },
-
-  updateRecipe: async (args, req) => {
-    if (!req.isAuth) {
-      throw new Error("Unauthenticated!");
-    }
-
-    const recipe = await Recipe.findById(args.recipeID);
-    recipe.dateCreated = new Date(args.recipeInput.dateCreated);
-    recipe.title = args.recipeInput.title;
-    recipe.content = args.recipeInput.content;
-    recipe.tags = args.recipeInput.tags;
-    recipe.image = args.recipeInput.image;
-
-    await recipe.save();
-    return true;
-  },
-
-  getListRecipeByTags: async (args) => {
-    const sortedListRecipe = await Recipe.find({
-      tags: { $all: args.tags },
-    }).sort({ numberLike: -1, dateCreated: -1 });
-    return sortedListRecipe.map(async (recipe) => {
-      const contributor = await User.findById(recipe.contributor);
-      return await toRecipeThumbnail(recipe, contributor.username);
-    });
-  },
-
-  getListRecipeByTitle: async (args) => {
-    const recipes = await Recipe.find(
-      { $text: { $search: args.keywords } },
-    ).sort({ numberLike: -1, dateCreated: -1 });
-    return recipes.map(async (recipe) => {
-      const contributor = await User.findById(recipe.contributor);
-      return await toRecipeThumbnail(recipe, contributor.username);
-    });
-  },
-
-  getListReccommendRecipe: async (args) => {
-    const recipeById = await Recipe.findById(args.recipeID);
-
-    stringReplace = ['[', ']', '"'];
-    content = recipeById.content.replaceAll(',', '');
-
-    for (let index = 0; index < stringReplace.length; index++) {
-      content = content.replaceAll(stringReplace[index], ' ');
-    }
-
-    let recipes = await Recipe.find(
-      { $text: { $search: content } },
-      { score: { $meta: "textScore" } }
-    ).sort({ score: { $meta: "textScore" } });
-    recipes = recipes.filter((recipe) => recipe._id.toString() !== args.recipeID);
-    return recipes.map(async (recipe) => {
-      const contributor = await User.findById(recipe.contributor);
-      return await toRecipeThumbnail(recipe, contributor.username);
-    });
   },
 
   isRecipeLiked: async (args, req) => {
