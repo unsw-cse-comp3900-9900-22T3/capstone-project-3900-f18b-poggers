@@ -3,6 +3,17 @@ const User = require("../../models/user");
 const Tag = require("../../models/tag.js");
 const Comment = require("../../models/comment.js");
 
+// helper functions
+const getTagNames = async (tags) => {
+  const sortedListTag = await Tag.find({ _id: { $in: tags } }).sort({
+  content: 1,
+  });
+  const tagNames = sortedListTag.map((tag) => {
+    return tag.content;
+  });
+  return tagNames;
+}
+
 module.exports = {
   createRecipe: async (args, req) => {
     if (!req.isAuth) {
@@ -30,13 +41,6 @@ module.exports = {
       authUser.listRecipes.push(recipe);
       await authUser.save();
 
-      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
-        content: 1,
-      });
-      const tagNames = sortedListTag.map((tag) => {
-        return tag.content;
-      });
-
       return {
         _id: recipe._id,
         title: recipe.title,
@@ -46,7 +50,7 @@ module.exports = {
         contributorUsername: authUser.username,
         numberLike: 0,
         listComments: [],
-        tags: tagNames,
+        tags: await getTagNames(recipe.tags),
       };
     } catch (err) {
       console.log(err);
@@ -57,14 +61,6 @@ module.exports = {
   getRecipeById: async (args) => {
     const recipe = await Recipe.findById(args.recipeID);
     const contributor = await User.findById(recipe.contributor);
-
-    // query and sort list of tags
-    const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
-      content: 1,
-    });
-    const tagNames = sortedListTag.map((tag) => {
-      return tag.content;
-    });
 
     // query and sort list of comments
     const sortedListComment = await Comment.find({
@@ -88,7 +84,7 @@ module.exports = {
       contributorUsername: contributor.username,
       numberLike: recipe.numberLike,
       listComments: comments,
-      tags: tagNames,
+      tags: await getTagNames(recipe.tags),
     };
   },
 
@@ -106,13 +102,6 @@ module.exports = {
     }).sort({ dateCreated: -1, numberLike: -1 });
 
     return (await sortedListRecipe).map(async (recipe) => {
-      // query and sort list of tags
-      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
-        content: 1,
-      });
-      const tagNames = sortedListTag.map((tag) => {
-        return tag.content;
-      });
       return {
         _id: recipe._id,
         contributorUsername: user.username,
@@ -120,7 +109,7 @@ module.exports = {
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.numberLike,
-        tags: tagNames,
+        tags: await getTagNames(recipe.tags),
       };
     });
   },
@@ -146,14 +135,6 @@ module.exports = {
       _id: { $in: listRecipeID },
     }).sort({ dateCreated: -1, numberLike: -1 });
     return sortedNewsFeed.map(async (recipe) => {
-      // query and sort list of tags
-      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
-        content: 1,
-      });
-      const tagNames = sortedListTag.map((tag) => {
-        return tag.content;
-      });
-
       const contributor = await User.findById(recipe.contributor);
       return {
         _id: recipe._id,
@@ -162,7 +143,7 @@ module.exports = {
         image: recipe.image,
         content: recipe.content,
         numberLike: recipe.numberLike,
-        tags: tagNames,
+        tags: await getTagNames(recipe.tags),
       };
     });
   },
@@ -211,14 +192,6 @@ module.exports = {
       tags: { $all: args.tags },
     }).sort({ numberLike: -1, dateCreated: -1 });
     return sortedListRecipe.map(async (recipe) => {
-      // query and sort list of tags
-      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
-        content: 1,
-      });
-      const tagNames = sortedListTag.map((tag) => {
-        return tag.content;
-      });
-
       const contributor = await User.findById(recipe.contributor);
       return {
         _id: recipe._id,
@@ -227,7 +200,7 @@ module.exports = {
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.numberLike,
-        tags: tagNames,
+        tags: await getTagNames(recipe.tags),
       };
     });
   },
@@ -241,14 +214,6 @@ module.exports = {
       { $text: { $search: args.keywords } },
     ).sort({ numberLike: -1, dateCreated: -1 });
     return recipes.map(async (recipe) => {
-      // query and sort list of tags
-      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
-        content: 1,
-      });
-      const tagNames = sortedListTag.map((tag) => {
-        return tag.content;
-      });
-
       const contributor = await User.findById(recipe.contributor);
       return {
         _id: recipe._id,
@@ -257,7 +222,7 @@ module.exports = {
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.numberLike,
-        tags: tagNames,
+        tags: await getTagNames(recipe.tags),
       };
     });
   },
@@ -278,14 +243,6 @@ module.exports = {
     ).sort({ score: { $meta: "textScore" } });
     recipes = recipes.filter(recipe => recipe._id.toString() !== args.recipeID);
     return recipes.map(async (recipe) => {
-      // query and sort list of tags
-      const sortedListTag = await Tag.find({ _id: { $in: recipe.tags } }).sort({
-        content: 1,
-      });
-      const tagNames = sortedListTag.map((tag) => {
-        return tag.content;
-      });
-
       const contributor = await User.findById(recipe.contributor);
       return {
         _id: recipe._id,
@@ -294,7 +251,7 @@ module.exports = {
         title: recipe.title,
         content: recipe.content,
         numberLike: recipe.numberLike,
-        tags: tagNames,
+        tags: await getTagNames(recipe.tags),
       };
     });
   },
