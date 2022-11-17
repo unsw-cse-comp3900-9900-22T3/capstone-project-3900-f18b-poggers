@@ -15,12 +15,12 @@ import UpdateRecipe from './pages/UpdateRecipe';
 import Discovery from './pages/Discovery';
 import Search from './pages/Search';
 import SavedRecipes from './pages/SavedRecipes';
-import theme from './themes/Theme';
+import Theme from './themes/Theme';
 
 const App = () => {
   return (
     <Router>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={Theme}>
         <Nav />
         <Routes>
           <Route path="/" element={<Discovery />} />
