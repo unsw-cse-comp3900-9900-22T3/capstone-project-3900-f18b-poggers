@@ -92,7 +92,7 @@ const Recipe = (props: Props) => {
           `
         }
 
-        const res = await fetch('http://localhost:3000/graphql', {
+        const res = await fetch('http://localhost:6921/graphql', {
           body: JSON.stringify(requestBody),
           method: "POST",
           headers: {
@@ -132,7 +132,7 @@ const Recipe = (props: Props) => {
       }
 
       try {
-        const res2 = await fetch('http://localhost:3000/graphql', {
+        const res2 = await fetch('http://localhost:6921/graphql', {
           body: JSON.stringify(requestBody2),
           method: "POST",
           headers: {
@@ -170,7 +170,7 @@ const Recipe = (props: Props) => {
             }
           `
         };
-        const res = await fetch('http://localhost:3000/graphql', {
+        const res = await fetch('http://localhost:6921/graphql', {
           body: JSON.stringify(requestBody),
           method: "POST",
           headers: {
@@ -266,7 +266,7 @@ const Recipe = (props: Props) => {
       `
     }
     try {
-      const res = await fetch('http://localhost:3000/graphql', {
+      const res = await fetch('http://localhost:6921/graphql', {
         body: JSON.stringify(requestBody),
         method: "POST",
         headers: {
@@ -305,7 +305,7 @@ const Recipe = (props: Props) => {
       `
     }
     try {
-      const res = await fetch('http://localhost:3000/graphql', {
+      const res = await fetch('http://localhost:6921/graphql', {
         body: JSON.stringify(requestBody),
         method: "POST",
         headers: {

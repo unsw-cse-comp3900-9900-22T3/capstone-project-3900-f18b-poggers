@@ -10,6 +10,8 @@ const isAuth = require("./middleware/isAuthentication");
 
 const app = express();
 
+const BACKEND_PORT = 6921;
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
@@ -37,7 +39,7 @@ mongoose
     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.hmp3jml.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`
   )
   .then(() => {
-    app.listen(3000);
+    app.listen(BACKEND_PORT);
   })
   .catch((err) => {
     console.log(err);

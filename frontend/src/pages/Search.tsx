@@ -44,7 +44,7 @@ const Search = (_props: Props) => {
           }
         `
       }
-      const res = await fetch('http://localhost:3000/graphql', {
+      const res = await fetch('http://localhost:6921/graphql', {
         body: JSON.stringify(body),
         method: "POST",
         headers: {
@@ -82,7 +82,7 @@ const Search = (_props: Props) => {
       }
 
 
-      const res = await fetch('http://localhost:3000/graphql', {
+      const res = await fetch('http://localhost:6921/graphql', {
         body: JSON.stringify(body),
         method: "POST",
         headers: {
@@ -130,7 +130,7 @@ const Search = (_props: Props) => {
         `
       }
 
-      const res = await fetch('http://localhost:3000/graphql', {
+      const res = await fetch('http://localhost:6921/graphql', {
         body: JSON.stringify(body),
         method: "POST",
         headers: {
