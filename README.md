@@ -47,3 +47,5 @@
 7. Select the “Connect your application” option.
 8. Take note of the username, password and database name and replace the values in `nodemon.json` with these values, replacing `<password>` with your user’s password.
 
+# Side Notes
+- The application might become a bit slow/unresponsive if many recipes are uploaded with a free MongoDB database (i.e. Shared Cluster).
