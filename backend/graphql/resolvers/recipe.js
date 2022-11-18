@@ -212,11 +212,12 @@ module.exports = {
   getListReccommendRecipe: async (args) => {
     const recipeById = await Recipe.findById(args.recipeID);
 
-    stringReplace = ['[', ']', '"'];
-    content = recipeById.content.replaceAll(',', '');
+    const stringReplace = ['\\[', '\\]', '"'];
+    let content = recipeById.content.replace(/,/g, '');
 
     for (let index = 0; index < stringReplace.length; index++) {
-      content = content.replaceAll(stringReplace[index], ' ');
+      const regex = new RegExp(stringReplace[index], 'g');
+      content = content.replace(regex, ' ');
     }
 
     let recipes = await Recipe.find(

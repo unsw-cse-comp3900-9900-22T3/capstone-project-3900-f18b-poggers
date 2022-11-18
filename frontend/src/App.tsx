@@ -1,4 +1,4 @@
-import { createTheme, ThemeProvider } from '@mui/material';
+import { ThemeProvider } from '@mui/material';
 import {
   BrowserRouter as Router,
   Routes,
@@ -15,50 +15,12 @@ import UpdateRecipe from './pages/UpdateRecipe';
 import Discovery from './pages/Discovery';
 import Search from './pages/Search';
 import SavedRecipes from './pages/SavedRecipes';
-
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      light: '#4f5b62',
-      main: '#263238',
-      dark: '#000a12',
-      contrastText: '#ffffff',
-    },
-    secondary: {
-      light: '#6f74dd',
-      main: '#3949ab',
-      dark: '#00227b',
-      contrastText: '#ffffff',
-    },
-  },
-  typography: {
-    fontFamily: `"Inter", "Roboto", "Helvetica Neue", "Arial", sans-serif`,
-    h1: {
-      fontFamily: `"Open Sans", "Roboto", "Helvetica Neue", "Arial", sans-serif`
-    },
-    h2: {
-      fontFamily: `"Open Sans", "Roboto", "Helvetica Neue", "Arial", sans-serif`
-    },
-    h3: {
-      fontFamily: `"Open Sans", "Roboto", "Helvetica Neue", "Arial", sans-serif`
-    },
-    h4: {
-      fontFamily: `"Open Sans", "Roboto", "Helvetica Neue", "Arial", sans-serif`
-    },
-    h5: {
-      fontFamily: `"Open Sans", "Roboto", "Helvetica Neue", "Arial", sans-serif`
-    },
-    h6: {
-      fontFamily: `"Open Sans", "Roboto", "Helvetica Neue", "Arial", sans-serif`
-    },
-  }
-});
+import Theme from './themes/Theme';
 
 const App = () => {
   return (
     <Router>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={Theme}>
         <Nav />
         <Routes>
           <Route path="/" element={<Discovery />} />
