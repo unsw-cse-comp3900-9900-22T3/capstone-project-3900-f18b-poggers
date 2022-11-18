@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../../models/user");
 
 module.exports = {
+  // create a new user
   createUser: async (args) => {
     try {
       const existingUser = await User.findOne({
@@ -34,6 +35,7 @@ module.exports = {
     }
   },
 
+  // login a user
   login: async ({ username, password }) => {
     // Look at the database to find existing user
     const user = await User.findOne({ username: username });
@@ -60,6 +62,8 @@ module.exports = {
     };
   },
 
+  // follow another user by a logged in user
+  // if the logged in user is already following the other user, unfollow the other user
   follow: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");
@@ -75,8 +79,12 @@ module.exports = {
     }
 
     if (authUser.listFollowing.includes(followUsername.username)) {
-      authUser.listFollowing = authUser.listFollowing.filter((username) => username !== followUsername.username);
-      followUsername.listFollower = followUsername.listFollower.filter((username) => username !== authUser.username);
+      authUser.listFollowing = authUser.listFollowing.filter(
+        (username) => username !== followUsername.username
+      );
+      followUsername.listFollower = followUsername.listFollower.filter(
+        (username) => username !== authUser.username
+      );
     } else {
       authUser.listFollowing.push(followUsername.username);
       followUsername.listFollower.push(authUser.username);
@@ -88,6 +96,7 @@ module.exports = {
     return true;
   },
 
+  // check if a logged in user is following another user
   isFollowing: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");
@@ -100,8 +109,8 @@ module.exports = {
     return false;
   },
 
-  // No need Auth for this function
-  getUserInfo: async (args, req) => {
+  // get user info by username
+  getUserInfo: async (args) => {
     const user = await User.findOne({
       username: args.username,
     });
@@ -117,6 +126,7 @@ module.exports = {
     };
   },
 
+  // check if a logged in user is authenticated
   isUserAuth: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");
