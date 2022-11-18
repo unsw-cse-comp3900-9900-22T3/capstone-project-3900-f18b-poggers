@@ -2,6 +2,7 @@ const Tag = require("../../models/tag");
 
 
 module.exports = {
+  // create a new tag
   createTag: async (args) => {
     const tagName = args.tagName.charAt(0).toUpperCase() + args.tagName.slice(1);
     console.log(tagName);
@@ -18,6 +19,7 @@ module.exports = {
     return true;
   },
 
+  // get all tags' id and name in the database
   getTags: async () => {
     const tagList = await Tag.find().sort();
     return tagList.map((tag) => {

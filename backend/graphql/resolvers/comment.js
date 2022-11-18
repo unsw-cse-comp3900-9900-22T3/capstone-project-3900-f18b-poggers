@@ -3,6 +3,7 @@ const Comment = require("../../models/comment");
 const User = require("../../models/user");
 
 module.exports = {
+  // Add a comment to a recipe by a logged in user
   createComment: async (args, req) => {
     if (!req.isAuth) {
       throw new Error("Unauthenticated!");
